@@ -81,7 +81,8 @@ public class EmployeeView {
             int employeeSalary = getEmployeeSalary();
             long mobileNumber =  getEmployeePhoneNumber();                 
             Date date = getEmployeeDOB();
-            createStatus = controllerObj.createEmployee(employeeID, name, designation, employeeSalary, date, mobileNumber);
+            createStatus = controllerObj.createEmployee(employeeID, name, designation, 
+                                                        employeeSalary, date, mobileNumber);
             System.out.println(createStatus ? "Employee created sucessfully" : "Please try again");                   
         } else {
             System.out.println("Employee ID already exists");
@@ -105,8 +106,8 @@ public class EmployeeView {
      * This method updates employee details based on user's choice.
      */
     private void updateEmployee() {
-        String updateQuestion = "What do you want to update\n 1.Name 2.Designation 3.Salary 4. Date of Birth "
-                                 + " 5. Phone Number 6.Exit";
+        String updateQuestion = "What do you want to update \n1.Name 2.Designation "
+                               + "3.Salary 4. Date of Birth 5. Phone Number 6.Exit";
         String option;
         String employeeID = getEmployee("ID");
         if (controllerObj.checkEmployeeID(employeeID)) {
