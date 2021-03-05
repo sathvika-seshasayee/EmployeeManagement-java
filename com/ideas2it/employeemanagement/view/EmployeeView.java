@@ -24,8 +24,9 @@ public class EmployeeView {
     */
    public void EmployeeOptions() {
         String option = "y";
-        String optionQuestion = "What do you want to do today with the Employee Database?\n 1. Create 2. Display" 
-                                 + " one Emlpoyee details 3. Display All Employee details 4. Update 5. Delete 6.Exit\n";
+        String optionQuestion = "What do you want to do today with the Employee "
+                + "Database?\n 1. Create 2. Display one Emlpoyee details 3. Display "
+                + "All Employee details 4. Update 5. Delete 6.Exit\n";
         do {
             System.out.println(optionQuestion);
             int choice = scanner.nextInt();
