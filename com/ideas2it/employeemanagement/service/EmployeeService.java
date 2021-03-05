@@ -147,7 +147,7 @@ public class EmployeeService {
      * @params salary
      * @return employeeSalary
      */
-     public int checkEmployeeSalary(String salary) {
+    public int checkEmployeeSalary(String salary) {
         int employeeSalary = 0;
         try {
             employeeSalary = Integer.parseInt(salary);
