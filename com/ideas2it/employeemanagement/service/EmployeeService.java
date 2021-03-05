@@ -24,6 +24,12 @@ public class EmployeeService {
     
     /**
      * This method adds new employee details into map.
+     * @params employeeID
+     * @params name
+     * @params designation
+     * @params employeeSalary
+     * @params date
+     * @params mobileNumber
      * @return true if employee object is created, false otherwise.
      */    
     public boolean createEmployee(String employeeID, String name, String designation, 
@@ -47,8 +53,8 @@ public class EmployeeService {
     public String[] viewAllEmployees() {
         String[] employeeDetails = new String[employees.size()];
         int i = 0;
-        for(Map.Entry < String, EmployeeModel> entry : employees.entrySet()) {          
-            employeeDetails[i] = entry.getKey() + "  " + entry.getValue();
+        for(Map.Entry < String, EmployeeModel> employee : employees.entrySet()) {          
+            employeeDetails[i] = employee.getKey() + "  " + employee.getValue();
             i++;
         }
     return employeeDetails;
@@ -136,7 +142,7 @@ public class EmployeeService {
         return (Pattern.matches("[1-9][0-9]{9}", phoneNumber)) ? Long.parseLong(phoneNumber) : 0;
     }
 
-     /**
+    /**
      * This method validates salary.
      * @params salary
      * @return employeeSalary
