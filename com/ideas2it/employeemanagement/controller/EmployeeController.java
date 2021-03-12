@@ -1,9 +1,7 @@
 package com.ideas2it.employeemanagement.controller;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.Map;
+import java.sql.Date;
+import java.sql.SQLException;
 
 import com.ideas2it.employeemanagement.service.EmployeeService;
 
@@ -15,100 +13,116 @@ import com.ideas2it.employeemanagement.service.EmployeeService;
  */
 public class EmployeeController {
     EmployeeService serviceObj = new EmployeeService();
-    public boolean checkEmployeeID(String employeeID) {
-        return serviceObj.checkEmployeeID(employeeID);
+    public boolean checkEmployeeID(int employeeId)  throws ClassNotFoundException, SQLException {
+        return serviceObj.checkEmployeeID(employeeId);
     }
  
     /**
      * This method passes employee details to service layer.
+     * @params employeeID
+     * @params name
+     * @params designation
+     * @params employeeSalary
+     * @params date
+     * @params mobileNumber
      * @return true if employee object is created, false otherwise.
      */ 
-    public boolean createEmployee(String employeeID, String name, String designation, 
-                                  int employeeSalary, Date date, long mobileNumber) {
-        return serviceObj.createEmployee(employeeID, name, designation, employeeSalary, date, mobileNumber);
+    public int createEmployee(String name, String designation, 
+            long employeeSalary, Date date, long mobileNumber) throws ClassNotFoundException, SQLException {
+        return serviceObj.createEmployee(name, designation, employeeSalary, date, mobileNumber);
+    }
+
+    public boolean createAddress(int employeeId, String address, String city, 
+            String state, String country, int pinCode, String addressType, boolean yesOrNo) throws ClassNotFoundException, SQLException {
+        return serviceObj.createAddress(employeeId, address, city, state, country, pinCode, addressType, yesOrNo);
+    }
+
+    public boolean setAddress(int employeeId, String address, String city, 
+            String state, String country, int pinCode, String addressType, boolean yesOrNo) throws ClassNotFoundException, SQLException {
+        return serviceObj.setAddress(employeeId, address, city, state, country, pinCode, addressType, yesOrNo);
     }
 
     /**
-     * This method passes new employee name for updation using employeeID as referance
-     * for employee details to service layer.
-     * @params name
-     * @params employeeID
-     */  
-    public void setEmployeeName(String name, String employeeID) {
-        serviceObj.setEmployeeName(name, employeeID);
-    }
-
-    /**
-     * This method passes new designation for updation using employeeID as referance
-     * for employee details to service layer.
-     * @params designation
-     * @params employeeID
-     */
-    public void setEmployeeDesignation(String designation, String employeeID) {
-        serviceObj.setEmployeeDesignation(designation, employeeID);
-    }
-    
-    /**
-     * This method passes new date of birth for updation using employeeID as referance
-     * for employee details to service layer.
-     * @params date, date of birth for employee
-     * @params employeeID
-     */
-    public void setEmployeeDOB(Date date, String employeeID) {
-        serviceObj.setEmployeeDOB(date, employeeID);
-    }
- 
-    /**
-     * This method passes new salary for updation using employeeID as referance
-     * for employee details to service layer.
-     * @params salary
-     * @params employeeID
-     */
-    public void setEmployeeSalary(int salary, String employeeID) {
-        serviceObj.setEmployeeSalary(salary, employeeID);
-    }
-
-    /**
-     * This method passes new phone number for updation using employeeID as referance
-     * for employee details to service layer.
-     * @params phoneNumber
-     * @params employeeID
-     */
-    public void setEmployeePhoneNumber(long phoneNumber, String employeeID) {
-        serviceObj.setEmployeePhoneNumber(phoneNumber, employeeID);
-    }
-
-    /**
-     * This method passes employeeID to service layer for deleting employee details.
-     * @params employeeID
-     */
-    public void deleteEmployee(String employeeID) {
-        serviceObj.deleteEmployee(employeeID);
-    }
-
-    /**
-     * This method passes employeeID to service layer.
-     * @params employeeID
+     * This method passes employeeId to service layer.
+     * @params employeeId
      * @return concatinated string employee id and details 
      */
-    public String viewSingleEmployee(String employeeID) {
-        return serviceObj.viewSingleEmployee(employeeID);
+    public String displaySingleEmployee(int employeeId) throws ClassNotFoundException, SQLException {
+        return serviceObj.viewSingleEmployee(employeeId);
     }
 
     /**
-     * This method passes employeeID to service layer.
+     * This method passes employeeId to service layer.
      * @return array of strings of employee details
      */
-    public String[] viewAllEmployees() {
+    public String[] displayAllEmployees() throws ClassNotFoundException, SQLException {
         return serviceObj.viewAllEmployees();
     }
 
     /**
-     * This method passes date of birth to service layer for 
-     * checking map if id exists in database
-     * @params employeeID
+     * This method passes employeeId to service layer for deleting employee details.
+     * @params employeeId
      */
-    public Date checkEmployeeDOB(String dob) {
+    public void deleteEmployee(int employeeId) throws ClassNotFoundException, SQLException {
+        serviceObj.deleteEmployee(employeeId);
+    }
+
+    /**
+     * This method passes new employee name for updation using employeeId as referance
+     * for employee details to service layer.
+     * @params name
+     * @params employeeId
+     */  
+    public boolean setEmployeeName(String name, int employeeId) throws ClassNotFoundException, SQLException {
+        return serviceObj.setEmployeeName(name, employeeId);
+    }
+
+    /**
+     * This method passes new designation for updation using employeeId as referance
+     * for employee details to service layer.
+     * @params designation
+     * @params employeeId
+     */
+    public boolean setEmployeeDesignation(String designation, int employeeId) throws ClassNotFoundException, SQLException {
+        return serviceObj.setEmployeeDesignation(designation, employeeId);
+    }
+    
+    /**
+     * This method passes new date of birth for updation using employeeId as referance
+     * for employee details to service layer.
+     * @params date, date of birth for employee
+     * @params employeeId
+     */
+    public boolean setEmployeeDOB(Date date, int employeeId) throws ClassNotFoundException, SQLException {
+        return serviceObj.setEmployeeDOB(date, employeeId);
+    }
+ 
+    /**
+     * This method passes new salary for updation using employeeId as referance
+     * for employee details to service layer.
+     * @params salary
+     * @params employeeId
+     */
+    public boolean setEmployeeSalary(long salary, int employeeId) throws ClassNotFoundException, SQLException {
+        return serviceObj.setEmployeeSalary(salary, employeeId);
+    }
+
+    /**
+     * This method passes new phone number for updation using employeeId as referance
+     * for employee details to service layer.
+     * @params phoneNumber
+     * @params employeeId
+     */
+    public boolean setEmployeePhoneNumber(long phoneNumber, int employeeId) throws ClassNotFoundException, SQLException {
+        return serviceObj.setEmployeePhoneNumber(phoneNumber, employeeId);
+    }
+
+    /**
+     * This method passes date of birth to service layer for 
+     * converting to date format
+     * @params dob date of birth of employee
+     */
+    public Date checkEmployeeDOB(String dob) throws ClassNotFoundException, SQLException {
         return serviceObj.checkEmployeeDOB(dob);
     }
 
@@ -116,15 +130,15 @@ public class EmployeeController {
      * This method passes phone number to service layer for validation.
      * @params phone number
      */
-    public long checkEmployeePhoneNumber(String phoneNumber) {
+    public long checkEmployeePhoneNumber(String phoneNumber) throws ClassNotFoundException, SQLException {
         return serviceObj.checkEmployeePhoneNumber(phoneNumber);
     }
- 
+
     /**
      * This method passes salary to service layer for validation.
      * @params salary
      */
-    public int checkEmployeeSalary(String salary) {
+    public long checkEmployeeSalary(String salary) throws ClassNotFoundException, SQLException {
         return serviceObj.checkEmployeeSalary(salary);
     }
 }

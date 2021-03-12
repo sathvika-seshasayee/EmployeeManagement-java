@@ -1,9 +1,10 @@
 package com.ideas2it.employeemanagement.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
- * Plain old Java object for Employee Database. It contains specific details of employee
+ * Plain old Java object for Employee Database. 
+ * It contains specific details of employee
  * 
  * @version 3.0 03 Mar 2021
  * @author Sathvika Seshasayee
@@ -11,11 +12,12 @@ import java.util.Date;
 public class EmployeeModel {
     private String name;
     private String designation;
-    private int salary;
+    private long salary;
     private Date dob;           
     private long phoneNumber;
     
-    public EmployeeModel (String name, String designation, int salary, Date date, long phoneNumber) {
+    public EmployeeModel (String name, String designation, long salary, 
+                         Date date, long phoneNumber) {
         this.name = name;
         this.designation = designation;
         this.salary = salary;
@@ -31,7 +33,7 @@ public class EmployeeModel {
          this.designation = newDesignation;
     }
 
-     public void setSalary(int newSalary) {
+     public void setSalary(long newSalary) {
          this.salary = newSalary;
     }
  
@@ -43,7 +45,28 @@ public class EmployeeModel {
          this.phoneNumber = newPhoneNumber;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDesignation() {
+        return this.designation;
+    }
+
+    public long getSalary() {
+        return this.salary;
+    }
+
+    public Date getDOB() {
+        return this.dob;
+    }
+
+    public long getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
      public String toString() {
-          return name + "  " + designation + "  " + "Rs " + salary + "  " + dob + "  " + phoneNumber;
+          return "Name : " + name + "\nDesignation :  " + designation + "\nSalary : " + "Rs " 
+                  + salary + "\nDate of Birth :  " + dob + "\nPhone number : " + phoneNumber;
      }
 }
