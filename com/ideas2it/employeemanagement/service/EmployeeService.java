@@ -65,8 +65,26 @@ public class EmployeeModel {
         return this.phoneNumber;
     }
 
+<<<<<<< HEAD
      public String toString() {
           return "Name : " + name + "\nDesignation :  " + designation + "\nSalary : " + "Rs " 
                   + salary + "\nDate of Birth :  " + dob + "\nPhone number : " + phoneNumber;
      }
 }
+=======
+    /**
+     * This method validates salary.
+     * @params salary
+     * @return employeeSalary
+     */
+    public int checkEmployeeSalary(String salary) {
+        int employeeSalary = 0;
+        try {
+            employeeSalary = Integer.parseInt(salary);
+        } catch (NumberFormatException e) {
+            employeeSalary = 0;
+        }
+        return employeeSalary;
+    }
+}
+>>>>>>> 8456b524d77ea36f48e0eebe865c2812313f5ae4

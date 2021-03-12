@@ -23,8 +23,14 @@ public class EmployeeView {
     */
    public void EmployeeOptions() throws ClassNotFoundException, SQLException {
         String option = "y";
+<<<<<<< HEAD
         String optionQuestion = "What do you want to do today with the Employee Database?\n1. Create 2. Display" 
                                  + " one Emlpoyee details 3. Display All Employee details 4. Update 5. Delete 6.Exit\n";
+=======
+        String optionQuestion = "What do you want to do today with the Employee "
+                + "Database?\n 1. Create 2. Display one Emlpoyee details 3. Display "
+                + "All Employee details 4. Update 5. Delete 6.Exit\n";
+>>>>>>> 8456b524d77ea36f48e0eebe865c2812313f5ae4
         do {
             System.out.println(optionQuestion);
             int choice = scanner.nextInt();
@@ -78,6 +84,7 @@ public class EmployeeView {
             long employeeSalary = getEmployeeSalary();
             long mobileNumber =  getEmployeePhoneNumber();                 
             Date date = getEmployeeDOB();
+<<<<<<< HEAD
             int employeeID = controllerObj.createEmployee(name, designation, employeeSalary, 
                                                       date, mobileNumber);
             System.out.println("is your permenant address same as current address? y/n");
@@ -96,6 +103,13 @@ public class EmployeeView {
             addressStatus = controllerObj.createAddress(employeeID, address, city, state, country, pinCode, addressType, yesOrNo);
             addressType = "temporary";
             System.out.println((false == addressStatus) ? "Address added" : "Address not added");
+=======
+            createStatus = controllerObj.createEmployee(employeeID, name, designation, 
+                                                        employeeSalary, date, mobileNumber);
+            System.out.println(createStatus ? "Employee created sucessfully" : "Please try again");                   
+        } else {
+            System.out.println("Employee ID already exists");
+>>>>>>> 8456b524d77ea36f48e0eebe865c2812313f5ae4
         }
            System.out.println("Employee created sucessfully\nEmployee ID is " + employeeID);                   
    }
@@ -118,12 +132,20 @@ public class EmployeeView {
     /**
      * This method updates employee details based on user's choice.
      */
+<<<<<<< HEAD
     private void updateEmployee() throws ClassNotFoundException, SQLException {
         String updateQuestion = "What do you want to update\n 1.Name 2.Designation 3.Salary 4. Date of Birth "
                                  + " 5. Phone Number 6. Address 7. Exit";
         System.out.println("Enter the ID of employee you want to update");
         int employeeID = scanner.nextInt();
         scanner.skip(Pattern.compile("[\r\n]{2}"));                                                      
+=======
+    private void updateEmployee() {
+        String updateQuestion = "What do you want to update \n1.Name 2.Designation "
+                               + "3.Salary 4. Date of Birth 5. Phone Number 6.Exit";
+        String option;
+        String employeeID = getEmployee("ID");
+>>>>>>> 8456b524d77ea36f48e0eebe865c2812313f5ae4
         if (controllerObj.checkEmployeeID(employeeID)) {
             System.out.println(updateQuestion);
             int choice = scanner.nextInt();
@@ -248,3 +270,17 @@ public class EmployeeView {
     }
 } 
 
+<<<<<<< HEAD
+=======
+    /**
+    * This method displays all employees details.
+    */
+    private void displayAllEmployees() {
+        String[] employeeDetails = controllerObj.displayAllEmployees();
+        for(String i : employeeDetails ) {
+            System.out.println(i);
+        }
+        System.out.println("------------------End of list---------------------------");
+    }
+} 
+>>>>>>> 8456b524d77ea36f48e0eebe865c2812313f5ae4
