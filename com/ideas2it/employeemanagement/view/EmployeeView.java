@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.ideas2it.employeemanagement.controller.EmployeeController;
 
@@ -23,14 +25,8 @@ public class EmployeeView {
     */
    public void EmployeeOptions() throws ClassNotFoundException, SQLException {
         String option = "y";
-<<<<<<< HEAD
         String optionQuestion = "What do you want to do today with the Employee Database?\n1. Create 2. Display" 
                                  + " one Emlpoyee details 3. Display All Employee details 4. Update 5. Delete 6.Exit\n";
-=======
-        String optionQuestion = "What do you want to do today with the Employee "
-                + "Database?\n 1. Create 2. Display one Emlpoyee details 3. Display "
-                + "All Employee details 4. Update 5. Delete 6.Exit\n";
->>>>>>> 8456b524d77ea36f48e0eebe865c2812313f5ae4
         do {
             System.out.println(optionQuestion);
             int choice = scanner.nextInt();
@@ -44,8 +40,8 @@ public class EmployeeView {
                     displaySingleEmployee();  
                     break;   
                 case 3:
-                     displayAllEmployees();
-                     break;
+                    displayAllEmployees();
+                    break;
                 case 4:
                     updateEmployee();
                     break;
@@ -78,43 +74,48 @@ public class EmployeeView {
     */
     private void createEmployee() throws ClassNotFoundException, SQLException {     
         String addressType; 
-        boolean addressStatus;   
-            String name = getEmployee("name");  
-            String designation = getEmployee("designation");          
-            long employeeSalary = getEmployeeSalary();
-            long mobileNumber =  getEmployeePhoneNumber();                 
-            Date date = getEmployeeDOB();
-<<<<<<< HEAD
-            int employeeID = controllerObj.createEmployee(name, designation, employeeSalary, 
-                                                      date, mobileNumber);
-            System.out.println("is your permenant address same as current address? y/n");
-            boolean yesOrNo = ("y" == scanner.nextLine());
-            int n = (false == yesOrNo) ? 1 :0;
-            addressType = "permanant";
+        boolean createStatus;   
+        String name = getEmployee("name");  
+        String designation = getEmployee("designation");          
+        double employeeSalary = getEmployeeSalary();
+        long mobileNumber =  getEmployeePhoneNumber();                 
+        Date date = getEmployeeDOB();
+        System.out.print ("How many addresses do you want to enter including your" 
+                               + "current address, permanant address and other addresses? :  ");
+        int n = scanner.nextInt();
+        scanner.skip(Pattern.compile("[\r\n]{2}")); 
+        ArrayList<String> address = new ArrayList<String>();
+        int addressIndex = 0; 
+        addressType = "permanant";
         for (int i = 0; i < n; i++ ) {
-            System.out.println("Enter the " + addressType + " address");
-            String address = getEmployee("address i.e. apartment number, street, area ");
-            String city = getEmployee("city");
-            String state = getEmployee("state");
-            String country = getEmployee("country");
-            System.out.print("Enter the pin code of address of the employee  :  ");
-            int pinCode = scanner.nextInt();
-            scanner.nextLine(); // change to skip and write comment explanation
-            addressStatus = controllerObj.createAddress(employeeID, address, city, state, country, pinCode, addressType, yesOrNo);
-            addressType = "temporary";
-            System.out.println((false == addressStatus) ? "Address added" : "Address not added");
-=======
-            createStatus = controllerObj.createEmployee(employeeID, name, designation, 
-                                                        employeeSalary, date, mobileNumber);
-            System.out.println(createStatus ? "Employee created sucessfully" : "Please try again");                   
+            System.out.println("\nEnter the " + addressType + " address");
+            address = getAddress(address); 
+            address.add(addressType);  
+            addressType = "temporary"; 
+        }                      
+        int employeeId = controllerObj.createEmployee(name, designation, employeeSalary, date, mobileNumber, address);
+       
+        if(0 == employeeId){
+            System.out.println("Employee not added, please try again");
         } else {
-            System.out.println("Employee ID already exists");
->>>>>>> 8456b524d77ea36f48e0eebe865c2812313f5ae4
-        }
-           System.out.println("Employee created sucessfully\nEmployee ID is " + employeeID);                   
-   }
-  
+            System.out.println("Employee created sucessfully\nEmployee ID is " + employeeId);   
+        }                
+    }
 
+    private ArrayList<String> getAddress(ArrayList<String> address) {
+            address.add(getEmployee("address i.e. apartment number, street, area "));
+            address.add(getEmployee("city"));
+            address.add(getEmployee("state"));
+            address.add(getEmployee("country"));
+            address.add(getPinCode());
+        return address;
+    }
+
+    private String getPinCode() {
+        String pinCode = getEmployee("pin code of residence");
+        return controllerObj.checkPinCode(pinCode) ? pinCode : getPinCode();
+    }
+         
    /**
     * This method deletes an employee from Database.
     */
@@ -132,64 +133,62 @@ public class EmployeeView {
     /**
      * This method updates employee details based on user's choice.
      */
-<<<<<<< HEAD
     private void updateEmployee() throws ClassNotFoundException, SQLException {
         String updateQuestion = "What do you want to update\n 1.Name 2.Designation 3.Salary 4. Date of Birth "
-                                 + " 5. Phone Number 6. Address 7. Exit";
+                                 + " 5. Phone Number 6. Update existing Address 7. Delete address 7. Exit";
         System.out.println("Enter the ID of employee you want to update");
-        int employeeID = scanner.nextInt();
+        int employeeId = scanner.nextInt();
+        int updateOption ;
+        int addressnumber = 1;
+        
+        ArrayList<String> employeeAddressDetails;
         scanner.skip(Pattern.compile("[\r\n]{2}"));                                                      
-=======
-    private void updateEmployee() {
-        String updateQuestion = "What do you want to update \n1.Name 2.Designation "
-                               + "3.Salary 4. Date of Birth 5. Phone Number 6.Exit";
-        String option;
-        String employeeID = getEmployee("ID");
->>>>>>> 8456b524d77ea36f48e0eebe865c2812313f5ae4
-        if (controllerObj.checkEmployeeID(employeeID)) {
+        if (controllerObj.checkEmployeeID(employeeId)) {
             System.out.println(updateQuestion);
             int choice = scanner.nextInt();
             scanner.skip(Pattern.compile("[\r\n]{2}"));
 
             switch (choice) {
                 case 1:
-                    controllerObj.setEmployeeName(getEmployee("name"), employeeID);     
+                    controllerObj.setEmployeeName(getEmployee("name"), employeeId);     
                     break;
                 case 2:
-                    controllerObj.setEmployeeDesignation(getEmployee("designation"), employeeID);
+                    controllerObj.setEmployeeDesignation(getEmployee("designation"), employeeId);
                     break;
                 case 3:
-                    controllerObj.setEmployeeSalary(getEmployeeSalary(), employeeID);
+                    controllerObj.setEmployeeSalary(getEmployeeSalary(), employeeId);
                     break;
                 case 4:
-                    controllerObj.setEmployeeDOB(getEmployeeDOB(), employeeID);
+                    controllerObj.setEmployeeDOB(getEmployeeDOB(), employeeId);
                     break;
                 case 5:
-                    controllerObj.setEmployeePhoneNumber(getEmployeePhoneNumber(), employeeID);
+                    controllerObj.setEmployeePhoneNumber(getEmployeePhoneNumber(), employeeId);
                     break;
                 case 6:
-                    System.out.println("Do you want to update the 1. permanant or\n 2. temporary address");
-                    choice = scanner.nextInt(); 
-                    scanner.skip(Pattern.compile("[\r\n]{2}"));                          
-                    String address = getEmployee("address i.e. apartment number, street, area ");
-                    String city = getEmployee("city");
-                    String state = getEmployee("state");
-                    String country = getEmployee("country");
-                    System.out.print("enter the pincode : ");
-                    int pinCode = scanner.nextInt();
-                    scanner.skip(Pattern.compile("[\r\n]{2}"));
-                    if (1 == choice) {
-                        System.out.println("Is you permanant address same as temporary address? y/n");
-                        String option = scanner.nextLine();
-                        boolean yesOrNo = ("y" == option);
-                        controllerObj.setAddress(employeeID, address,
-                                city, state, country, pinCode, "permanant", yesOrNo);
-// delete any temporary address if present
-                    } else {
-                        controllerObj.setAddress(employeeID, address,
-                                city, state, country, pinCode, "temporary", false);
-                    } 
+                    employeeAddressDetails = controllerObj.singleEmployeeAddress(employeeId);
+                    for(int i = 0; i < employeeAddressDetails.size(); i++) {
+                        System.out.println(employeeAddressDetails.get(i) + "\n");
+                    }
+                    System.out.println("Enter the address option you want to update e.g. 1, 2, etc");
+                    for(String i : employeeAddressDetails ) {
+                        System.out.println(addressnumber + "  " + i);
+                        addressnumber++;
+                    }
+                    updateOption = scanner.nextInt();    // choice of address
+                    scanner.skip(Pattern.compile("[\r\n]{2}"));    
+                    ArrayList<String> address = new ArrayList<String>();
+                    address = getAddress(address);                     
+                    controllerObj.setAddress(employeeId, address, updateOption);          //  change options in controller.....
                 case 7:
+                    employeeAddressDetails = controllerObj.singleEmployeeAddress(employeeId);
+                    for(int i = 0; i < employeeAddressDetails.size(); i++) {
+                        System.out.println(employeeAddressDetails.get(i) + "\n");
+                    }
+                    System.out.println("Enter the address option you want to update e.g. 1, 2, etc");
+                    updateOption = scanner.nextInt();    // choice of address
+                    scanner.skip(Pattern.compile("[\r\n]{2}")); 
+                    controllerObj.deleteSingleAddress(employeeId, updateOption);
+                case 8:
                     Runtime.getRuntime().halt(0);
                 default:
                     System.out.println("Invalid choice. Please enter again");
@@ -200,17 +199,23 @@ public class EmployeeView {
             System.out.println("Employee ID does not exist");
         }
     }
+        
 
     /**
      * This method displays one employee details.
      */  
     private void displaySingleEmployee() throws ClassNotFoundException, SQLException {
-        System.out.println("Enter the id of employee");
+        System.out.print("Enter the id of employee  :  ");
         int employeeID = scanner.nextInt();
         scanner.nextLine();                                     // change to skip
         if(controllerObj.checkEmployeeID(employeeID)) {
             String employeeDetails = controllerObj.displaySingleEmployee(employeeID);
             System.out.println(employeeDetails);
+            ArrayList<String> employeeAddressDetails = controllerObj.singleEmployeeAddress(employeeID);
+            for(int i = 0; i < employeeAddressDetails.size(); i++) {
+                System.out.println(employeeAddressDetails.get(i) + "\n");
+            }
+            System.out.println("----------------End of list------------------");
         } else {
             System.out.println("Employee ID does not exist");
         }
@@ -220,11 +225,12 @@ public class EmployeeView {
     * This method displays all employees details.
     */
     private void displayAllEmployees() throws ClassNotFoundException, SQLException {
-        String[] employeeDetails = controllerObj.displayAllEmployees();
-        for(String i : employeeDetails ) {
-            System.out.println(i);
+        ArrayList<String> employeeDetails = controllerObj.displayAllEmployees();
+        Iterator<String> employee = employeeDetails.iterator();
+        while(employee.hasNext()) { 
+            System.out.println(employee.next());
         }
-        System.out.println("------------------End of list---------------------------");
+        System.out.println("--------------End of list---------------");
     }
 
     /**
@@ -244,9 +250,9 @@ public class EmployeeView {
     /**
      * This method gets and validates salary.
      */   
-    private long getEmployeeSalary() throws ClassNotFoundException, SQLException {
+    private double getEmployeeSalary() throws ClassNotFoundException, SQLException {
         String salary = getEmployee("Salary");
-        long employeeSalary = controllerObj.checkEmployeeSalary(salary);
+        double employeeSalary = controllerObj.checkEmployeeSalary(salary);
         while(0 == controllerObj.checkEmployeeSalary(salary)) {
             System.out.println("Please enter numbers only");
             salary = getEmployee("Salary");
@@ -270,17 +276,3 @@ public class EmployeeView {
     }
 } 
 
-<<<<<<< HEAD
-=======
-    /**
-    * This method displays all employees details.
-    */
-    private void displayAllEmployees() {
-        String[] employeeDetails = controllerObj.displayAllEmployees();
-        for(String i : employeeDetails ) {
-            System.out.println(i);
-        }
-        System.out.println("------------------End of list---------------------------");
-    }
-} 
->>>>>>> 8456b524d77ea36f48e0eebe865c2812313f5ae4

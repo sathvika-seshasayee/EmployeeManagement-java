@@ -2,6 +2,7 @@ package com.ideas2it.employeemanagement.controller;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.ideas2it.employeemanagement.service.EmployeeService;
 
@@ -27,19 +28,26 @@ public class EmployeeController {
      * @params mobileNumber
      * @return true if employee object is created, false otherwise.
      */ 
-    public int createEmployee(String name, String designation, 
-            long employeeSalary, Date date, long mobileNumber) throws ClassNotFoundException, SQLException {
-        return serviceObj.createEmployee(name, designation, employeeSalary, date, mobileNumber);
+    public int createEmployee(String name, String designation, double employeeSalary, Date date, 
+            long mobileNumber, ArrayList<String> address) throws ClassNotFoundException, SQLException {
+        return serviceObj.createEmployee(name, designation, employeeSalary, date, mobileNumber, address);
+    }
+    
+     public ArrayList<String> singleEmployeeAddress(int employeeId) throws 
+            ClassNotFoundException, SQLException {
+        return serviceObj.singleEmployeeAddress(employeeId);
     }
 
-    public boolean createAddress(int employeeId, String address, String city, 
-            String state, String country, int pinCode, String addressType, boolean yesOrNo) throws ClassNotFoundException, SQLException {
-        return serviceObj.createAddress(employeeId, address, city, state, country, pinCode, addressType, yesOrNo);
+    public boolean deleteSingleAddress(int employeeId, int updateOption) throws ClassNotFoundException, SQLException {
+        return serviceObj.deleteSingleAddress(employeeId, updateOption);
+    } 
+
+    public boolean setAddress(int employeeId, ArrayList<String> address, int updateOption) throws ClassNotFoundException, SQLException {
+        return serviceObj.setAddress(employeeId, address, updateOption);
     }
 
-    public boolean setAddress(int employeeId, String address, String city, 
-            String state, String country, int pinCode, String addressType, boolean yesOrNo) throws ClassNotFoundException, SQLException {
-        return serviceObj.setAddress(employeeId, address, city, state, country, pinCode, addressType, yesOrNo);
+    public boolean checkPinCode(String pinCode) {
+         return serviceObj.checkPinCode(pinCode);
     }
 
     /**
@@ -55,7 +63,7 @@ public class EmployeeController {
      * This method passes employeeId to service layer.
      * @return array of strings of employee details
      */
-    public String[] displayAllEmployees() throws ClassNotFoundException, SQLException {
+    public ArrayList<String> displayAllEmployees() throws ClassNotFoundException, SQLException {
         return serviceObj.viewAllEmployees();
     }
 
@@ -103,7 +111,7 @@ public class EmployeeController {
      * @params salary
      * @params employeeId
      */
-    public boolean setEmployeeSalary(long salary, int employeeId) throws ClassNotFoundException, SQLException {
+    public boolean setEmployeeSalary(double salary, int employeeId) throws ClassNotFoundException, SQLException {
         return serviceObj.setEmployeeSalary(salary, employeeId);
     }
 
@@ -138,7 +146,7 @@ public class EmployeeController {
      * This method passes salary to service layer for validation.
      * @params salary
      */
-    public long checkEmployeeSalary(String salary) throws ClassNotFoundException, SQLException {
+    public double checkEmployeeSalary(String salary) throws ClassNotFoundException, SQLException {
         return serviceObj.checkEmployeeSalary(salary);
     }
 }

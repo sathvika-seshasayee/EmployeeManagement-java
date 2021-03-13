@@ -12,11 +12,11 @@ import java.sql.Date;
 public class EmployeeModel {
     private String name;
     private String designation;
-    private long salary;
+    private double salary;
     private Date dob;           
     private long phoneNumber;
     
-    public EmployeeModel (String name, String designation, long salary, 
+    public EmployeeModel (String name, String designation, double salary, 
                          Date date, long phoneNumber) {
         this.name = name;
         this.designation = designation;
@@ -33,7 +33,7 @@ public class EmployeeModel {
          this.designation = newDesignation;
     }
 
-     public void setSalary(long newSalary) {
+     public void setSalary(double newSalary) {
          this.salary = newSalary;
     }
  
@@ -53,7 +53,7 @@ public class EmployeeModel {
         return this.designation;
     }
 
-    public long getSalary() {
+    public double getSalary() {
         return this.salary;
     }
 
@@ -65,8 +65,8 @@ public class EmployeeModel {
         return this.phoneNumber;
     }
 
-     public String toString() {
-          return "Name : " + name + "\nDesignation :  " + designation + "\nSalary : " + "Rs " 
-                  + salary + "\nDate of Birth :  " + dob + "\nPhone number : " + phoneNumber;
+    public String toString() {
+        return "Name : " + name + "\nDesignation :  " + designation + "\nSalary : " + "Rs " 
+                + salary + "\nDate of Birth :  " + dob + "\nPhone number : " + phoneNumber + "\n";
      }
 }
