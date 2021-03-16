@@ -80,7 +80,7 @@ public class EmployeeView {
         double employeeSalary = getEmployeeSalary();
         long mobileNumber =  getEmployeePhoneNumber();                 
         Date date = getEmployeeDOB();
-        System.out.print ("How many addresses do you want to enter including your" 
+        System.out.print ("How many addresses do you want to enter including your " 
                                + "current address, permanant address and other addresses? :  ");
         int n = scanner.nextInt();
         scanner.skip(Pattern.compile("[\r\n]{2}")); 
@@ -211,17 +211,13 @@ public class EmployeeView {
         if(controllerObj.checkEmployeeID(employeeID)) {
             String employeeDetails = controllerObj.displaySingleEmployee(employeeID);
             System.out.println(employeeDetails);
-            ArrayList<String> employeeAddressDetails = controllerObj.singleEmployeeAddress(employeeID);
-            for(int i = 0; i < employeeAddressDetails.size(); i++) {
-                System.out.println(employeeAddressDetails.get(i) + "\n");
-            }
-            System.out.println("----------------End of list------------------");
+            System.out.println("----------------End------------------");
         } else {
             System.out.println("Employee ID does not exist");
         }
     }
 
-    /**
+   /**
     * This method displays all employees details.
     */
     private void displayAllEmployees() throws ClassNotFoundException, SQLException {

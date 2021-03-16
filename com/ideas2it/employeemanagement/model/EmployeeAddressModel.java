@@ -1,4 +1,3 @@
-// address pojo
 package com.ideas2it.employeemanagement.model;
 
 /**
@@ -24,7 +23,6 @@ public class EmployeeAddressModel {
     this.country = country;
     this.pinCode = pinCode;
     this.addressType = addressType;
- //   this.yesOrNo = yesOrNo;
     }
 
     public String getAddress() {
@@ -51,13 +49,10 @@ public class EmployeeAddressModel {
         return this.addressType;
     }
 
- /*   public int getYesOrNo() {
-        return ((yesOrNo) ? 1 :0) ;
-    }        */
-
     public String toString() {
         String newLine = "\n";
-        return "Address Type : " + addressType + newLine + address + newLine + city + newLine + state + newLine + country 
-                + newLine + pinCode + newLine;
+        return "Address Type : " + addressType + newLine + "address : " + address + newLine + "city : " + city 
+               + newLine + "state : " + state + newLine + "country : " + country 
+                + newLine + "pin code : " +  pinCode + newLine;
     }
 }

@@ -18,9 +18,7 @@ public class SingletonConnection {
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/employees", "root", "Sath1996@");
             return connection;
-        } catch (SQLException e) {
-            System.out.println("Can't connect to database. Please try again");
-        }
+        } catch (SQLException e) {}
         return null;
     }
 }

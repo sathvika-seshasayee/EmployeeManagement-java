@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import com.ideas2it.employeemanagement.service.EmployeeService;
+import com.ideas2it.employeemanagement.service.EmployeeServiceImpl;
 
 /**
  * Links view and service layers.
@@ -13,7 +13,7 @@ import com.ideas2it.employeemanagement.service.EmployeeService;
  * @author Sathvika Seshasayee
  */
 public class EmployeeController {
-    EmployeeService serviceObj = new EmployeeService();
+    EmployeeServiceImpl serviceObj = new EmployeeService();
     public boolean checkEmployeeID(int employeeId)  throws ClassNotFoundException, SQLException {
         return serviceObj.checkEmployeeID(employeeId);
     }
