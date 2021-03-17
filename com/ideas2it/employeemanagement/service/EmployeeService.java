@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.ideas2it.employeemanagement.model.EmployeeModel;
 import com.ideas2it.employeemanagement.model.EmployeeAddressModel;
@@ -50,7 +51,7 @@ public interface EmployeeService {
      * @param updateOption row number of address chosen by employee
      * @return false is single address of employee was soft deleted
      */
-    boolean deleteSingleAddress(int employeeId, int updateOption) 
+    boolean deleteSingleAddress(int employeeId) 
                                        throws ClassNotFoundException, SQLException;
 
     /**
@@ -60,7 +61,7 @@ public interface EmployeeService {
      * @param updateOption is the option of address to be updated.
      * @return false if address was updated.
      */
-    boolean setAddress(int employeeId, ArrayList<String> address, int updateOption) 
+    boolean setAddress(int addressId, ArrayList<String> address) 
                                throws ClassNotFoundException, SQLException;
 
     /**
@@ -75,13 +76,13 @@ public interface EmployeeService {
      * @param employeeId is id of employee
      * @return list of employee address strings.
      */
-    ArrayList<String> singleEmployeeAddress(int employeeId) throws ClassNotFoundException, SQLException;
+    Map<Integer, String> singleEmployeeAddress(int employeeId) throws ClassNotFoundException, SQLException;
 
     /** 
      * This method converts all employee and corresponding address details to string.
      * @return array list of strings of details of all employee.
      */
-    ArrayList<String> viewAllEmployees() throws ClassNotFoundException, SQLException;
+    ArrayList<String> viewAllEmployees(String Option) throws ClassNotFoundException, SQLException;
 
     /**
      * soft deletes one employee details.

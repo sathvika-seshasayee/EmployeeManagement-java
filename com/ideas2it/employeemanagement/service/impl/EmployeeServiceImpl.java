@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.lang.IllegalArgumentException;
 
 import com.ideas2it.employeemanagement.dao.impl.EmployeeDaoImpl;
@@ -64,7 +66,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public boolean addAddress(int employeeId, ArrayList<String> address) throws ClassNotFoundException,
    							        SQLException {
         int addressIndex = 0; 
-        employeeAddressObj = new EmployeeAddressModel(address.get(addressIndex), address.get(addressIndex++),
+        employeeAddressObj = new EmployeeAddressModel(address.get(addressIndex++), address.get(addressIndex++),
                             address.get(addressIndex++), address.get(addressIndex++), address.get(addressIndex++), 
                             address.get(addressIndex++));
         return employeeDao.addAddress(employeeId, employeeAddressObj);
@@ -76,9 +78,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     
      */    
     @Override
-    public boolean deleteSingleAddress(int employeeId, int updateOption) 
+    public boolean deleteSingleAddress(int addressId) 
                                        throws ClassNotFoundException, SQLException {
-        return employeeDao.deleteSingleAddress(employeeId, updateOption);
+        return employeeDao.deleteSingleAddress(addressId);
     } 
 
     /**
@@ -87,12 +89,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     
      */    
     @Override
-    public boolean setAddress(int employeeId, ArrayList<String> address, int updateOption) 
+    public boolean setAddress(int addressId, ArrayList<String> address) 
                                throws ClassNotFoundException, SQLException {
         String addressTypeDummy = "  ";
         employeeAddressObj = new EmployeeAddressModel(address.get(0), address.get(1), address.get(2), address.get(3), 
                                                       address.get(4), addressTypeDummy);
-        return employeeDao.setAddress(employeeId, employeeAddressObj, updateOption);
+        return employeeDao.setAddress(addressId, employeeAddressObj);
     }
     
 
@@ -112,16 +114,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     
      */    
     @Override
-    public ArrayList<String> singleEmployeeAddress(int employeeId) throws ClassNotFoundException, SQLException {
+    public Map<Integer, String> singleEmployeeAddress(int employeeId) throws ClassNotFoundException, SQLException {
         int length;
         ArrayList<EmployeeAddressModel> singleEmployeeAddresses = employeeDao.singleEmployeeAddress(employeeId);
-       
-        ArrayList<String> addresses = new ArrayList<String>();
-       
+           // get address id also in this, use hash map for address id and details, add id in pojo
+        Map<Integer, String> address = new TreeMap<Integer, String>();
         for (int i = 0; i < singleEmployeeAddresses.size(); i++) {
-            addresses.add((singleEmployeeAddresses.get(i)).toString());
+            int addressId = (singleEmployeeAddresses.get(i)).getId();
+            address.put(addressId, (singleEmployeeAddresses.get(i)).toString());  
         }
-        return addresses;
+        return address;
     }
 
     /**
@@ -130,8 +132,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     
      */    
     @Override
-    public ArrayList<String> viewAllEmployees() throws ClassNotFoundException, SQLException  {
-        ArrayList<EmployeeModel> employee = employeeDao.viewAllEmployees();
+    public ArrayList<String> viewAllEmployees(String option) throws ClassNotFoundException, SQLException  {
+        ArrayList<EmployeeModel> employee = employeeDao.viewAllEmployees(option);
         ArrayList<String> employeeDetails = new ArrayList<String>();
 
         for(int i = 0; i < employee.size(); i++) {

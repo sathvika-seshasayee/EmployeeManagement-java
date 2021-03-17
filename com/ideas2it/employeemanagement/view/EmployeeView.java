@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.Scanner;
-
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.ideas2it.employeemanagement.controller.EmployeeController;
 
@@ -43,7 +44,7 @@ public class EmployeeView {
                     displaySingleEmployee();  
                     break;   
                 case 3:
-                    displayAllEmployees();
+                    displayAllEmployees("active");
                     break;
                 case 4:
                     updateEmployee();
@@ -52,6 +53,7 @@ public class EmployeeView {
                     deleteEmployee();
                     break;
                 case 6:
+                    displayAllEmployees("deleted");
                     restoreEmployee();
                     break;
                 case 7:
@@ -95,19 +97,20 @@ public class EmployeeView {
     * This method adds details of employee to Database.
     */
     private void createEmployee() throws ClassNotFoundException, SQLException {     
-        String addressType; 
-        boolean createStatus;   
+        String addressType;   
+        ArrayList<ArrayList<String>> addresses = new ArrayList<ArrayList<String>>();
+        ArrayList<String> address = new ArrayList<String>();
         String name = getEmployee("name");  
         String designation = getEmployee("designation");          
         double employeeSalary = getEmployeeSalary();
         long mobileNumber =  getEmployeePhoneNumber();                 
         Date date = getEmployeeDOB();
+        System.out.println("Do you want to enter the address ? y/n ");
+        if ((scanner.nextLine()).equals("y")) {
         System.out.print ("How many addresses do you want to enter including your " 
                                + "current address, permanant address and other addresses? :  ");
         int n = scanner.nextInt();
         scanner.skip(Pattern.compile("[\r\n]{2}")); 
-        ArrayList<ArrayList<String>> addresses = new ArrayList<ArrayList<String>>();
-        ArrayList<String> address = new ArrayList<String>();
         int addressIndex = 0; 
         addressType = "permanant";
         for (int i = 0; i < n; i++ ) {
@@ -116,7 +119,14 @@ public class EmployeeView {
             address.add(addressType);  
             addressType = "temporary"; 
             addresses.add(address);
-        }                      
+        }  
+        } else {
+            for (int i = 0; i < 5 ; i++ ) {
+            address.add(null);
+         }
+            address.add("permanant");
+            addresses.add(address);
+        }                 
         int employeeId = controllerObj.createEmployee(name, designation, employeeSalary, date, mobileNumber, addresses);
        
         if(0 == employeeId){
@@ -146,6 +156,7 @@ public class EmployeeView {
     private void deleteEmployee() throws ClassNotFoundException, SQLException {
         System.out.println("Enter the id of employee");
         int employeeID = scanner.nextInt();
+        scanner.skip(Pattern.compile("[\r\n]{2}"));
         if (controllerObj.checkEmployeeID(employeeID)) {
             controllerObj.deleteEmployee(employeeID);
             System.out.println("Employee deleted sucessfully"); 
@@ -161,18 +172,25 @@ public class EmployeeView {
         String updateQuestion = "What do you want to update\n 1.Name 2.Designation 3.Salary 4. Date of Birth "
                                  + " 5. Phone Number 6. Update existing Address 7. Delete address 8. Add Address" 
                                  + " 9. Exit";
-        System.out.println("Enter the ID of employee you want to update");
-        int employeeId = scanner.nextInt();
+        
         int updateOption ;
         int addressnumber = 1;
+        String addressType = "temporary";
         
-        ArrayList<String> employeeAddressDetails;
-        scanner.skip(Pattern.compile("[\r\n]{2}"));                                                      
+        Map<Integer, String> employeeAddressDetails = new TreeMap<Integer, String>();
+        int choice = 0;
+          System.out.println("Enter the ID of employee you want to update");
+        int employeeId = scanner.nextInt();             
+        scanner.skip(Pattern.compile("[\r\n]{2}"));      
+         
+                                          
         if (controllerObj.checkEmployeeID(employeeId)) {
-            System.out.println(updateQuestion);
-            int choice = scanner.nextInt();
+             System.out.println(updateQuestion);
+           choice = scanner.nextInt();
+           scanner.skip(Pattern.compile("[\r\n]{2}"));
+            
             ArrayList<String> address = new ArrayList<String>();
-            scanner.skip(Pattern.compile("[\r\n]{2}"));
+            
 
             switch (choice) {
                 case 1:
@@ -192,38 +210,49 @@ public class EmployeeView {
                     break;
                 case 6:
                     employeeAddressDetails = controllerObj.singleEmployeeAddress(employeeId);
-              /*      for(int i = 0; i < employeeAddressDetails.size(); i++) {
-                        System.out.println(employeeAddressDetails.get(i) + "\n");
-                    } */
+                    int addressNumber = 1;
+                
                     System.out.println("Enter the address option you want to update e.g. 1, 2, etc");
-                    for(String i : employeeAddressDetails ) {
-                        System.out.println(addressnumber + "  " + i);
-                        addressnumber++;
+                    int[]  addressIdArray= new int[employeeAddressDetails.size() + 1];
+                    for( Map.Entry<Integer, String> entry : employeeAddressDetails.entrySet() ){
+                        System.out.println( addressNumber + ".  " + entry.getValue());
+                        addressIdArray[addressNumber] = entry.getKey();
+                        addressNumber++;
                     }
+               
                     updateOption = scanner.nextInt();    // choice of address
                     scanner.skip(Pattern.compile("[\r\n]{2}"));    
-                    
-                    address = getAddress(address);                     
-                    controllerObj.setAddress(employeeId, address, updateOption);          //  change options in controller.....
+                    int addressId = addressIdArray[updateOption];
+                    address = getAddress(address);    
+                                   
+                    controllerObj.setAddress(addressId, address);          
                     break;
                 case 7:
                     employeeAddressDetails = controllerObj.singleEmployeeAddress(employeeId);
-                    for(int i = 0; i < employeeAddressDetails.size(); i++) {
-                        System.out.println(i+1 + "  " + employeeAddressDetails.get(i) + "\n");
-                    }
+                    addressNumber = 1;
                     System.out.println("Enter the address option you want to update e.g. 1, 2, etc");
-                    updateOption = scanner.nextInt();    // choice of address
-                    scanner.skip(Pattern.compile("[\r\n]{2}")); 
-                    controllerObj.deleteSingleAddress(employeeId, updateOption);
+                    addressIdArray= new int[employeeAddressDetails.size() + 1];
+                    for( Map.Entry<Integer, String> entry : employeeAddressDetails.entrySet() ){
+                        System.out.println( addressNumber + ".  " + entry.getValue());
+                        addressIdArray[addressNumber] = entry.getKey();
+                        addressNumber++;
+                    }
+                     updateOption = scanner.nextInt();    // choice of address
+                    scanner.skip(Pattern.compile("[\r\n]{2}"));    
+                    addressId = addressIdArray[updateOption];
+
+                    controllerObj.deleteSingleAddress(addressId);
                     break;
                 case 8:
-                    String addressType = "temporary";
+                    addressType = "temporary";
                     address = getAddress(address);
                     address.add(addressType);
+            
                     controllerObj.addAddress(employeeId, address);
                     break;
                 case 9:
-                    Runtime.getRuntime().halt(0);
+                    EmployeeOptions();
+                    break;
                 default:
                     System.out.println("Invalid choice. Please enter again");
                     break;
@@ -232,6 +261,8 @@ public class EmployeeView {
         } else {
             System.out.println("Employee ID does not exist");
         }
+        
+      
     }
         
 
@@ -254,8 +285,8 @@ public class EmployeeView {
    /**
     * This method displays all employees details.
     */
-    private void displayAllEmployees() throws ClassNotFoundException, SQLException {
-        ArrayList<String> employeeDetails = controllerObj.displayAllEmployees();
+    private void displayAllEmployees(String option) throws ClassNotFoundException, SQLException {
+        ArrayList<String> employeeDetails = controllerObj.displayAllEmployees(option);
         Iterator<String> employee = employeeDetails.iterator();
         while(employee.hasNext()) { 
             System.out.println(employee.next());

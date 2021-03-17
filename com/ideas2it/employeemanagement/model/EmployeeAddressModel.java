@@ -23,7 +23,7 @@ public class EmployeeAddressModel {
     this.state = state;
     this.country = country;
     this.pinCode = pinCode;
-    this.addressType = addressType;
+    this.addressType= addressType;
     }
 
     public int getId() {

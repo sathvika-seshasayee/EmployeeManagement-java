@@ -32,7 +32,7 @@ public class EmployeeModel {
     }
 
     public void setId(int newId) {
-        this.id = id;
+        this.id = newId;
     }
 
     public void setName(String newName) {
@@ -88,11 +88,14 @@ public class EmployeeModel {
     }
 
     public String toString() {
-        String addresses = "";
-        for (int i = 0; i < (this.addresses).size(); i++) {
-           addresses = addresses +  ((this.addresses).get(i)).toString() + "\n";
-        }
-        return "Name : " + name + "\nDesignation :  " + designation + "\nSalary : " + "Rs " 
+        String addresses = ""; 
+       if(!(this.addresses).isEmpty()) {
+         for (int i = 0; i < (this.addresses).size(); i++) {
+             addresses = addresses +  ((this.addresses).get(i)).toString() + "\n";
+          }        
+       }
+        
+        return  "Employee Id  : " + id + "\nName : " + name + "\nDesignation :  " + designation + "\nSalary : " + "Rs " 
                 + salary + "\nDate of Birth :  " + dob + "\nPhone number : " + phoneNumber + "\n\n"
                 + addresses + "\n";
      }

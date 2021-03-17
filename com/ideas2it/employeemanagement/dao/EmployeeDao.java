@@ -33,7 +33,7 @@ public interface EmployeeDao {
      * @return false if address was updated.
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean setAddress(int employeeId, EmployeeAddressModel employeeAddressObj, int updateOption) throws ClassNotFoundException, SQLException ;
+    boolean setAddress(int addressId, EmployeeAddressModel employeeAddressObj) throws ClassNotFoundException, SQLException ;
 
     /**
      * This method retrives single employee address from database.
@@ -52,16 +52,6 @@ public interface EmployeeDao {
 
     public EmployeeModel viewSingleEmployee(int employeeId) throws 
 	        ClassNotFoundException, SQLException;
-
-    /**
-     * This method is used to retrive the address Id. 
-     * @ employeeId is id of employee
-     * @ updateOption row number of chosen address by the user from given options of 
-     * particular address of employee.
-     * @return address Id is returned.
-     * @throws ClassNotFoundException, SQLException.
-     */ 
-    int getAddressId(int employeeId, int updateOption)  throws ClassNotFoundException, SQLException ;
  
     /**
      * This methods soft deletes all the address of a single employee from database. 
@@ -76,7 +66,7 @@ public interface EmployeeDao {
      * @return array list of Employee POJO objects with details of all employee.
      * @throws ClassNotFoundException, SQLException.
      */
-    ArrayList<EmployeeModel> viewAllEmployees() throws ClassNotFoundException, SQLException;
+    ArrayList<EmployeeModel> viewAllEmployees(String option) throws ClassNotFoundException, SQLException;
 
     /**
      * This method retrives single employee details from database.
@@ -108,7 +98,7 @@ public interface EmployeeDao {
      * @return false is single address of employee was soft deleted
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean deleteSingleAddress(int employeeId, int updateOption) throws ClassNotFoundException, SQLException; 
+    boolean deleteSingleAddress(int addressId) throws ClassNotFoundException, SQLException; 
 
     /**
      * updates name of an employee in database.

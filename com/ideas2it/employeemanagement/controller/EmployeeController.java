@@ -3,6 +3,7 @@ package com.ideas2it.employeemanagement.controller;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
 
@@ -33,17 +34,17 @@ public class EmployeeController {
         return serviceObj.createEmployee(name, designation, employeeSalary, date, mobileNumber, addresses);
     }
     
-     public ArrayList<String> singleEmployeeAddress(int employeeId) throws 
+     public Map<Integer, String> singleEmployeeAddress(int employeeId) throws 
             ClassNotFoundException, SQLException {
         return serviceObj.singleEmployeeAddress(employeeId);
     }
 
-    public boolean deleteSingleAddress(int employeeId, int updateOption) throws ClassNotFoundException, SQLException {
-        return serviceObj.deleteSingleAddress(employeeId, updateOption);
+    public boolean deleteSingleAddress(int addressId) throws ClassNotFoundException, SQLException {
+        return serviceObj.deleteSingleAddress(addressId);
     } 
 
-    public boolean setAddress(int employeeId, ArrayList<String> address, int updateOption) throws ClassNotFoundException, SQLException {
-        return serviceObj.setAddress(employeeId, address, updateOption);
+    public boolean setAddress(int addressId, ArrayList<String> address) throws ClassNotFoundException, SQLException {
+        return serviceObj.setAddress(addressId, address);
     }
 
     public boolean restoreEmployee(int employeeId)  throws ClassNotFoundException, SQLException {
@@ -72,8 +73,8 @@ public class EmployeeController {
      * This method passes employeeId to service layer.
      * @return array of strings of employee details
      */
-    public ArrayList<String> displayAllEmployees() throws ClassNotFoundException, SQLException {
-        return serviceObj.viewAllEmployees();
+    public ArrayList<String> displayAllEmployees(String option) throws ClassNotFoundException, SQLException {
+        return serviceObj.viewAllEmployees(option);
     }
 
     /**
