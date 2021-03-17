@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import com.ideas2it.employeemanagement.service.EmployeeServiceImpl;
+import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
 
 /**
  * Links view and service layers.
@@ -13,7 +13,7 @@ import com.ideas2it.employeemanagement.service.EmployeeServiceImpl;
  * @author Sathvika Seshasayee
  */
 public class EmployeeController {
-    EmployeeServiceImpl serviceObj = new EmployeeService();
+    EmployeeServiceImpl serviceObj = new EmployeeServiceImpl();
     public boolean checkEmployeeID(int employeeId)  throws ClassNotFoundException, SQLException {
         return serviceObj.checkEmployeeID(employeeId);
     }
@@ -29,8 +29,8 @@ public class EmployeeController {
      * @return true if employee object is created, false otherwise.
      */ 
     public int createEmployee(String name, String designation, double employeeSalary, Date date, 
-            long mobileNumber, ArrayList<String> address) throws ClassNotFoundException, SQLException {
-        return serviceObj.createEmployee(name, designation, employeeSalary, date, mobileNumber, address);
+            long mobileNumber, ArrayList<ArrayList<String>> addresses) throws ClassNotFoundException, SQLException {
+        return serviceObj.createEmployee(name, designation, employeeSalary, date, mobileNumber, addresses);
     }
     
      public ArrayList<String> singleEmployeeAddress(int employeeId) throws 
@@ -44,6 +44,15 @@ public class EmployeeController {
 
     public boolean setAddress(int employeeId, ArrayList<String> address, int updateOption) throws ClassNotFoundException, SQLException {
         return serviceObj.setAddress(employeeId, address, updateOption);
+    }
+
+    public boolean restoreEmployee(int employeeId)  throws ClassNotFoundException, SQLException {
+        return serviceObj.restoreEmployee(employeeId);
+    }
+
+    public boolean addAddress(int employeeId, ArrayList<String> address) throws ClassNotFoundException,
+   							        SQLException {
+        return serviceObj.addAddress(employeeId, address);
     }
 
     public boolean checkPinCode(String pinCode) {

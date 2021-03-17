@@ -8,6 +8,7 @@ package com.ideas2it.employeemanagement.model;
  * @author Sathvika Seshasayee
  */
 public class EmployeeAddressModel {
+    private int id;
     private String address;            // contains apartment number and street name
     private String city;
     private String state;
@@ -23,6 +24,10 @@ public class EmployeeAddressModel {
     this.country = country;
     this.pinCode = pinCode;
     this.addressType = addressType;
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public String getAddress() {
@@ -49,10 +54,37 @@ public class EmployeeAddressModel {
         return this.addressType;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+ 
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setPinCode(String pinCode) {
+        this.pinCode = pinCode;
+    }
+
+    public void setAddressType(String addressType) {
+        this.addressType = addressType;
+    }
+
     public String toString() {
-        String newLine = "\n";
-        return "Address Type : " + addressType + newLine + "address : " + address + newLine + "city : " + city 
-               + newLine + "state : " + state + newLine + "country : " + country 
-                + newLine + "pin code : " +  pinCode + newLine;
+        return "Address Type : " + addressType + "\n" + address + " , " 
+                +  city + " , " + state + " , " + country  + " , " +  pinCode
+                + "\n";
     }
 }

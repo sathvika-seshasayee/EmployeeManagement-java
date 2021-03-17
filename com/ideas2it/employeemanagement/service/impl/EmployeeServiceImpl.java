@@ -6,12 +6,12 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;  // delete these
-import java.util.Map;
+import java.lang.IllegalArgumentException;
 
-import com.ideas2it.employeemanagement.dao.impl.EmployeeDao;
+import com.ideas2it.employeemanagement.dao.impl.EmployeeDaoImpl;
 import com.ideas2it.employeemanagement.model.EmployeeModel;
 import com.ideas2it.employeemanagement.model.EmployeeAddressModel;
+import com.ideas2it.employeemanagement.service.EmployeeService;
 
 /**
  * Contains logics behind displayed outputs.
@@ -20,40 +20,73 @@ import com.ideas2it.employeemanagement.model.EmployeeAddressModel;
  * @author Sathvika Seshasayee
  */
 public class EmployeeServiceImpl implements EmployeeService {
-    EmployeeDaoImpl employeeDao = new EmployeeDao();
+    EmployeeDaoImpl employeeDao = new EmployeeDaoImpl();
     EmployeeModel employeeModelObj;
     EmployeeAddressModel employeeAddressObj;
 
     /**
-     * This method adds new employee details into map.
-     * @params employeeId
-     * @params name
-     * @params designation
-     * @params employeeSalary
-     * @params date
-     * @params mobileNumber
-     * @return true if employee object is created, false otherwise.
+  
+     * {@inheritdoc}
+    
      */    
+  //  @Override
     public int createEmployee(String name, String designation, double employeeSalary, Date date, 
-            long mobileNumber, ArrayList<String> address) throws ClassNotFoundException, SQLException {
+            long mobileNumber, ArrayList<ArrayList<String>> addresses) throws ClassNotFoundException, SQLException {
         ArrayList<EmployeeAddressModel> employeeAddressObjs = new ArrayList<EmployeeAddressModel>();
-        int j = 0;
-        for(int i = 0; i < (address.size())/6; i++) {
-            employeeAddressObj = new EmployeeAddressModel(address.get(j++), address.get(j++),
-                            address.get(j++), address.get(j++), address.get(j++), address.get(j++));
+        int addressIndex = 0;
+        for(ArrayList<String> address : addresses) {
+            employeeAddressObj = new EmployeeAddressModel(address.get(addressIndex++), address.get(addressIndex++),
+                            address.get(addressIndex++), address.get(addressIndex++), address.get(addressIndex++), address.get(addressIndex++));
             employeeAddressObjs.add(employeeAddressObj);
+            addressIndex = 0;
         }
         employeeModelObj = new EmployeeModel(name, designation, employeeSalary, 
                                              date, mobileNumber, employeeAddressObjs);
         return employeeDao.createEmployee(employeeModelObj);
     } 
 
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
+    public boolean restoreEmployee(int employeeId) throws ClassNotFoundException, SQLException  { 
+        return employeeDao.restoreEmployee(employeeId);
+    }
 
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
+    public boolean addAddress(int employeeId, ArrayList<String> address) throws ClassNotFoundException,
+   							        SQLException {
+        int addressIndex = 0; 
+        employeeAddressObj = new EmployeeAddressModel(address.get(addressIndex), address.get(addressIndex++),
+                            address.get(addressIndex++), address.get(addressIndex++), address.get(addressIndex++), 
+                            address.get(addressIndex++));
+        return employeeDao.addAddress(employeeId, employeeAddressObj);
+    }
+
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
     public boolean deleteSingleAddress(int employeeId, int updateOption) 
                                        throws ClassNotFoundException, SQLException {
         return employeeDao.deleteSingleAddress(employeeId, updateOption);
     } 
 
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
     public boolean setAddress(int employeeId, ArrayList<String> address, int updateOption) 
                                throws ClassNotFoundException, SQLException {
         String addressTypeDummy = "  ";
@@ -62,16 +95,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeDao.setAddress(employeeId, employeeAddressObj, updateOption);
     }
     
-  
 
-   /**
-    * This method is logic for viewing single employee details.
-    * @return concatinated string of employee id and details
-    */
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
     public String viewSingleEmployee(int employeeId) throws ClassNotFoundException, SQLException  {
         return (employeeDao.viewSingleEmployee(employeeId)).toString();
     }
 
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
     public ArrayList<String> singleEmployeeAddress(int employeeId) throws ClassNotFoundException, SQLException {
         int length;
         ArrayList<EmployeeAddressModel> singleEmployeeAddresses = employeeDao.singleEmployeeAddress(employeeId);
@@ -85,9 +125,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /**
-     * This method is logic for viewing all employee details.
-     * @return array of strings of employee details.
-     */
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
     public ArrayList<String> viewAllEmployees() throws ClassNotFoundException, SQLException  {
         ArrayList<EmployeeModel> employee = employeeDao.viewAllEmployees();
         ArrayList<String> employeeDetails = new ArrayList<String>();
@@ -100,97 +142,118 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
   
     /**
-     * This method deletes the employee details if present.
-     * @return false if employee id was not present, true otherwise.
-     */
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
     public boolean deleteEmployee(int employeeId) throws ClassNotFoundException, SQLException {
         return employeeDao.deleteEmployee(employeeId);
     }
 
-    /**
-     * This method updates employee name.
-     * @params name
-     * @params employeeId
-     */  
+   /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override 
     public boolean setEmployeeName(String name, int employeeId) throws ClassNotFoundException, SQLException  {
         return employeeDao.setEmployeeName(name, employeeId);
     }
 
     /**
-     * This method updates employee designation.
-     * @params designation
-     * @params employeeId
-     */  
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override 
     public boolean setEmployeeDesignation(String designation, int employeeId) throws ClassNotFoundException, SQLException  {
         return employeeDao.setEmployeeDesignation(designation, employeeId);
     }
 
     /**
-     * This method updates employee date of birth.
-     * @params date is date of birth of employee
-     * @params employeeId
-     */  
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override  
     public boolean setEmployeeDOB(Date date, int employeeId) throws ClassNotFoundException, SQLException {
         return employeeDao.setEmployeeDOB(date, employeeId);
     }
 
     /**
-     * This method updates employee salary.
-     * @params salary
-     * @params employeeId
-     */  
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override  
     public boolean setEmployeeSalary(double salary, int employeeId) throws ClassNotFoundException, SQLException {
         return employeeDao.setEmployeeSalary(salary, employeeId);
     }
 
-    /**
-     * This method updates employee phone number.
-     * @params phoneNumber
-     * @params employeeId
-     */  
+   /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override 
     public boolean setEmployeePhoneNumber(long phoneNumber, int employeeId) throws ClassNotFoundException, SQLException {
         return employeeDao.setEmployeePhoneNumber(phoneNumber, employeeId);
     }
    
 
     /**
-     * This method validates presence of employee id.
-     */  
-    public Boolean checkEmployeeID(int employeeId) throws ClassNotFoundException, SQLException {
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override 
+    public boolean checkEmployeeID(int employeeId) throws ClassNotFoundException, SQLException {
         return employeeDao.checkEmployeeID(employeeId);
     }
  
     /**
-     * This method validates date of birth.
-     */  
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override 
     public Date checkEmployeeDOB(String dob) throws ClassNotFoundException, SQLException {
-        Date date = Date.valueOf(dob);
-     /*   try {
-            date = Date.valueOf(dob);
-        } catch (Exception e) {
-            date = null;
-        } */
-        return date;
+        Date date = null;
+            try {
+                date = Date.valueOf(dob);
+            } catch (IllegalArgumentException e) {
+                date = null;
+            }
+         return date;
     }
 
     /**
-     * This method validates mobile number.
-     * @params phoneNumber
-     * @return mobileNumber
-     */
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
     public long checkEmployeePhoneNumber(String phoneNumber) {
         return (Pattern.matches("[7-9][0-9]{9}", phoneNumber)) ? Long.parseLong(phoneNumber) : 0;
     }
 
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
     public boolean checkPinCode(String pinCode) {
          return (Pattern.matches("[1-9][0-9]{5}", pinCode));
     }
 
     /**
-     * This method validates salary.
-     * @params salary
-     * @return employeeSalary
-     */
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
      public double checkEmployeeSalary(String salary) {
         double employeeSalary = 0;
         try {

@@ -13,12 +13,13 @@ import com.ideas2it.employeemanagement.model.EmployeeAddressModel;
  * @author Sathvika Seshasayee
  */
 public class EmployeeModel {
+    private int id;
     private String name;
     private String designation;
     private double salary;
     private Date dob;           
     private long phoneNumber;
-    private ArrayList<EmployeeAddressModel> address;
+    private ArrayList<EmployeeAddressModel> addresses;
     
     public EmployeeModel (String name, String designation, double salary, 
                          Date date, long phoneNumber, ArrayList<EmployeeAddressModel> addresses) {
@@ -27,7 +28,11 @@ public class EmployeeModel {
         this.salary = salary;
         this.phoneNumber = phoneNumber;
         this.dob = date;
-        this.address = addresses;
+        this.addresses = addresses;
+    }
+
+    public void setId(int newId) {
+        this.id = id;
     }
 
     public void setName(String newName) {
@@ -51,8 +56,12 @@ public class EmployeeModel {
     }
 
     public void setAddresses(ArrayList<EmployeeAddressModel> address) {
-         this.address = address;
+         this.addresses = address;
     }
+
+    public int getId() {
+        return this.id;
+    }   
 
     public String getName() {
         return this.name;
@@ -75,13 +84,13 @@ public class EmployeeModel {
     }
 
     public ArrayList<EmployeeAddressModel> getAddresses() {
-        return this.address;
+        return this.addresses;
     }
 
     public String toString() {
         String addresses = "";
-        for (int i = 0; i < address.size(); i++) {
-           addresses = addresses +  (address.get(i)).toString() + "\n";
+        for (int i = 0; i < (this.addresses).size(); i++) {
+           addresses = addresses +  ((this.addresses).get(i)).toString() + "\n";
         }
         return "Name : " + name + "\nDesignation :  " + designation + "\nSalary : " + "Rs " 
                 + salary + "\nDate of Birth :  " + dob + "\nPhone number : " + phoneNumber + "\n\n"

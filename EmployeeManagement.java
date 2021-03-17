@@ -9,7 +9,8 @@ import com.ideas2it.employeemanagement.view.EmployeeView;
  * @author Sathvika Seshasayee
  */
 public class EmployeeManagement { 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    public static void main(String[] args) throws ClassNotFoundException, 
+	                                              SQLException {
         EmployeeView viewObj = new EmployeeView();
         viewObj.EmployeeOptions();
     }
