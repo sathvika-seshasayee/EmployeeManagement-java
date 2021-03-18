@@ -1,9 +1,15 @@
 package com.ideas2it.sessionfactory;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
+/**
+ * Singleton class for connecting  to database
+ * 
+ * @version 1.0 09 Mar 2021
+ * @author Sathvika Seshasayee
+ */
 public class SingletonConnection {
     private static SingletonConnection singleInstance = null;
 
@@ -16,7 +22,9 @@ public class SingletonConnection {
 
     public Connection mysqlConnection() {
         try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/employees", "root", "Sath1996@");
+            Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/employees", "root",
+                     "Sath1996@");
             return connection;
         } catch (SQLException e) {}
         return null;

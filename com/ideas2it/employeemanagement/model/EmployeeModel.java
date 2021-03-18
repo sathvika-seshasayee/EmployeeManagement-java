@@ -22,7 +22,8 @@ public class EmployeeModel {
     private ArrayList<EmployeeAddressModel> addresses;
     
     public EmployeeModel (String name, String designation, double salary, 
-                         Date date, long phoneNumber, ArrayList<EmployeeAddressModel> addresses) {
+                          Date date, long phoneNumber, 
+                          ArrayList<EmployeeAddressModel> addresses) {
         this.name = name;
         this.designation = designation;
         this.salary = salary;
@@ -89,14 +90,17 @@ public class EmployeeModel {
 
     public String toString() {
         String addresses = ""; 
-       if(!(this.addresses).isEmpty()) {
-         for (int i = 0; i < (this.addresses).size(); i++) {
-             addresses = addresses +  ((this.addresses).get(i)).toString() + "\n";
-          }        
-       }
-        
-        return  "Employee Id  : " + id + "\nName : " + name + "\nDesignation :  " + designation + "\nSalary : " + "Rs " 
-                + salary + "\nDate of Birth :  " + dob + "\nPhone number : " + phoneNumber + "\n\n"
+        if(!(this.addresses).isEmpty()) {
+            for (int i = 0; i < (this.addresses).size(); i++) {
+                addresses = addresses   
+                            + ((this.addresses).get(i)).toString() 
+                            + "\n";
+            }        
+        }
+        return  "Employee Id  : " + id + "\nName : " + name 
+                + "\nDesignation :  " + designation + "\nSalary : " 
+                + "Rs " + salary + "\nDate of Birth :  " + dob 
+                + "\nPhone number : " + phoneNumber + "\n\n"
                 + addresses + "\n";
      }
 }

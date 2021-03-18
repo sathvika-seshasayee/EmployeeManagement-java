@@ -14,8 +14,6 @@ import com.ideas2it.employeemanagement.model.EmployeeAddressModel;
  * @since 2021-03-16
  */
 public interface EmployeeDao {
-
-    // java compiler adds public abstract for methods
     /**
      * This method is used to add employee details name, salary,
      * date of birth, phone number, address into mysql database.
@@ -23,7 +21,8 @@ public interface EmployeeDao {
      * @return id of employee
      * @throws ClassNotFoundException, SQLException.
      */
-    int createEmployee(EmployeeModel employeeModelObj) throws ClassNotFoundException, SQLException;   
+    int createEmployee(EmployeeModel employeeModelObj) throws 
+            ClassNotFoundException, SQLException;   
 
     /**
      * This method updates the address of employee in the database.
@@ -33,7 +32,8 @@ public interface EmployeeDao {
      * @return false if address was updated.
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean setAddress(int addressId, EmployeeAddressModel employeeAddressObj) throws ClassNotFoundException, SQLException ;
+    boolean setAddress(int addressId, EmployeeAddressModel employeeAddressObj) 
+            throws ClassNotFoundException, SQLException ;
 
     /**
      * This method retrives single employee address from database.
@@ -44,29 +44,54 @@ public interface EmployeeDao {
     public ArrayList<EmployeeAddressModel> singleEmployeeAddress(int employeeId)
         	throws ClassNotFoundException, SQLException;
 
+    /**
+     * This method adds one address to database.
+     * @param employeeId is id of employee.
+     * @param employeeAddressModelObj contains details of 
+     * employee in Employee address POJO.
+     * @return false if address was created
+     * @throws ClassNotFoundException, SQLException.
+     */
     public boolean addAddress(int employeeId, 
-	                      EmployeeAddressModel employeeAddressObj) throws ClassNotFoundException,
-   							        SQLException;
+	                      EmployeeAddressModel employeeAddressObj) throws 
+                                         ClassNotFoundException, SQLException;
 
-    public boolean restoreEmployee(int employeeId) throws ClassNotFoundException, SQLException;
+    /**
+     * This method restores deleted employee
+     * @param employeeId is id of employee.
+     * @return false if employee was restored
+     * @throws ClassNotFoundException, SQLException.
+     */
+    public boolean restoreEmployee(int employeeId) throws 
+            ClassNotFoundException, SQLException;
 
-    public EmployeeModel viewSingleEmployee(int employeeId) throws 
+    /**
+     * This method gets one employee details from database
+     * @param employeeId is id of employee.
+     * @return Employee pojo object with employee details
+     * @throws ClassNotFoundException, SQLException.
+     */
+    public EmployeeModel viewSingleEmployee(int employeeId) throws            // change name of function
 	        ClassNotFoundException, SQLException;
  
     /**
-     * This methods soft deletes all the address of a single employee from database. 
+     * This methods soft deletes all the address of a single 
+     * employee from database. 
      * employeeId is id of employee.
      * @return false if addresses are deleted
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean deleteAllAddress(int employeeId) throws ClassNotFoundException, SQLException;
+    boolean deleteAllAddress(int employeeId) throws ClassNotFoundException, 
+                                                    SQLException;
 
     /** 
-     * This method retrives all employee and corresponding address details from database.
+     * This method retrives all employee and corresponding address
+     * details from database.
      * @return array list of Employee POJO objects with details of all employee.
      * @throws ClassNotFoundException, SQLException.
      */
-    ArrayList<EmployeeModel> viewAllEmployees(String option) throws ClassNotFoundException, SQLException;
+    ArrayList<EmployeeModel> viewAllEmployees(String option) throws 
+            ClassNotFoundException, SQLException;
 
     /**
      * This method retrives single employee details from database.
@@ -75,21 +100,14 @@ public interface EmployeeDao {
      * @throws ClassNotFoundException, SQLException.
      */
     
-
-    /**
-     * gets all employee Ids from database.
-     * @return array list of employee ids.
-     * @throws ClassNotFoundException, SQLException.
-     */
-    ArrayList<Integer> getEmployeeIds () throws ClassNotFoundException, SQLException;
-
     /**
      * soft deletes one employee details.
      * @param is id of employee.
      * @return false if employee details were soft deleted.
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean deleteEmployee(int employeeId) throws ClassNotFoundException, SQLException;
+    boolean deleteEmployee(int employeeId) throws ClassNotFoundException, 
+                                                  SQLException;
 
     /**
      * deletes one address of an employee.
@@ -98,7 +116,8 @@ public interface EmployeeDao {
      * @return false is single address of employee was soft deleted
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean deleteSingleAddress(int addressId) throws ClassNotFoundException, SQLException; 
+    boolean deleteSingleAddress(int addressId) throws ClassNotFoundException, 
+                                                      SQLException; 
 
     /**
      * updates name of an employee in database.
@@ -107,7 +126,8 @@ public interface EmployeeDao {
      * @return false if upation was sucessful.
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean setEmployeeName(String name, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeeName(String name, int employeeId) throws 
+            ClassNotFoundException, SQLException;
 
     /**
      * updates designation of an employee in database.
@@ -116,7 +136,8 @@ public interface EmployeeDao {
      * @return false if upation was sucessful.
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean setEmployeeDesignation(String designation, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeeDesignation(String designation, int employeeId) throws 
+            ClassNotFoundException, SQLException;
 
     /**
      * updates date of employee in database.
@@ -125,7 +146,8 @@ public interface EmployeeDao {
      * @return false if upation was sucessful.
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean setEmployeeDOB(Date date, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeeDOB(Date date, int employeeId) throws 
+             ClassNotFoundException, SQLException;
 
     /**
      * updates salary of employee in database.
@@ -134,7 +156,8 @@ public interface EmployeeDao {
      * @return false if upation was sucessful.
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean setEmployeeSalary(double salary, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeeSalary(double salary, int employeeId) throws 
+           ClassNotFoundException, SQLException;
 
     /**
      * updates phone number of employee in database.
@@ -143,14 +166,16 @@ public interface EmployeeDao {
      * @return false if upation was sucessful.
      * @throws ClassNotFoundException, SQLException.
      */
-    boolean setEmployeePhoneNumber(long phoneNumber, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeePhoneNumber(long phoneNumber, int employeeId) throws 
+            ClassNotFoundException, SQLException;
 
     /**
      * check if employee Id is in database.
      * @param employeeId is id of employee
      * @return false if upation was sucessful.
      */
-    boolean checkEmployeeID(int employeeId) throws ClassNotFoundException, SQLException;
+    boolean checkEmployeeID(int employeeId) throws ClassNotFoundException, 
+                                                   SQLException;
 
 }
 

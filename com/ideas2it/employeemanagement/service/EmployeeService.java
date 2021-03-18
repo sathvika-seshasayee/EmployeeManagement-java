@@ -25,34 +25,41 @@ public interface EmployeeService {
      * @param mobileNumber represents mobile number of employee
      * @param address represents list of addresses entered by user
      * @return employee id from database.
-    int createEmployee(String name, String designation, double employeeSalary, Date date, 
-            long mobileNumber, ArrayList<ArrayList<String>> addresses) throws ClassNotFoundException, SQLException;
-
+     * @throws ClassNotFoundException, SQLEXception.
+     */
+    int createEmployee(String name, String designation, double employeeSalary,
+                       Date date, long mobileNumber, 
+                       ArrayList<ArrayList<String>> addresses) 
+                       throws ClassNotFoundException, SQLException;
 
     /**
      * restores one  employee.
      * @param employeeId id of employee
      * @return false if employee was restored.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    boolean restoreEmployee(int employeeId) throws ClassNotFoundException, SQLException;
+    boolean restoreEmployee(int employeeId) throws ClassNotFoundException, 
+                                                   SQLException;
 
     /**
      * converts address array list into employee address POJO object.
      * @param employeeId id of employee
      * @param address address entered by user.
      * @return false is single address of employee was soft deleted
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    boolean addAddress(int employeeId, ArrayList<String> address) throws ClassNotFoundException,
-   							        SQLException;
+    boolean addAddress(int employeeId, ArrayList<String> address) throws 
+           ClassNotFoundException, SQLException;
 
     /**
      * deletes one address of an employee.
      * @param employeeId id of employee
      * @param updateOption row number of address chosen by employee
      * @return false is single address of employee was soft deleted
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    boolean deleteSingleAddress(int employeeId) 
-                                       throws ClassNotFoundException, SQLException;
+    boolean deleteSingleAddress(int employeeId) throws ClassNotFoundException, 
+                                                       SQLException;
 
     /**
      * This method converts the address list to address POJO objects.
@@ -60,6 +67,7 @@ public interface EmployeeService {
      * @param employeeAddressObj is object of Employee address POJO.
      * @param updateOption is the option of address to be updated.
      * @return false if address was updated.
+     * @throws ClassNotFoundException, SQLEXception.
      */
     boolean setAddress(int addressId, ArrayList<String> address) 
                                throws ClassNotFoundException, SQLException;
@@ -67,37 +75,48 @@ public interface EmployeeService {
     /**
      * This method converts single employee details from database to string.
      * @params employeeId is id of employee.
-     * @return a string with employee details
+     * @return a string with employee details.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    public String viewSingleEmployee(int employeeId) throws ClassNotFoundException, SQLException;
+    public String viewSingleEmployee(int employeeId) throws 
+            ClassNotFoundException, SQLException;
 
     /**
      * This method converts single employee address to string.
      * @param employeeId is id of employee
      * @return list of employee address strings.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    Map<Integer, String> singleEmployeeAddress(int employeeId) throws ClassNotFoundException, SQLException;
+    Map<Integer, String> singleEmployeeAddress(int employeeId) throws 
+             ClassNotFoundException, SQLException;
 
     /** 
-     * This method converts all employee and corresponding address details to string.
+     * This method converts all employee and corresponding address 
+     * details to string.
      * @return array list of strings of details of all employee.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    ArrayList<String> viewAllEmployees(String Option) throws ClassNotFoundException, SQLException;
+    ArrayList<String> viewAllEmployees(String Option) throws 
+            ClassNotFoundException, SQLException;
 
     /**
      * soft deletes one employee details.
      * @param is id of employee.
      * @return false if employee details were soft deleted.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    boolean deleteEmployee(int employeeId) throws ClassNotFoundException, SQLException;
+    boolean deleteEmployee(int employeeId) throws ClassNotFoundException,
+                                                  SQLException;
 
     /**
      * updates name of an employee in database.
      * @param name is new name entered by user.
      * @param employeeId is id of employee
      * @return false if upation was sucessful.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    boolean setEmployeeName(String name, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeeName(String name, int employeeId) throws 
+            ClassNotFoundException, SQLException;
 
     
     /**
@@ -105,32 +124,40 @@ public interface EmployeeService {
      * @param designation is new designation entered by user.
      * @param employeeId is id of employee
      * @return false if upation was sucessful.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    boolean setEmployeeDesignation(String designation, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeeDesignation(String designation, int employeeId) throws 
+            ClassNotFoundException, SQLException;
 
     /**
      * updates date of employee in database.
      * @param date is new date entered by user.
      * @param employeeId is id of employee
      * @return false if upation was sucessful.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    boolean setEmployeeDOB(Date date, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeeDOB(Date date, int employeeId) throws 
+            ClassNotFoundException, SQLException;
 
     /**
      * updates salary of employee in database.
      * @param salary is new salary entered by user.
      * @param employeeId is id of employee
      * @return false if upation was sucessful.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    boolean setEmployeeSalary(double salary, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeeSalary(double salary, int employeeId) throws 
+            ClassNotFoundException, SQLException;
 
      /**
      * updates phone number of employee in database.
      * @param phoneNumber is new phone number entered by user.
      * @param employeeId is id of employee
      * @return false if upation was sucessful.
+     * @throws ClassNotFoundException, SQLEXception.
      */
-    boolean setEmployeePhoneNumber(long phoneNumber, int employeeId) throws ClassNotFoundException, SQLException;
+    boolean setEmployeePhoneNumber(long phoneNumber, int employeeId) throws 
+            ClassNotFoundException, SQLException;
   
     /**
      * checks if employee id is present in database
@@ -138,7 +165,8 @@ public interface EmployeeService {
      * @return false is single address of employee was soft deleted
      * @throws ClassNotFoundException, SQLException.
      */ 
-    boolean checkEmployeeID(int employeeId) throws ClassNotFoundException, SQLException;
+    boolean checkEmployeeID(int employeeId) throws ClassNotFoundException,
+                                                   SQLException;
 
     /**
      * checks for correct format of date.
@@ -146,7 +174,8 @@ public interface EmployeeService {
      * @return date of birth in right format.
      * @throws ClassNotFoundException, SQLException.
      */ 
-    Date checkEmployeeDOB(String dob) throws ClassNotFoundException, SQLException;
+    Date checkEmployeeDOB(String dob) throws ClassNotFoundException, 
+                                             SQLException;
 
     /**
      * checks for correct format of phone number.
@@ -171,6 +200,4 @@ public interface EmployeeService {
      * @throws ClassNotFoundException, SQLException.
      */
     double checkEmployeeSalary(String salary);
-}
-
-    
+}  
