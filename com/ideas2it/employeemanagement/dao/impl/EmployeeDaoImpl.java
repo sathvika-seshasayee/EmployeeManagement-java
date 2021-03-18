@@ -193,7 +193,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
                               + "employee_model.deleted_flag = \"deleted\" ";
         ArrayList<EmployeeModel> employee = new ArrayList<EmployeeModel>();
         Statement statement =  connection.createStatement();
-        String query = ("deleted" == option) ?  restoreQuery : displayAllQuery;
+        String query = (option.equals("deleted")) ?  restoreQuery : displayAllQuery;
         ResultSet resultSet = statement.executeQuery(query);
 	resultSet.next();		   
         do {
@@ -248,23 +248,17 @@ public class EmployeeDaoImpl implements EmployeeDao {
                                       + " employee_model.employee_id = ? and "
                                       + " employee_model.deleted_flag "
                                       + "= \"active\"";
-        String employeeName = "";
-        String employeeDesignation = "";
-        Double employeeSalary = 0.0;
-        Date employeeDob = null;
-        long employeeMobileNumber = 0;
         PreparedStatement prepareStatement = 
                 connection.prepareStatement(employeeDisplayQuery);
         prepareStatement.setInt(1, employeeId);
         ResultSet resultSet = prepareStatement.executeQuery();
-     
-        while(resultSet.next()) {
-            employeeId = resultSet.getInt("employee_id");
-            employeeName = resultSet.getString("employee_name");
-            employeeDesignation = resultSet.getString("designation");
-            employeeSalary = resultSet.getDouble("salary");
-            employeeDob = resultSet.getDate("dob");
-            employeeMobileNumber = resultSet.getLong("mobile_number");
+        resultSet.next();
+        employeeModelObj = new EmployeeModel(resultSet.getString("employee_name"), resultSet.getString("designation"), 
+                                             resultSet.getDouble("salary"), resultSet.getDate("dob"), 
+					     resultSet.getLong("mobile_number"), null); 
+        employeeId = resultSet.getInt("employee_id");
+        employeeModelObj.setId(employeeId);
+        do {
             employeeAddressModelObj = 
                     new EmployeeAddressModel(resultSet.getString("address"), 
                                              resultSet.getString("city"), 
@@ -273,10 +267,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			                     resultSet.getString("pincode"), 
                               resultSet.getString("permanant_or_temporary"));
             address.add(employeeAddressModelObj); 
-        }
-        employeeModelObj = new EmployeeModel(employeeName, employeeDesignation, 
-                                             employeeSalary, employeeDob, 
-					     employeeMobileNumber, address); 
+        }while(resultSet.next()) ;
+        employeeModelObj.setAddresses(address); 
         employeeModelObj.setId(employeeId);
         return employeeModelObj;
        }
@@ -287,16 +279,22 @@ public class EmployeeDaoImpl implements EmployeeDao {
     
      */    
     @Override
-    public ArrayList<EmployeeAddressModel> singleEmployeeAddress(int employeeId)
+    public ArrayList<EmployeeAddressModel> singleEmployeeAddress(int employeeId, String option)
         	throws ClassNotFoundException, SQLException {
         ArrayList<EmployeeAddressModel> addresses  = 
 		        new ArrayList<EmployeeAddressModel>();
-        String displayQuery = "select address_id, permanant_or_temporary, "
+        String updateQuery = "select address_id, permanant_or_temporary, "
                               + " address, city, state, country, pincode "
                               + " from employee_address"
                               + " where employee_id = ?";
+        String deleteQuery = "select address_id, permanant_or_temporary, "
+                              + " address, city, state, country, pincode "
+                              + " from employee_address"
+                              + " where employee_id = ? and "
+                              + " permanant_or_temporary = \"temporary\" ";
+        String query = (option.equals("delete")) ? deleteQuery : updateQuery;
         PreparedStatement prepareStatement = 
-		        connection.prepareStatement(displayQuery);
+		        connection.prepareStatement(query);
         prepareStatement.setInt(1, employeeId);
         ResultSet resultSet = prepareStatement.executeQuery();
         while (resultSet.next()) {

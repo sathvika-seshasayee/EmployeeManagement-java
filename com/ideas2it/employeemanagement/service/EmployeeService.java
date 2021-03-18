@@ -87,7 +87,7 @@ public interface EmployeeService {
      * @return list of employee address strings.
      * @throws ClassNotFoundException, SQLEXception.
      */
-    Map<Integer, String> singleEmployeeAddress(int employeeId) throws 
+    Map<Integer, String> singleEmployeeAddress(int employeeId, String option) throws 
              ClassNotFoundException, SQLException;
 
     /** 

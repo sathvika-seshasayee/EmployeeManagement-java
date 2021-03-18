@@ -133,11 +133,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     
      */    
     @Override
-    public Map<Integer, String> singleEmployeeAddress(int employeeId) throws 
+    public Map<Integer, String> singleEmployeeAddress(int employeeId, String option) throws 
             ClassNotFoundException, SQLException {
         int length;
         ArrayList<EmployeeAddressModel> singleEmployeeAddresses = 
-                employeeDao.singleEmployeeAddress(employeeId);
+                employeeDao.singleEmployeeAddress(employeeId, option);
         Map<Integer, String> address = new TreeMap<Integer, String>();
         for (int i = 0; i < singleEmployeeAddresses.size(); i++) {
             int addressId = (singleEmployeeAddresses.get(i)).getId();

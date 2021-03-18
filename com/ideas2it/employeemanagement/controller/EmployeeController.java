@@ -45,9 +45,9 @@ public class EmployeeController {
      * @return tree map of sorted values of employee addresses based on address id.
      * @throws ClassNotFoundException, SQLException
      */
-    public Map<Integer, String> singleEmployeeAddress(int employeeId) throws 
+    public Map<Integer, String> singleEmployeeAddress(int employeeId, String option) throws 
             ClassNotFoundException, SQLException {
-        return serviceObj.singleEmployeeAddress(employeeId);
+        return serviceObj.singleEmployeeAddress(employeeId, option);
     }
 
     /**

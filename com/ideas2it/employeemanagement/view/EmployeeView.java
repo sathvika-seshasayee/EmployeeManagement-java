@@ -208,12 +208,13 @@ public class EmployeeView {
                                 + "\n2. Designation \n3. Salary "
                                 + "\n4. Date of Birth \n5. Phone Number "
                                 + "\n6. Update existing Address "
-                                + "\n7. Delete address \n8. Add Address" 
-                                + " \n9. Exit";
+                                + "\n7. Delete temporary address "
+                                + "\n8. Add Address" 
+                                + "\n9. Exit";
         String addressType = "temporary";
         int choice = 0;
         int addressId; 
-        boolean updateStatus = false;
+        boolean updateStatus = true;
         ArrayList<String> address = new ArrayList<String>();
         int employeeId = getEmployeeId();
         if (controllerObj.checkEmployeeID(employeeId)) {
@@ -243,13 +244,19 @@ public class EmployeeView {
                             getEmployeePhoneNumber(), employeeId);
                     break;
                 case 6:
-                    addressId = singleEmployeeAddress(employeeId);
+                    addressId = singleEmployeeAddress(employeeId, "update");
+                    if(0 == addressId){
+                        break;
+                    }
                     address = getAddress();    
                     updateStatus = controllerObj.setAddress(addressId, 
                                                             address);          
                     break;
                 case 7: 
-                    addressId = singleEmployeeAddress(employeeId);
+                    addressId = singleEmployeeAddress(employeeId, "delete");
+                    if(0 == addressId){
+                        break;
+                    }
                     updateStatus = 
                             controllerObj.deleteSingleAddress(addressId);
                     break;
@@ -280,18 +287,20 @@ public class EmployeeView {
      * This method displays single employee addresses 
      * @return address id corresponding to user's selection
      * @param employeeId id of employee
+     * @return address id.
      * @throws ClassNotFoundException, SQLException.
      */
-    private int singleEmployeeAddress(int employeeId) throws 
+    private int singleEmployeeAddress(int employeeId, String option) throws 
             ClassNotFoundException, SQLException {
-        int addressId;
+        int addressId = 0;
         int updateOption ;                  // choice of address entered by user
         int addressNumber = 1;
         int[] addressIdArray;
         Map<Integer, String> employeeAddressDetails = 
                 new TreeMap<Integer, String>(); 
+        if(!((controllerObj.singleEmployeeAddress(employeeId, option)).isEmpty())){
         employeeAddressDetails = 
-                controllerObj.singleEmployeeAddress(employeeId);
+                controllerObj.singleEmployeeAddress(employeeId, option);
         System.out.println("Enter the address option you want to "
                            + " update e.g. 1, 2, etc");
         addressIdArray = new int[employeeAddressDetails.size() + 1];
@@ -306,7 +315,10 @@ public class EmployeeView {
         updateOption = scanner.nextInt();   
         scanner.skip(Pattern.compile("[\r\n]{2}"));    
         addressId = addressIdArray[updateOption];
-        return addressId;
+       } else {
+       System.out.println("There are no addresses for this category in this id");
+       }
+       return addressId;
     }
 
     /**

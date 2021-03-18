@@ -41,7 +41,7 @@ public interface EmployeeDao {
      * @return list of employee address POJO objects.
      * @throws ClassNotFoundException, SQLException.
      */
-    public ArrayList<EmployeeAddressModel> singleEmployeeAddress(int employeeId)
+    public ArrayList<EmployeeAddressModel> singleEmployeeAddress(int employeeId, String option)
         	throws ClassNotFoundException, SQLException;
 
     /**
