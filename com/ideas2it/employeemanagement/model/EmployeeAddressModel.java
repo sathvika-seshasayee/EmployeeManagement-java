@@ -14,16 +14,16 @@ public class EmployeeAddressModel {
     private String state;
     private String country;
     private String pinCode;
-    private String addressType;       // permanant or temporary address
+    private boolean isPermanantAddress;       // permanant or temporary address
   
     public EmployeeAddressModel(String address, String city, String state,
-            String country, String pinCode, String addressType) {
+            String country, String pinCode, boolean isPermanantAddress) {
     this.address = address;
     this.city = city;
     this.state = state;
     this.country = country;
     this.pinCode = pinCode;
-    this.addressType= addressType;
+    this.isPermanantAddress= isPermanantAddress;
     }
 
     public int getId() {
@@ -50,8 +50,8 @@ public class EmployeeAddressModel {
         return pinCode;
     }
 
-    public String getAddressType() {
-        return this.addressType;
+    public boolean getAddressType() {
+        return this.isPermanantAddress;
     }
 
     public void setId(int id) {
@@ -78,12 +78,13 @@ public class EmployeeAddressModel {
         this.pinCode = pinCode;
     }
 
-    public void setAddressType(String addressType) {
-        this.addressType = addressType;
+    public void setAddressType(boolean isPermanantAddress) {
+        this.isPermanantAddress = isPermanantAddress;
     }
 
     public String toString() {
-        return "Address Type : " + addressType + "\n" + address + " , " 
+        String addressType = isPermanantAddress ? "permanant" : "temporary";
+        return "Address type : " + addressType + "\n" + address + " , " 
                 +  city + " , " + state + " , " + country  + " , " +  pinCode
                 + "\n";
     }

@@ -32,6 +32,9 @@ public interface EmployeeService {
                        ArrayList<ArrayList<String>> addresses) 
                        throws ClassNotFoundException, SQLException;
 
+    EmployeeAddressModel getAddressObj(ArrayList<String> address) throws
+            ClassNotFoundException, SQLException;
+
     /**
      * restores one  employee.
      * @param employeeId id of employee

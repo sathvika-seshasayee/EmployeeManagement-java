@@ -97,10 +97,10 @@ public class EmployeeModel {
                             + "\n";
             }        
         }
-        return  "Employee Id  : " + id + "\nName : " + name 
-                + "\nDesignation :  " + designation + "\nSalary : " 
+        return    "Employee Id     : " + id  + "\nName          : " + name 
+                + "\nDesignation   :  " + designation + "\nSalary        : " 
                 + "Rs " + salary + "\nDate of Birth :  " + dob 
-                + "\nPhone number : " + phoneNumber + "\n\n"
+                + "\nPhone number  : " + phoneNumber + "\n\n"
                 + addresses + "\n";
      }
 }

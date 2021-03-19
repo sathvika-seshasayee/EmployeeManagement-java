@@ -23,8 +23,6 @@ import com.ideas2it.employeemanagement.service.EmployeeService;
  */
 public class EmployeeServiceImpl implements EmployeeService {
     EmployeeDaoImpl employeeDao = new EmployeeDaoImpl();
-    EmployeeModel employeeModelObj;
-    EmployeeAddressModel employeeAddressObj;
 
     /**
   
@@ -39,23 +37,32 @@ public class EmployeeServiceImpl implements EmployeeService {
                                       ClassNotFoundException, SQLException {
         ArrayList<EmployeeAddressModel> employeeAddressObjs = 
                 new ArrayList<EmployeeAddressModel>();
-        int addressIndex = 0;
+        
+        if(!addresses.isEmpty()){
         for(ArrayList<String> address : addresses) {
-            employeeAddressObj = 
-                    new EmployeeAddressModel(address.get(addressIndex++), 
-                                             address.get(addressIndex++),
-                                             address.get(addressIndex++), 
-                                             address.get(addressIndex++), 
-                                             address.get(addressIndex++), 
-                                             address.get(addressIndex++));
+            EmployeeAddressModel employeeAddressObj = getAddressObj(address);       
             employeeAddressObjs.add(employeeAddressObj);
-            addressIndex = 0;
         }
-        employeeModelObj = new EmployeeModel(name, designation, employeeSalary, 
+        } else {
+            employeeAddressObjs = null;
+        }
+        EmployeeModel employeeModelObj = new EmployeeModel(name, designation, employeeSalary, 
                                              date, mobileNumber, 
                                              employeeAddressObjs);
         return employeeDao.createEmployee(employeeModelObj);
     } 
+
+    public EmployeeAddressModel getAddressObj(ArrayList<String> address) throws
+            ClassNotFoundException, SQLException {
+    boolean isPermanantaddress = ((address.get(5)).equals("permanant"));
+    EmployeeAddressModel employeeAddressObj = new EmployeeAddressModel(address.get(0), 
+                                                      address.get(1), 
+                                                      address.get(2), 
+                                                      address.get(3), 
+                                                      address.get(4), 
+                                                      isPermanantaddress);
+    return employeeAddressObj;
+    }
 
     /**
   
@@ -77,13 +84,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public boolean addAddress(int employeeId, ArrayList<String> address) throws
             ClassNotFoundException, SQLException {
         int addressIndex = 0; 
-        employeeAddressObj = 
-                new EmployeeAddressModel(address.get(addressIndex++), 
-                                         address.get(addressIndex++),
-                                         address.get(addressIndex++), 
-                                         address.get(addressIndex++), 
-                                         address.get(addressIndex++), 
-                                         address.get(addressIndex++));
+        EmployeeAddressModel employeeAddressObj = getAddressObj(address);
         return employeeDao.addAddress(employeeId, employeeAddressObj);
     }
 
@@ -106,13 +107,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public boolean setAddress(int addressId, ArrayList<String> address) 
             throws ClassNotFoundException, SQLException {
-        String addressTypeDummy = "  ";
-        employeeAddressObj = new EmployeeAddressModel(address.get(0), 
-                                                      address.get(1), 
-                                                      address.get(2), 
-                                                      address.get(3), 
-                                                      address.get(4), 
-                                                      addressTypeDummy);
+        String addressTypeDummy = "";
+        address.add(addressTypeDummy);
+        EmployeeAddressModel employeeAddressObj = getAddressObj(address);
         return employeeDao.setAddress(addressId, employeeAddressObj);
     }
     
