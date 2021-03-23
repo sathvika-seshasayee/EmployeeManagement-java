@@ -32,8 +32,31 @@ public interface EmployeeService {
                        ArrayList<ArrayList<String>> addresses) 
                        throws ClassNotFoundException, SQLException;
 
+    /** 
+     * This method converts list of address details into objects
+     * @param address is list of address details
+     * @return address object with details of address
+     * @throws ClassNotFoundException, SQLEXception.
+     */
     EmployeeAddressModel getAddressObj(ArrayList<String> address) throws
             ClassNotFoundException, SQLException;
+  
+    /**
+     * This method updates employee details.
+     * @param employeeId employee id of employee
+     * @param name represents employee name.
+     * @param designation represents employee designation.
+     * @param employeeSalary represents salary of employee.
+     * @param date represents date of birth of employee
+     * @param mobileNumber represents mobile number of employee
+     * @param address represents list of addresses entered by user
+     * @return true if updation was sucessful, false otherwise.
+     * @throws ClassNotFoundException, SQLEXception.
+     */
+    public boolean updateEmployee(int employeeId, String name, String designation, 
+                                  double salary, Date dob, long phoneNumber, 
+                                  ArrayList<ArrayList<String>> addresses) throws 
+                                            ClassNotFoundException, SQLException;
 
     /**
      * restores one  employee.
@@ -63,17 +86,6 @@ public interface EmployeeService {
      */
     boolean deleteSingleAddress(int employeeId) throws ClassNotFoundException, 
                                                        SQLException;
-
-    /**
-     * This method converts the address list to address POJO objects.
-     * @param employeeId is id of employee.
-     * @param employeeAddressObj is object of Employee address POJO.
-     * @param updateOption is the option of address to be updated.
-     * @return false if address was updated.
-     * @throws ClassNotFoundException, SQLEXception.
-     */
-    boolean setAddress(int addressId, ArrayList<String> address) 
-                               throws ClassNotFoundException, SQLException;
 
     /**
      * This method converts single employee details from database to string.

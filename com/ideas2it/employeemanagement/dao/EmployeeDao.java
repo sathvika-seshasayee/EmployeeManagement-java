@@ -25,15 +25,12 @@ public interface EmployeeDao {
             ClassNotFoundException, SQLException;   
 
     /**
-     * This method updates the address of employee in the database.
-     * @param employeeId is id of employee.
-     * @param employeeAddressObj is object of Employee address POJO.
-     * @param updateOption is the option of address to be updated
-     * @return false if address was updated.
-     * @throws ClassNotFoundException, SQLException.
+     * This method updates employee details
+     * @param employeeModelObj object with employee details.
+     * @return true if updation was sucessfull, false otherwise.
      */
-    boolean setAddress(int addressId, EmployeeAddressModel employeeAddressObj) 
-            throws ClassNotFoundException, SQLException ;
+    boolean updateEmployee(EmployeeModel employeeModelObj) throws 
+                                      ClassNotFoundException, SQLException;
 
     /**
      * This method retrives single employee address from database.

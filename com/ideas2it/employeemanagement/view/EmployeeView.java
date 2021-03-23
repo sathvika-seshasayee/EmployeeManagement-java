@@ -21,19 +21,26 @@ import com.ideas2it.employeemanagement.controller.EmployeeController;
  */
 public class EmployeeView {
     Scanner scanner = new Scanner(System.in);
+    String updateQuestion = "\n1. Name "
+                                + "\n2. Designation \n3. Salary "
+                                + "\n4. Date of Birth \n5. Phone Number "
+                                + "\n6. Add Address "
+                                + "\n7. Exit\n" ;
+    EmployeeController controllerObj = new EmployeeController();
 
    /**
     * This method displays options that can be performed in employee Database.
     * @throws ClassNotFoundException, SQLException.
     */
     public void EmployeeOptions() throws ClassNotFoundException, SQLException {
+        
         String option = "y";
         String optionQuestion = "What do you want to do today with the"
                                 + " Employee Database?\n1. Create "
                                 + "\n2. Display one Emlpoyee details "
                                 + "\n3. Display All Employee "
-                                + " details \n4. Update \n5. Delete "
-                                + "\n6. Restore Employee \n7. Exit\n";
+                                + " details \n4. Update \n5. Delete Employee"
+                                + "\n6. Restore Employee \n7. Delete Address \n8. Exit\n";
         while (true) {
             System.out.println(optionQuestion);
             int choice = scanner.nextInt();
@@ -60,6 +67,9 @@ public class EmployeeView {
                     restoreEmployee();
                     break;
                 case 7:
+                    deleteAddress();
+                    break;
+                case 8:
                     System.out.println("*****Thank You*****\n\n");
                     System.exit(0);
                     break;
@@ -69,7 +79,38 @@ public class EmployeeView {
             }
         }
     }
-     
+
+    /**
+     * This method deleted one address of an employee
+     */
+    private void deleteAddress() throws ClassNotFoundException, 
+                                          SQLException {
+        boolean deleteStatus = false;
+        int employeeId = getEmployeeId();
+        if (controllerObj.checkEmployeeID(employeeId)) {
+            int addressId = singleEmployeeAddress(employeeId, "deleted");
+            if(0 == addressId){
+                deleteStatus = false;
+             } else {
+                deleteStatus = 
+                        controllerObj.deleteSingleAddress(addressId);
+             }
+        
+            if(deleteStatus) {
+                System.out.println("Address deleted sucessfully");
+            } else {
+                System.out.println("Address not deleted");
+            }
+
+        } else {
+            System.out.println("Employee Id does not exist");
+        }
+       
+        }
+
+    /**
+     * This method restores one employee
+     */ 
     private void restoreEmployee() throws ClassNotFoundException, 
                                           SQLException {
         EmployeeController controllerObj = new EmployeeController();
@@ -211,82 +252,61 @@ public class EmployeeView {
      * @throws ClassNotFoundException, SQLException.
      */
     private void updateEmployee() throws ClassNotFoundException, SQLException {
-        String updateQuestion = "\n1. Name "
-                                + "\n2. Designation \n3. Salary "
-                                + "\n4. Date of Birth \n5. Phone Number "
-                                + "\n6. Update existing Address "
-                                + "\n7. Delete address "
-                                + "\n8. Add Address" 
-                                + "\n9. Exit\n";
         int choice = 0;
         int addressId; 
         boolean updateStatus = true;
+        ArrayList<ArrayList<String>> addresses = 
+                new ArrayList<ArrayList<String>>();
         EmployeeController controllerObj = new EmployeeController();
-        ArrayList<String> address = new ArrayList<String>();
+        ArrayList<String> newAddress = new ArrayList<String>();
+        String newName = "";
+        String newDesignation = "";
+        double newSalary = 0.0;
+        Date newDob = null;
+        addresses = null;
+        long newPhoneNumber = 0;
         int employeeId = getEmployeeId();
         if (controllerObj.checkEmployeeID(employeeId)) {
-        while(true) {
-        System.out.println(updateQuestion);
-        choice = scanner.nextInt();
-        scanner.skip(Pattern.compile("[\r\n]{2}"));   
+            while(true) {
+                System.out.println(updateQuestion);
+                choice = scanner.nextInt();
+                scanner.skip(Pattern.compile("[\r\n]{2}"));   
             
-            switch (choice) {
-                case 1:
-                    updateStatus = controllerObj.setEmployeeName(
-                            getEmployee("name"), employeeId);     
-                    break;
-                case 2:
-                    updateStatus = controllerObj.setEmployeeDesignation(
-                            getEmployee("designation"), employeeId);
-                    break;
-                case 3:
-                    updateStatus = controllerObj.setEmployeeSalary(
-                            getEmployeeSalary(), employeeId);
-                    break;
-                case 4:
-                    updateStatus = controllerObj.setEmployeeDOB(
-                            getEmployeeDOB(), employeeId);
-                    break;
-                case 5:
-                    updateStatus = controllerObj.setEmployeePhoneNumber(
-                            getEmployeePhoneNumber(), employeeId);
-                    break;
-                case 6:
-                    addressId = singleEmployeeAddress(employeeId, "update");
-                    if(0 == addressId){
+                switch (choice) {
+                    case 1:
+                        newName = getEmployee("name");   
                         break;
-                    }
-                    address = getAddress();    
-                    updateStatus = controllerObj.setAddress(addressId, 
-                                                            address);          
-                    break;
-                case 7: 
-                    addressId = singleEmployeeAddress(employeeId, "delete");
-                    if(0 == addressId){
+                    case 2:
+                        newDesignation = getEmployee("designation");
                         break;
-                    }
-                    updateStatus = 
-                            controllerObj.deleteSingleAddress(addressId);
-                    break;
-                case 8:
-                    address = getAddress();
-                    updateStatus = controllerObj.addAddress(employeeId,
-                                                             address);
-                    break;
-                case 9:
-                    EmployeeOptions();
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please enter again");
-                    break;
+                    case 3:
+                        newSalary = getEmployeeSalary();
+                        break;
+                    case 4:
+                        newDob = getEmployeeDOB();
+                        break;
+                    case 5:
+                        newPhoneNumber = getEmployeePhoneNumber();
+                        break;
+                    case 6:
+                        newAddress = null;
+                        newAddress = getAddress();
+                       addresses.add(newAddress);
+                        break;
+                    case 7:
+                        updateStatus = controllerObj.updateEmployee(employeeId, newName, newDesignation, newSalary, newDob, newPhoneNumber, addresses);
+                        if(updateStatus) {
+                            System.out.println("\nUpdation was sucessfull\n");
+                        } else {
+                            System.out.println("\nUpdation was not sucessfull\n");
+                        }
+                        EmployeeOptions();
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please enter again");
+                        break;
+                   }
             }
-        
-        if(!updateStatus) {
-            System.out.println("\nUpdation was sucessfull\n");
-        } else {
-            System.out.println("\nUpdation was not sucessfull\n");
-        }
-        }
         } else {
         System.out.println("Employee Id does not exist");
         }

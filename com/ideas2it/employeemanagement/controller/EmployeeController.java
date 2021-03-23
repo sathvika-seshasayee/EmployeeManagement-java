@@ -22,12 +22,11 @@ public class EmployeeController {
  
     /**
      * This method passes employee details to service layer.
-     * @param employeeID
-     * @param name
-     * @param designation
-     * @param employeeSalary
-     * @param date
-     * @param mobileNumber
+     * @param name nam of employee
+     * @param designation designation of employee
+     * @param employeeSalary salary of employee
+     * @param date date of birth of employee
+     * @param mobileNumber phone number of employee
      * @return id of employee.
      *
      */ 
@@ -38,7 +37,27 @@ public class EmployeeController {
         return serviceObj.createEmployee(name, designation, employeeSalary,
                                          date, mobileNumber, addresses);
     }
+
+    /**
+     * This method update employee details
+     * @param employeeId id of employee
+     * @param name nam of employee
+     * @param designation designation of employee
+     * @param employeeSalary salary of employee
+     * @param date date of birth of employee
+     * @param mobileNumber phone number of employee
+     * @return true if updation was sucessful
+     */
+    public boolean updateEmployee(int employeeId, String name, String designation, 
+                              double salary, Date dob, 
+                              long phoneNumber, 
+                              ArrayList<ArrayList<String>> addresses) throws 
+                                      ClassNotFoundException, SQLException {
+        return serviceObj.updateEmployee(employeeId, name, designation, salary,
+                                         dob, phoneNumber, addresses);
+    }        
     
+
     /**
      * This method passes id of employee to get addresses of that employee
      * @param employeeId is id of employee.
@@ -60,17 +79,6 @@ public class EmployeeController {
             ClassNotFoundException, SQLException {
         return serviceObj.deleteSingleAddress(addressId);
     } 
-
-    /** 
-     * This method updates the existing address.                                                                   // change method name to update address
-     * @param addressId is the id of address to be updated.
-     * @param address is the address entered by user.
-     * @throws ClassNotFoundException, SQLException
-     */
-    public boolean setAddress(int addressId, ArrayList<String> address) throws
-            ClassNotFoundException, SQLException {
-        return serviceObj.setAddress(addressId, address);
-    }
 
     /**
      * This method restores deleted employee in database

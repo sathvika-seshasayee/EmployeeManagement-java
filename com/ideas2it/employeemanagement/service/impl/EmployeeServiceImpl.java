@@ -31,14 +31,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      */    
     @Override
     public int createEmployee(String name, String designation, 
-                              double employeeSalary, Date date, 
+                              double salary, Date date, 
                               long mobileNumber, 
                               ArrayList<ArrayList<String>> addresses) throws 
                                       ClassNotFoundException, SQLException {
         ArrayList<EmployeeAddressModel> employeeAddressObjs = 
                 new ArrayList<EmployeeAddressModel>();
-        
-        if(!addresses.isEmpty()){
+        if(null != addresses){
         for(ArrayList<String> address : addresses) {
             EmployeeAddressModel employeeAddressObj = getAddressObj(address);       
             employeeAddressObjs.add(employeeAddressObj);
@@ -46,11 +45,57 @@ public class EmployeeServiceImpl implements EmployeeService {
         } else {
             employeeAddressObjs = null;
         }
-        EmployeeModel employeeModelObj = new EmployeeModel(name, designation, employeeSalary, 
+        EmployeeModel employeeModelObj = new EmployeeModel(name, designation, salary, 
                                              date, mobileNumber, 
                                              employeeAddressObjs);
         return employeeDao.createEmployee(employeeModelObj);
     } 
+
+
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
+    public boolean updateEmployee(int employeeId, String name, String designation, 
+                              double salary, Date dob, 
+                              long phoneNumber, 
+                              ArrayList<ArrayList<String>> addresses) throws 
+                                      ClassNotFoundException, SQLException {
+        EmployeeModel employeeModelObj = employeeDao.viewSingleEmployee(employeeId);
+        employeeModelObj.setId(employeeId);
+        if("" != name) {
+            employeeModelObj.setName(name);
+        }
+        if("" != designation) {
+            employeeModelObj.setDesignation(designation);
+        }
+        if(0.0 != salary) {
+            employeeModelObj.setSalary(salary);
+        }
+        if(0 != phoneNumber) {
+            employeeModelObj.setPhoneNumber(phoneNumber);
+        }
+        if(null != dob) {
+            employeeModelObj.setDOB(dob);
+        }
+        
+        ArrayList<EmployeeAddressModel> employeeAddressObjs = 
+                new ArrayList<EmployeeAddressModel>();
+        if(null != addresses){
+        for(ArrayList<String> address : addresses) {
+            EmployeeAddressModel employeeAddressObj = getAddressObj(address);       
+            employeeAddressObjs.add(employeeAddressObj);
+        }
+        } else {
+            employeeAddressObjs = null;
+        }
+        employeeModelObj.setAddresses(employeeAddressObjs);
+        
+        return employeeDao.updateEmployee(employeeModelObj);
+    } 
+
 
     public EmployeeAddressModel getAddressObj(ArrayList<String> address) throws
             ClassNotFoundException, SQLException {
@@ -98,20 +143,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         ClassNotFoundException, SQLException {
         return employeeDao.deleteSingleAddress(addressId);
     } 
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public boolean setAddress(int addressId, ArrayList<String> address) 
-            throws ClassNotFoundException, SQLException {
-        String addressTypeDummy = "";
-        address.add(addressTypeDummy);
-        EmployeeAddressModel employeeAddressObj = getAddressObj(address);
-        return employeeDao.setAddress(addressId, employeeAddressObj);
-    }
     
     /**
   
@@ -249,8 +280,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Date checkEmployeeDOB(String dob) throws 
             ClassNotFoundException, SQLException {
         Date date = null;
+        boolean isDate = false;
             try {
-                date = Date.valueOf(dob);
+               isDate = Pattern.matches("[1][9][0-9][0-9][-](?:0?[1-9]|(1)[02])[-](?:[012]?[0-9]|(3)[01])", dob);
+               if(isDate) {
+                   date = Date.valueOf(dob);
+               }
             } catch (IllegalArgumentException e) {
                 date = null;
             }

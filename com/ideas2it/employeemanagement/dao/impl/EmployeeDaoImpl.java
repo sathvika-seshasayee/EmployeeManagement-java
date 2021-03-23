@@ -24,7 +24,22 @@ public class EmployeeDaoImpl implements EmployeeDao {
     SingletonConnection singletonConnection = 
 	        SingletonConnection.getInstance();
     Connection connection = singletonConnection.mysqlConnection();
-   // PreparedStatement prepareStatement;
+    final static String deleteEmployeeQuery = "update employee_model "
+                                     + " set is_deleted "
+                                     + " = true  "
+                                     + " where employee_id = ? ";
+    final static String deleteAddressQuery = "update employee_address "
+                                     + " set is_deleted "
+                                     + " = true  "
+                                     + " where employee_id = ? ";
+    final static String restoreEmployeeQuery = "update employee_model "
+                                     + " set is_deleted "
+                                     + " = false  "
+                                     + " where employee_id = ? ";
+    final static String restoreAddressQuery = "update employee_address "
+                                     + " set is_deleted "
+                                     + " = false  "
+                                     + " where employee_id = ? ";
 
     /**
   
@@ -86,33 +101,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
      * {@inheritdoc}
     
      */    
-    @Override
-    public boolean setAddress(int addressId, 
-	                      EmployeeAddressModel employeeAddressObj) 
-                              throws ClassNotFoundException, SQLException {
-        boolean setAddressStatus = true;
-        //int addressId = getAddressId(employeeId, updateOption);
-        String updateQuery = "update employee_address set address = ?, "
-		              + "city = ?, state = ?, country = ?, pincode = ?"
-                              + " where address_id = ?";
-        PreparedStatement prepareStatement = 
-		        connection.prepareStatement(updateQuery);
-        prepareStatement.setString(1, employeeAddressObj.getAddress());
-        prepareStatement.setString(2, employeeAddressObj.getCity());
-        prepareStatement.setString(3, employeeAddressObj.getState());
-        prepareStatement.setString(4, employeeAddressObj.getCountry());
-        prepareStatement.setString(5, employeeAddressObj.getPinCode());
-        prepareStatement.setInt(6, addressId);
-        setAddressStatus = prepareStatement.execute();
-        prepareStatement.close();
-        return setAddressStatus;
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
     @Override 
     public boolean addAddress(int employeeId, 
                               EmployeeAddressModel employeeAddressObj) throws 
@@ -144,22 +132,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override 
     public boolean restoreEmployee(int employeeId) throws 
             ClassNotFoundException, SQLException { 
-        String restoreEmployeeQuery = "update employee_model, "
-                                      + " employee_address "
-                                      + " employee_model.is_deleted "
-                                      + " = false , "
-                                      + " employee_address.is_deleted "
-                                      + "= false "
-                                      + " where employee_model.employee_id = "
-                                      + " employee_address.employee_id and "
-                                      + " employee_model.employee_id = ?"; 
         PreparedStatement prepareStatement = 
 		        connection.prepareStatement(restoreEmployeeQuery);    
         prepareStatement.setInt(1, employeeId);
         int restoreEmployeeStatus = prepareStatement.executeUpdate();
         prepareStatement.close();
-        prepareStatement = connection.prepareStatement(restoreEmployeeQuery);
-        prepareStatement.setInt(1, employeeId); 
+        prepareStatement = 
+		        connection.prepareStatement(restoreAddressQuery);    
+        prepareStatement.setInt(1, employeeId);
         prepareStatement.executeUpdate();
         prepareStatement.close();
         return (0 != restoreEmployeeStatus);                              
@@ -238,7 +218,38 @@ public class EmployeeDaoImpl implements EmployeeDao {
            employee.add(employeeModelObj);
           }while(true);
     }
-           
+
+    public boolean updateEmployee(EmployeeModel employeeModelObj) throws 
+                                      ClassNotFoundException, SQLException {
+        String updateQuery = "update employee_model set employee_name = ? ,"
+                              + " designation = ?, salary = ? ,"
+                              + " dob = ?, mobile_number = ? "
+                              + " where employee_id = ? ";
+        PreparedStatement prepareStatement = 
+                connection.prepareStatement(updateQuery); 
+
+        prepareStatement.setString(1, employeeModelObj.getName());
+        prepareStatement.setString(2, employeeModelObj.getDesignation());
+        prepareStatement.setDouble(3, employeeModelObj.getSalary());
+        prepareStatement.setDate(4, employeeModelObj.getDOB());
+        prepareStatement.setLong(5, employeeModelObj.getPhoneNumber());
+        prepareStatement.setInt(6, employeeModelObj.getId());
+        int updateStatus = prepareStatement.executeUpdate();
+        prepareStatement.close();
+        int employeeId = employeeModelObj.getId();
+        ArrayList<EmployeeAddressModel> employeeAddressObjs = 
+                new ArrayList<EmployeeAddressModel>();
+        employeeAddressObjs = employeeModelObj.getAddresses();
+        if(null != employeeAddressObjs) {
+            for(EmployeeAddressModel employeeAddress : employeeAddressObjs) {
+                EmployeeAddressModel employeeAddressObj = employeeAddress;
+                addAddress(employeeId, employeeAddressObj);
+             }
+         }
+            
+        return (0 != updateStatus);
+        }
+          
     /**
   
      * {@inheritdoc}
@@ -294,12 +305,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
         	throws ClassNotFoundException, SQLException {
         ArrayList<EmployeeAddressModel> addresses  = 
 		        new ArrayList<EmployeeAddressModel>();
-        String updateQuery = "select address_id, is_permanant_address, "
+        String getAddressQuery = "select address_id, is_permanant_address, "
                               + " address, city, state, country, pincode "
                               + " from employee_address"
-                              + " where employee_id = ?";
+                              + " where is_deleted = false and employee_id = ?";
         PreparedStatement prepareStatement = 
-		        connection.prepareStatement(updateQuery);
+		        connection.prepareStatement(getAddressQuery);
         prepareStatement.setInt(1, employeeId);
         ResultSet resultSet = prepareStatement.executeQuery();
         while (resultSet.next()) {
@@ -329,18 +340,15 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override            
     public boolean deleteEmployee(int employeeId) 
 	        throws ClassNotFoundException, SQLException {
-        String deleteEmployeeQuery = "update employee_model, employee_address "
-                                     + " employee_model.is_deleted "
-                                     + " = true , "
-                                     + " employee_address.is_deleted "
-                                     + "= true "
-                                     + " where employee_model.employee_id = "
-                                     + " employee_address.employee_id and "
-                                     + " employee_model.employee_id = ?";
         PreparedStatement prepareStatement = 
 		        connection.prepareStatement(deleteEmployeeQuery);    
         prepareStatement.setInt(1, employeeId);
         int deleteEmployeeStatus = prepareStatement.executeUpdate();
+        prepareStatement.close();
+        prepareStatement = 
+		        connection.prepareStatement(deleteAddressQuery);    
+        prepareStatement.setInt(1, employeeId);
+        prepareStatement.executeUpdate();
         prepareStatement.close();
         return (0 != deleteEmployeeStatus);                             
     }
@@ -361,7 +369,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         prepareStatement.setInt(1, addressId);
         int deleteAddressStatus = prepareStatement.executeUpdate();
         prepareStatement.close();
-        return (!(1 == deleteAddressStatus));
+        return (1 == deleteAddressStatus);
     }
 
     /**
