@@ -93,7 +93,7 @@ public interface EmployeeService {
      * @return a string with employee details.
      * @throws ClassNotFoundException, SQLEXception.
      */
-    public String viewSingleEmployee(int employeeId) throws 
+    public String getSingleEmployee(int employeeId) throws 
             ClassNotFoundException, SQLException;
 
     /**
@@ -102,7 +102,7 @@ public interface EmployeeService {
      * @return list of employee address strings.
      * @throws ClassNotFoundException, SQLEXception.
      */
-    Map<Integer, String> singleEmployeeAddress(int employeeId, String option) throws 
+    Map<Integer, String> singleEmployeeAddress(int employeeId) throws 
              ClassNotFoundException, SQLException;
 
     /** 
@@ -123,57 +123,6 @@ public interface EmployeeService {
     boolean deleteEmployee(int employeeId) throws ClassNotFoundException,
                                                   SQLException;
 
-    /**
-     * updates name of an employee in database.
-     * @param name is new name entered by user.
-     * @param employeeId is id of employee
-     * @return false if upation was sucessful.
-     * @throws ClassNotFoundException, SQLEXception.
-     */
-    boolean setEmployeeName(String name, int employeeId) throws 
-            ClassNotFoundException, SQLException;
-
-    
-    /**
-     * updates designation of an employee in database.
-     * @param designation is new designation entered by user.
-     * @param employeeId is id of employee
-     * @return false if upation was sucessful.
-     * @throws ClassNotFoundException, SQLEXception.
-     */
-    boolean setEmployeeDesignation(String designation, int employeeId) throws 
-            ClassNotFoundException, SQLException;
-
-    /**
-     * updates date of employee in database.
-     * @param date is new date entered by user.
-     * @param employeeId is id of employee
-     * @return false if upation was sucessful.
-     * @throws ClassNotFoundException, SQLEXception.
-     */
-    boolean setEmployeeDOB(Date date, int employeeId) throws 
-            ClassNotFoundException, SQLException;
-
-    /**
-     * updates salary of employee in database.
-     * @param salary is new salary entered by user.
-     * @param employeeId is id of employee
-     * @return false if upation was sucessful.
-     * @throws ClassNotFoundException, SQLEXception.
-     */
-    boolean setEmployeeSalary(double salary, int employeeId) throws 
-            ClassNotFoundException, SQLException;
-
-     /**
-     * updates phone number of employee in database.
-     * @param phoneNumber is new phone number entered by user.
-     * @param employeeId is id of employee
-     * @return false if upation was sucessful.
-     * @throws ClassNotFoundException, SQLEXception.
-     */
-    boolean setEmployeePhoneNumber(long phoneNumber, int employeeId) throws 
-            ClassNotFoundException, SQLException;
-  
     /**
      * checks if employee id is present in database
      * @param employeeId id of employee

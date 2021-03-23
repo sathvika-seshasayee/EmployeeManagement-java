@@ -63,20 +63,24 @@ public class EmployeeServiceImpl implements EmployeeService {
                               long phoneNumber, 
                               ArrayList<ArrayList<String>> addresses) throws 
                                       ClassNotFoundException, SQLException {
-        EmployeeModel employeeModelObj = employeeDao.viewSingleEmployee(employeeId);
+        EmployeeModel employeeModelObj = employeeDao.getSingleEmployee(employeeId);
         employeeModelObj.setId(employeeId);
         if("" != name) {
             employeeModelObj.setName(name);
         }
+
         if("" != designation) {
             employeeModelObj.setDesignation(designation);
         }
+
         if(0.0 != salary) {
             employeeModelObj.setSalary(salary);
         }
+
         if(0 != phoneNumber) {
             employeeModelObj.setPhoneNumber(phoneNumber);
         }
+
         if(null != dob) {
             employeeModelObj.setDOB(dob);
         }
@@ -150,9 +154,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     
      */    
     @Override
-    public String viewSingleEmployee(int employeeId) throws 
+    public String getSingleEmployee(int employeeId) throws 
             ClassNotFoundException, SQLException  {
-        return (employeeDao.viewSingleEmployee(employeeId)).toString();
+        return (employeeDao.getSingleEmployee(employeeId)).toString();
     }
 
     /**
@@ -161,11 +165,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     
      */    
     @Override
-    public Map<Integer, String> singleEmployeeAddress(int employeeId, String option) throws 
+    public Map<Integer, String> singleEmployeeAddress(int employeeId) throws 
             ClassNotFoundException, SQLException {
         int length;
         ArrayList<EmployeeAddressModel> singleEmployeeAddresses = 
-                employeeDao.singleEmployeeAddress(employeeId, option);
+                employeeDao.singleEmployeeAddress(employeeId);
         Map<Integer, String> address = new TreeMap<Integer, String>();
         for (int i = 0; i < singleEmployeeAddresses.size(); i++) {
             int addressId = (singleEmployeeAddresses.get(i)).getId();
@@ -185,10 +189,13 @@ public class EmployeeServiceImpl implements EmployeeService {
             ClassNotFoundException, SQLException  {
         ArrayList<EmployeeModel> employee = employeeDao.viewAllEmployees(option);
         ArrayList<String> employeeDetails = new ArrayList<String>();
-
+        if(null != employee) {
         for(int i = 0; i < employee.size(); i++) {
             employeeDetails.add((employee.get(i)).toString());
         }
+		} else {
+			employeeDetails = null;
+		}
  
         return employeeDetails;
     }
@@ -203,62 +210,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             ClassNotFoundException, SQLException {
         return employeeDao.deleteEmployee(employeeId);
     }
-
-   /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override 
-    public boolean setEmployeeName(String name, int employeeId) 
-            throws ClassNotFoundException, SQLException  {
-        return employeeDao.setEmployeeName(name, employeeId);
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override 
-    public boolean setEmployeeDesignation(String designation, int employeeId) 
-            throws ClassNotFoundException, SQLException  {
-        return employeeDao.setEmployeeDesignation(designation, employeeId);
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override  
-    public boolean setEmployeeDOB(Date date, int employeeId) throws 
-            ClassNotFoundException, SQLException {
-        return employeeDao.setEmployeeDOB(date, employeeId);
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override  
-    public boolean setEmployeeSalary(double salary, int employeeId) 
-            throws ClassNotFoundException, SQLException {
-        return employeeDao.setEmployeeSalary(salary, employeeId);
-    }
-
-   /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override 
-    public boolean setEmployeePhoneNumber(long phoneNumber, int employeeId) 
-            throws ClassNotFoundException, SQLException {
-        return employeeDao.setEmployeePhoneNumber(phoneNumber, employeeId);
-    }
-   
 
     /**
   
@@ -279,17 +230,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override 
     public Date checkEmployeeDOB(String dob) throws 
             ClassNotFoundException, SQLException {
-        Date date = null;
+        Date dateOfBirth = null;
         boolean isDate = false;
             try {
                isDate = Pattern.matches("[1][9][0-9][0-9][-](?:0?[1-9]|(1)[02])[-](?:[012]?[0-9]|(3)[01])", dob);
                if(isDate) {
-                   date = Date.valueOf(dob);
+                   dateOfBirth = Date.valueOf(dob);
                }
             } catch (IllegalArgumentException e) {
-                date = null;
+                dateOfBirth = null;
             }
-         return date;
+         return dateOfBirth;
     }
 
     /**

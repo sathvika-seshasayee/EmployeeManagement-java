@@ -20,12 +20,18 @@ import com.ideas2it.employeemanagement.controller.EmployeeController;
  * @author Sathvika Seshasayee
  */
 public class EmployeeView {
-    Scanner scanner = new Scanner(System.in);
-    String updateQuestion = "\n1. Name "
+    static Scanner scanner = new Scanner(System.in);
+    final static String updateQuestion = "\n1. Name "
                                 + "\n2. Designation \n3. Salary "
                                 + "\n4. Date of Birth \n5. Phone Number "
                                 + "\n6. Add Address "
                                 + "\n7. Exit\n" ;
+    final static String employeeOptionsQuestion = "What do you want to do today with the"
+                                + " Employee Database?\n1. Create Employee"
+                                + "\n2. Display one Emlpoyee details "
+                                + "\n3. Display All Employee "
+                                + " details \n4. Update Employee \n5. Delete Employee"
+                                + "\n6. Restore Employee \n7. Delete one Address \n8. Exit\n";
     EmployeeController controllerObj = new EmployeeController();
 
    /**
@@ -33,16 +39,9 @@ public class EmployeeView {
     * @throws ClassNotFoundException, SQLException.
     */
     public void EmployeeOptions() throws ClassNotFoundException, SQLException {
-        
-        String option = "y";
-        String optionQuestion = "What do you want to do today with the"
-                                + " Employee Database?\n1. Create "
-                                + "\n2. Display one Emlpoyee details "
-                                + "\n3. Display All Employee "
-                                + " details \n4. Update \n5. Delete Employee"
-                                + "\n6. Restore Employee \n7. Delete Address \n8. Exit\n";
+        String option = "y"; 
         while (true) {
-            System.out.println(optionQuestion);
+            System.out.println(employeeOptionsQuestion);
             int choice = scanner.nextInt();
             scanner.skip(Pattern.compile("[\n\r]{2}"));          
 
@@ -63,8 +62,9 @@ public class EmployeeView {
                     deleteEmployee();
                     break;
                 case 6:
-                    displayAllEmployees("deleted");
-                    restoreEmployee();
+                    if(displayAllEmployees("deleted")) {
+                        restoreEmployee();
+                    }
                     break;
                 case 7:
                     deleteAddress();
@@ -88,7 +88,7 @@ public class EmployeeView {
         boolean deleteStatus = false;
         int employeeId = getEmployeeId();
         if (controllerObj.checkEmployeeID(employeeId)) {
-            int addressId = singleEmployeeAddress(employeeId, "deleted");
+            int addressId = singleEmployeeAddress(employeeId);
             if(0 == addressId){
                 deleteStatus = false;
              } else {
@@ -263,14 +263,13 @@ public class EmployeeView {
         String newDesignation = "";
         double newSalary = 0.0;
         Date newDob = null;
-        addresses = null;
         long newPhoneNumber = 0;
         int employeeId = getEmployeeId();
         if (controllerObj.checkEmployeeID(employeeId)) {
             while(true) {
                 System.out.println(updateQuestion);
                 choice = scanner.nextInt();
-                scanner.skip(Pattern.compile("[\r\n]{2}"));   
+                scanner.skip(Pattern.compile("[\r\n]{2}"));  
             
                 switch (choice) {
                     case 1:
@@ -289,12 +288,12 @@ public class EmployeeView {
                         newPhoneNumber = getEmployeePhoneNumber();
                         break;
                     case 6:
-                        newAddress = null;
                         newAddress = getAddress();
-                       addresses.add(newAddress);
+                        addresses.add(newAddress);
                         break;
                     case 7:
-                        updateStatus = controllerObj.updateEmployee(employeeId, newName, newDesignation, newSalary, newDob, newPhoneNumber, addresses);
+                        updateStatus = controllerObj.updateEmployee(employeeId, newName,
+                                newDesignation, newSalary, newDob, newPhoneNumber, addresses);
                         if(updateStatus) {
                             System.out.println("\nUpdation was sucessfull\n");
                         } else {
@@ -319,7 +318,7 @@ public class EmployeeView {
      * @return address id.
      * @throws ClassNotFoundException, SQLException.
      */
-    private int singleEmployeeAddress(int employeeId, String option) throws 
+    private int singleEmployeeAddress(int employeeId) throws 
             ClassNotFoundException, SQLException {
         int addressId = 0;
         int updateOption ;                  // choice of address entered by user
@@ -328,9 +327,9 @@ public class EmployeeView {
         EmployeeController controllerObj = new EmployeeController();
         Map<Integer, String> employeeAddressDetails = 
                 new TreeMap<Integer, String>(); 
-        if(!((controllerObj.singleEmployeeAddress(employeeId, option)).isEmpty())){
+        if(!((controllerObj.singleEmployeeAddress(employeeId)).isEmpty())){
         employeeAddressDetails = 
-                controllerObj.singleEmployeeAddress(employeeId, option);
+                controllerObj.singleEmployeeAddress(employeeId);
         System.out.println("Enter the address option you want to "
                            + " update e.g. 1, 2, etc");
         addressIdArray = new int[employeeAddressDetails.size() + 1];
@@ -341,11 +340,9 @@ public class EmployeeView {
              addressIdArray[addressNumber] = addresses.getKey();
              addressNumber++;
         }
-
         updateOption = scanner.nextInt();   
         scanner.skip(Pattern.compile("[\r\n]{2}"));    
         addressId = addressIdArray[updateOption];
-        System.out.print(addressId);
        } else {
        System.out.println("There are no addresses for this employee id");
        }
@@ -374,16 +371,23 @@ public class EmployeeView {
     * This method displays all employees details.
     * @throws ClassNotFoundException, SQLException.
     */
-    private void displayAllEmployees(String option) throws 
+    private boolean displayAllEmployees(String option) throws 
             ClassNotFoundException, SQLException {
+        boolean displayAllStatus = false;
         EmployeeController controllerObj = new EmployeeController();
         ArrayList<String> employeeDetails = 
                 controllerObj.displayAllEmployees(option);
+        if(employeeDetails != null) {
+            displayAllStatus = true;
         Iterator<String> employee = employeeDetails.iterator();
         while(employee.hasNext()) { 
             System.out.println(employee.next());
         }
         System.out.println("--------------End of list---------------");
+        } else {
+          System.out.println("No employee records to display");
+        }
+        return displayAllStatus;
     }
 
     /**

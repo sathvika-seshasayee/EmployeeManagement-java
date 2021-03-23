@@ -64,9 +64,9 @@ public class EmployeeController {
      * @return tree map of sorted values of employee addresses based on address id.
      * @throws ClassNotFoundException, SQLException
      */
-    public Map<Integer, String> singleEmployeeAddress(int employeeId, String option) throws 
+    public Map<Integer, String> singleEmployeeAddress(int employeeId) throws 
             ClassNotFoundException, SQLException {
-        return serviceObj.singleEmployeeAddress(employeeId, option);
+        return serviceObj.singleEmployeeAddress(employeeId);
     }
 
     /**
@@ -118,7 +118,7 @@ public class EmployeeController {
      */
     public String displaySingleEmployee(int employeeId) throws 
             ClassNotFoundException, SQLException {
-        return serviceObj.viewSingleEmployee(employeeId);
+        return serviceObj.getSingleEmployee(employeeId);
     }
 
     /**
@@ -140,66 +140,6 @@ public class EmployeeController {
     public void deleteEmployee(int employeeId) throws ClassNotFoundException,
                                                       SQLException {
         serviceObj.deleteEmployee(employeeId);
-    }
-
-    /**
-     * This method passes new employee name for updation using employeeId as 
-     * referance for employee details to service layer.
-     * @param name
-     * @param employeeId
-     * @throws ClassNotFoundException, SQLException 
-     */  
-    public boolean setEmployeeName(String name, int employeeId) throws 
-            ClassNotFoundException, SQLException {
-        return serviceObj.setEmployeeName(name, employeeId);
-    }
-
-    /**
-     * This method passes new designation for updation using employeeId as 
-     * referance for employee details to service layer.
-     * @param designation
-     * @param employeeId
-     * @throws ClassNotFoundException, SQLException 
-     */
-    public boolean setEmployeeDesignation(String designation, int employeeId) 
-            throws ClassNotFoundException, SQLException {
-        return serviceObj.setEmployeeDesignation(designation, employeeId);
-    }
-    
-    /**
-     * This method passes new date of birth for updation using employeeId as 
-     * referance for employee details to service layer.
-     * @param date, date of birth for employee
-     * @param employeeId
-     * @throws ClassNotFoundException, SQLException 
-     */
-    public boolean setEmployeeDOB(Date date, int employeeId) throws 
-            ClassNotFoundException, SQLException {
-        return serviceObj.setEmployeeDOB(date, employeeId);
-    }
- 
-    /**
-     * This method passes new salary for updation using employeeId as 
-     * referance for employee details to service layer.
-     * @param salary
-     * @param employeeId
-     * @throws ClassNotFoundException, SQLException 
-     */
-    public boolean setEmployeeSalary(double salary, int employeeId) throws 
-            ClassNotFoundException, SQLException {
-        return serviceObj.setEmployeeSalary(salary, employeeId);
-    }
-
-    /**
-     * This method passes new phone number for updation using employeeId as 
-     * referance for employee details to service layer.
-     * @param phoneNumber
-     * @param employeeId
-     * @throws ClassNotFoundException, SQLException 
-     */
-    public boolean setEmployeePhoneNumber(long phoneNumber, int employeeId) 
-            throws ClassNotFoundException, SQLException {
-        return serviceObj.setEmployeePhoneNumber(phoneNumber, employeeId);
     }
 
     /**

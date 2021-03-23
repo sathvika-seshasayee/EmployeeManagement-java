@@ -90,10 +90,9 @@ public class EmployeeModel {
 
     public String toString() {
         String addresses = ""; 
-        if(!(this.addresses).isEmpty()) {
-            for (int i = 0; i < (this.addresses).size(); i++) {
-                addresses = addresses   
-                            + ((this.addresses).get(i)).toString() 
+        for(EmployeeAddressModel address: this.addresses) {
+            if (address.getPinCode() != null) {
+                addresses = addresses + address.toString()
                             + "\n";
             }        
         }

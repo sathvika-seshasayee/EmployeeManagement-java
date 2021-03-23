@@ -12,7 +12,7 @@ import java.util.List;
 import com.ideas2it.employeemanagement.dao.EmployeeDao;
 import com.ideas2it.employeemanagement.model.EmployeeModel;
 import com.ideas2it.employeemanagement.model.EmployeeAddressModel;
-import com.ideas2it.sessionfactory.SingletonConnection;
+import com.ideas2it.employeemanagement.sessionfactory.DataBaseConnection;
 
 /**
  * Creates, reads, deletes, updates employee records from database
@@ -21,25 +21,65 @@ import com.ideas2it.sessionfactory.SingletonConnection;
  * @author Sathvika Seshasayee
  */
 public class EmployeeDaoImpl implements EmployeeDao {
-    SingletonConnection singletonConnection = 
-	        SingletonConnection.getInstance();
-    Connection connection = singletonConnection.mysqlConnection();
+    DataBaseConnection dataBaseConnection = 
+	        DataBaseConnection.getInstance();
+    Connection connection = dataBaseConnection.mysqlConnection();
     final static String deleteEmployeeQuery = "update employee_model "
-                                     + " set is_deleted "
-                                     + " = true  "
-                                     + " where employee_id = ? ";
+                                              + " set is_deleted "
+                                              + " = true  "
+                                              + " where employee_id = ? ";
     final static String deleteAddressQuery = "update employee_address "
-                                     + " set is_deleted "
-                                     + " = true  "
-                                     + " where employee_id = ? ";
+                                              + " set is_deleted "
+                                              + " = true  "
+                                              + " where employee_id = ? ";
     final static String restoreEmployeeQuery = "update employee_model "
-                                     + " set is_deleted "
-                                     + " = false  "
-                                     + " where employee_id = ? ";
+                                               + " set is_deleted "
+                                               + " = false  "
+                                               + " where employee_id = ? ";
     final static String restoreAddressQuery = "update employee_address "
-                                     + " set is_deleted "
-                                     + " = false  "
-                                     + " where employee_id = ? ";
+                                              + " set is_deleted "
+                                              + " = false  "
+                                              + " where employee_id = ? ";
+    final static String singleEmployeeDisplayQuery = "SELECT *FROM employee_model left JOIN"
+		                                      + " employee_address ON "
+                                                      + "employee_address.employee_id = "
+                                                      + " employee_model.employee_id where "
+                                                      + " employee_model.employee_id = ? and "
+                                                      + " employee_model.is_deleted "
+                                                      + "= false";
+    final static String createEmployeeQuery = " insert into employee_model(employee_name, designation, "
+                                              + " salary, dob, mobile_number) values(?, ?, ?, ?, ?)"; 
+    final static String addAddressQuery = "insert into employee_address(employee_id, "
+                                          + " address, city, state, country, pincode "
+                                          + " ,is_permanant_address)"
+      		                          + "values (?, ?, ?, ?, ?, ?, ?) ";
+    final static String displayAllQuery = "SELECT * FROM employee_model LEFT JOIN "
+		                         + "employee_address ON "
+				         + " employee_model.employee_id = "
+                                         + " employee_address.employee_id where "
+                                         + " employee_model.is_deleted "
+                                         + " = false ";
+    final static String restoreQuery = "SELECT * FROM employee_model LEFT JOIN "
+		                       + "employee_address ON "
+			               + " employee_address.employee_id = "
+                                       + " employee_model.employee_id where "
+                                       + "employee_model.is_deleted = true ";
+    final static String deleteAllAddressQuery = "update employee_address set " 
+                                                + "is_deleted = true where"
+                                                + " employee_id = ?";
+    final static String updateEmployeeQuery = "update employee_model set employee_name = ? ,"
+                                              + " designation = ?, salary = ? ,"
+                                              + " dob = ?, mobile_number = ? "
+                                              + " where employee_id = ? ";
+    final static String singleEmployeeAddressesQuery = "select address_id, is_permanant_address, "
+                                                       + " address, city, state, country, pincode "
+                                                       + " from employee_address"
+                                                       + " where is_deleted = false and employee_id = ?";
+    final static String deleteSingleAddressQuery = "update employee_address set is_deleted ="
+                        	                    + "true where address_id = ?";
+    final static String checkEmployeeIdQuery = "select employee_id from employee_model where "
+                                               + " employee_id = ? and is_deleted "
+                                               + "= false ";
 
     /**
   
@@ -49,52 +89,62 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public int createEmployee(EmployeeModel employeeModelObj) throws 
 	        ClassNotFoundException, SQLException {
-        Statement statement = connection.createStatement();
+        connection.setAutoCommit(false);
+        int employeeId = 0;
+        ArrayList<EmployeeAddressModel> address = employeeModelObj.getAddresses();
+        employeeId = createOnlyEmployee(employeeModelObj);
+        if ((null != address) && (employeeId != 0)) {
+            String value = "";
+            
+	    // number of values to be entered at run time
+            for(int i = 0; i < (address.size() - 1) ; i++) {    
+                value = value + ",(?, ?, ?, ?, ?, ?, ?)";
+            }
+            String insertAddressQuery =  " insert into employee_address(employee_id, address, "
+                    + " city, state, country, pincode, is_permanant_address) "
+                    + " values(?, ?, ?, ?, ?, ?, ?) " + value ;
+            int size = address.size();
+            PreparedStatement prepareStatement = connection.prepareStatement(insertAddressQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+                  // insertIndex specifies index at which values should be entered
+            int insertIndex = 0;                 
+            for(EmployeeAddressModel i :  address) {  
+                prepareStatement.setInt(insertIndex*7 + 1, employeeId);
+                prepareStatement.setString(insertIndex*7 + 2, i.getAddress());
+                prepareStatement.setString(insertIndex*7 + 3, i.getCity());
+                prepareStatement.setString(insertIndex*7 + 4, i.getState());
+                prepareStatement.setString(insertIndex*7 + 5, i.getCountry());
+                prepareStatement.setString(insertIndex*7 + 6, i.getPinCode());
+                prepareStatement.setBoolean(insertIndex*7 + 7, i.getAddressType());
+	        insertIndex = insertIndex + 1;
+            } 
+            prepareStatement.execute();
+            connection.commit();
+        } else {
+            connection.rollback();
+        }
+        return employeeId;
+    }
+
+    public int createOnlyEmployee(EmployeeModel employeeModelObj) throws 
+	        ClassNotFoundException, SQLException {
         PreparedStatement prepareStatement = null;
-        String insertQuery = "insert into employee_model(employee_name, "
-		             + " designation, salary, dob, mobile_number) "
-                             + " values(?, ?, ?, ?, ?)";
-        prepareStatement = connection.prepareStatement(insertQuery);
+        int employeeId = 0;
+        prepareStatement = connection.prepareStatement(createEmployeeQuery, PreparedStatement.RETURN_GENERATED_KEYS);
         prepareStatement.setString(1, employeeModelObj.getName());
         prepareStatement.setString(2, employeeModelObj.getDesignation());
         prepareStatement.setDouble(3, employeeModelObj.getSalary());
         prepareStatement.setDate(4, employeeModelObj.getDOB());
         prepareStatement.setLong(5, employeeModelObj.getPhoneNumber());
-        prepareStatement.execute();
-		
-        String getIdQuery = "select employee_id from employee_model ORDER "
-		                    + "BY employee_id DESC LIMIT 1";
-        ResultSet resultSet = statement.executeQuery(getIdQuery); 
-        resultSet.next();
-        int employeeId = resultSet.getInt(1);
+	int rowsAffected = prepareStatement.executeUpdate();
+        ResultSet resultSet = prepareStatement.getGeneratedKeys();
+
+        if((1 == rowsAffected) && (resultSet.next())) {
+            employeeId = resultSet.getInt(1);
+	    }
         resultSet.close();
-        ArrayList<EmployeeAddressModel> address = employeeModelObj.getAddresses();
-        int size = address.size();
-        String value = "";
-		// number of values to be entered at run time
-        for(int i = 0; i < (address.size() - 1) ; i++) {    
-            value = value + ",(?, ?, ?, ?, ?, ?, ?)";
-        }
-        insertQuery = "insert into employee_address(employee_id, address," 
-		       + "city, state, country, pincode ,is_permanant_address)"
-      		       + "values (?, ?, ?, ?, ?, ?, ?) " + value ;
-        prepareStatement = connection.prepareStatement(insertQuery);      
-        // insertIndex specifies index at which values should be entered
-        int insertIndex = 0;                 
-        for(EmployeeAddressModel i :  address) {  
-            prepareStatement.setInt(insertIndex*7 + 1, employeeId);
-            prepareStatement.setString(insertIndex*7 + 2, i.getAddress());
-            prepareStatement.setString(insertIndex*7 + 3, i.getCity());
-            prepareStatement.setString(insertIndex*7 + 4, i.getState());
-            prepareStatement.setString(insertIndex*7 + 5, i.getCountry());
-            prepareStatement.setString(insertIndex*7 + 6, i.getPinCode());
-            prepareStatement.setBoolean(insertIndex*7 + 7, i.getAddressType());
-            insertIndex = insertIndex + 1;
-        }
-        prepareStatement.execute();
-        prepareStatement.close();
         return employeeId;
-    }
+        }
+
 
     /**
   
@@ -106,10 +156,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
                               EmployeeAddressModel employeeAddressObj) throws 
                               ClassNotFoundException, SQLException {
         boolean addAddressStatus = true;
-        String addAddressQuery = "insert into employee_address(employee_id, "
-                                 + " address, city, state, country, pincode "
-                                 + " ,is_permanant_address)"
-      		                 + "values (?, ?, ?, ?, ?, ?, ?) ";
         PreparedStatement prepareStatement = 
 		        connection.prepareStatement(addAddressQuery);
         prepareStatement.setString(2, employeeAddressObj.getAddress());
@@ -132,16 +178,22 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override 
     public boolean restoreEmployee(int employeeId) throws 
             ClassNotFoundException, SQLException { 
+        connection.setAutoCommit(false);
         PreparedStatement prepareStatement = 
 		        connection.prepareStatement(restoreEmployeeQuery);    
         prepareStatement.setInt(1, employeeId);
         int restoreEmployeeStatus = prepareStatement.executeUpdate();
         prepareStatement.close();
-        prepareStatement = 
+        System.out.println(restoreEmployeeStatus);
+        if(1 == restoreEmployeeStatus) {
+      
+            prepareStatement = 
 		        connection.prepareStatement(restoreAddressQuery);    
-        prepareStatement.setInt(1, employeeId);
-        prepareStatement.executeUpdate();
-        prepareStatement.close();
+            prepareStatement.setInt(1, employeeId);
+            prepareStatement.executeUpdate();
+            prepareStatement.close();
+            connection.commit();
+        } 
         return (0 != restoreEmployeeStatus);                              
      }
  
@@ -153,18 +205,15 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public boolean deleteAllAddress(int employeeId) 
             throws ClassNotFoundException, SQLException {
-        String deleteQuery = "update employee_address set " 
-                             + "is_deleted = true where"
-                             + " employee_id = ?";
         PreparedStatement prepareStatement = 
-                connection.prepareStatement(deleteQuery);    
+                connection.prepareStatement(deleteAllAddressQuery);    
         prepareStatement.setInt(1, employeeId);
         int deleteAddressStatus = prepareStatement.executeUpdate();
         prepareStatement.close();
         return (0 != deleteAddressStatus);  
     }  
 
-     /**
+    /**
   
      * {@inheritdoc}
     
@@ -172,22 +221,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override 
     public ArrayList<EmployeeModel> viewAllEmployees(String option) 
 	        throws ClassNotFoundException, SQLException {
-        String displayAllQuery = "SELECT * FROM employee_model LEFT JOIN "
-		                  + "employee_address ON "
-				  + " employee_address.employee_id = "
-                                  + " employee_model.employee_id where "
-                                  + " employee_model.is_deleted "
-                                  + " = false ";
-        String restoreQuery = "SELECT * FROM employee_model LEFT JOIN "
-		              + "employee_address ON "
-			      + " employee_address.employee_id = "
-                              + " employee_model.employee_id where "
-                              + "employee_model.is_deleted = true ";
+        
         ArrayList<EmployeeModel> employee = new ArrayList<EmployeeModel>();
         Statement statement =  connection.createStatement();
         String query = (option.equals("deleted")) ?  restoreQuery : displayAllQuery;
-        ResultSet resultSet = statement.executeQuery(query);
-	resultSet.next();		   
+        ResultSet resultSet = statement.executeQuery(query);	
+        boolean ans = resultSet.next();		   
         do {
             int employeeId = resultSet.getInt("employee_id");
             EmployeeModel employeeModelObj = 
@@ -219,14 +258,17 @@ public class EmployeeDaoImpl implements EmployeeDao {
           }while(true);
     }
 
+
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override 
     public boolean updateEmployee(EmployeeModel employeeModelObj) throws 
                                       ClassNotFoundException, SQLException {
-        String updateQuery = "update employee_model set employee_name = ? ,"
-                              + " designation = ?, salary = ? ,"
-                              + " dob = ?, mobile_number = ? "
-                              + " where employee_id = ? ";
         PreparedStatement prepareStatement = 
-                connection.prepareStatement(updateQuery); 
+                connection.prepareStatement(updateEmployeeQuery); 
 
         prepareStatement.setString(1, employeeModelObj.getName());
         prepareStatement.setString(2, employeeModelObj.getDesignation());
@@ -256,22 +298,15 @@ public class EmployeeDaoImpl implements EmployeeDao {
     
      */    
     @Override
-    public EmployeeModel viewSingleEmployee(int employeeId) throws 
+    public EmployeeModel getSingleEmployee(int employeeId) throws 
             ClassNotFoundException, SQLException {
         EmployeeModel employeeModelObj;
         EmployeeAddressModel employeeAddressModelObj;
         ArrayList<EmployeeAddressModel> address = 
 		        new ArrayList<EmployeeAddressModel>();
         Statement statement = connection.createStatement();
-        String employeeDisplayQuery = "SELECT *FROM employee_model left JOIN"
-		                      + " employee_address ON "
-                                      + "employee_address.employee_id = "
-                                      + " employee_model.employee_id where "
-                                      + " employee_model.employee_id = ? and "
-                                      + " employee_model.is_deleted "
-                                      + "= false";
         PreparedStatement prepareStatement = 
-                connection.prepareStatement(employeeDisplayQuery);
+                connection.prepareStatement(singleEmployeeDisplayQuery);
         prepareStatement.setInt(1, employeeId);
         ResultSet resultSet = prepareStatement.executeQuery();
         resultSet.next();
@@ -289,7 +324,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
 			                     resultSet.getString("pincode"), 
                               resultSet.getBoolean("is_permanant_address"));
             address.add(employeeAddressModelObj); 
-        }while(resultSet.next()) ;
+        } while(resultSet.next()) ;
         employeeModelObj.setAddresses(address); 
         employeeModelObj.setId(employeeId);
         return employeeModelObj;
@@ -301,16 +336,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
     
      */    
     @Override
-    public ArrayList<EmployeeAddressModel> singleEmployeeAddress(int employeeId, String option)
+    public ArrayList<EmployeeAddressModel> singleEmployeeAddress(int employeeId)
         	throws ClassNotFoundException, SQLException {
         ArrayList<EmployeeAddressModel> addresses  = 
 		        new ArrayList<EmployeeAddressModel>();
-        String getAddressQuery = "select address_id, is_permanant_address, "
-                              + " address, city, state, country, pincode "
-                              + " from employee_address"
-                              + " where is_deleted = false and employee_id = ?";
         PreparedStatement prepareStatement = 
-		        connection.prepareStatement(getAddressQuery);
+		        connection.prepareStatement(singleEmployeeAddressesQuery);
         prepareStatement.setInt(1, employeeId);
         ResultSet resultSet = prepareStatement.executeQuery();
         while (resultSet.next()) {
@@ -340,17 +371,22 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override            
     public boolean deleteEmployee(int employeeId) 
 	        throws ClassNotFoundException, SQLException {
+        connection.setAutoCommit(false);
         PreparedStatement prepareStatement = 
 		        connection.prepareStatement(deleteEmployeeQuery);    
         prepareStatement.setInt(1, employeeId);
-        int deleteEmployeeStatus = prepareStatement.executeUpdate();
-        prepareStatement.close();
-        prepareStatement = 
+        int rowsAffected = prepareStatement.executeUpdate();
+        if(1 == rowsAffected) {
+            prepareStatement = 
 		        connection.prepareStatement(deleteAddressQuery);    
-        prepareStatement.setInt(1, employeeId);
-        prepareStatement.executeUpdate();
+            prepareStatement.setInt(1, employeeId);
+            rowsAffected = prepareStatement.executeUpdate();
+            connection.commit();
+        } else {
+           connection.rollback();
+        }
         prepareStatement.close();
-        return (0 != deleteEmployeeStatus);                             
+        return (false);                             
     }
 
     /**
@@ -361,111 +397,12 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public boolean deleteSingleAddress(int addressId) 
 	        throws ClassNotFoundException, SQLException {
-  
-        String deleteQuery = "update employee_address set is_deleted ="
-                        	+ "true where address_id = ?";
         PreparedStatement prepareStatement = 
-		        connection.prepareStatement(deleteQuery);    
+		        connection.prepareStatement(deleteSingleAddressQuery);    
         prepareStatement.setInt(1, addressId);
         int deleteAddressStatus = prepareStatement.executeUpdate();
         prepareStatement.close();
         return (1 == deleteAddressStatus);
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public boolean setEmployeeName(String name, int employeeId) 
-	        throws ClassNotFoundException, SQLException {
-        String updateQuery = "update employee_model set employee_name = ? "
-   		                     + " where employee_id = ?";
-        PreparedStatement prepareStatement = 
-		        connection.prepareStatement(updateQuery); 
-        prepareStatement.setString(1, name);
-        prepareStatement.setInt(2, employeeId);
-        boolean setNameStatus = prepareStatement.execute();
-        prepareStatement.close();
-        return setNameStatus;
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public boolean setEmployeeDesignation(String designation, int employeeId) 
-	        throws ClassNotFoundException, SQLException {
-        String updateQuery = "update employee_model set designation = ? where "
-                          	+ " employee_id = ?";
-        PreparedStatement prepareStatement =  
-		        connection.prepareStatement(updateQuery); 
-        prepareStatement.setString(1, designation);
-        prepareStatement.setInt(2, employeeId);
-        boolean setDesignationStatus = prepareStatement.execute();
-        prepareStatement.close();
-        return setDesignationStatus;
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public boolean setEmployeeDOB(Date date, int employeeId) 
-	    throws ClassNotFoundException, SQLException {
-        Statement statement = connection.createStatement();
-        String updateQuery = "update employee_model set dob = ? where" 
-                       		+ " employee_id = ?";
-        PreparedStatement prepareStatement = 
-		        connection.prepareStatement(updateQuery); 
-        prepareStatement.setDate(1, date);
-        prepareStatement.setInt(2, employeeId);
-        boolean setDobStatus = prepareStatement.execute();
-        prepareStatement.close();
-        return setDobStatus;
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public boolean setEmployeeSalary(double salary, int employeeId) 
-            throws ClassNotFoundException, SQLException {
-        String updateQuery = "update employee_model set salary = ?  where "
-                  		     + " employee_id = ? " ; 
-        PreparedStatement prepareStatement = 
-		        connection.prepareStatement(updateQuery);
-        prepareStatement.setDouble(1, salary);
-        prepareStatement.setInt(2, employeeId);
-        boolean setSalaryStatus = prepareStatement.execute();
-        prepareStatement.close();
-        return setSalaryStatus;
-    }
- 
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public boolean setEmployeePhoneNumber(long phoneNumber, int employeeId)
- 	    throws ClassNotFoundException, SQLException {
-        String updateQuery = "update employee_model set mobile_number = ? "
-		                     + " where employee_id = ?" ;
-        PreparedStatement prepareStatement = 
-		        connection.prepareStatement(updateQuery); 
-        prepareStatement.setLong(1, phoneNumber);
-        prepareStatement.setInt(2, employeeId);
-        boolean setPhoneNumberStatus = prepareStatement.execute();
-        prepareStatement.close();
-        return setPhoneNumberStatus;
     }
  
     /**
@@ -476,11 +413,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
     @Override
     public boolean checkEmployeeID(int employeeId) 
 	         throws ClassNotFoundException, SQLException {
-        String updateQuery = "select employee_id from employee_model where "
-                             + " employee_id = ? and is_deleted "
-                             + "= false ";
         PreparedStatement prepareStatement = 
-		        connection.prepareStatement(updateQuery); 
+		        connection.prepareStatement(checkEmployeeIdQuery); 
         prepareStatement.setInt(1, employeeId);
         ResultSet resultSet = prepareStatement.executeQuery();
         return (resultSet.next());
