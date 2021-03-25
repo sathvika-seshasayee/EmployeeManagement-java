@@ -1,17 +1,15 @@
-package com.ideas2it.employeemanagement.view;
+package com.ideas2it.employeemanagement.employee.view;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator; 
 import java.util.List;  
 import java.util.Map;                                                 
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-import com.ideas2it.employeemanagement.controller.EmployeeController;
+import com.ideas2it.employeemanagement.employee.controller.EmployeeController;
 
 /**
  * Gets input from user and displays results.
@@ -34,57 +32,10 @@ public class EmployeeView {
                                 + "\n6. Restore Employee \n7. Delete one Address \n8. Exit\n";
     EmployeeController controllerObj = new EmployeeController();
 
-   /**
-    * This method displays options that can be performed in employee Database.
-    * @throws ClassNotFoundException, SQLException.
-    */
-    public void EmployeeOptions() throws ClassNotFoundException, SQLException {
-        String option = "y"; 
-        while (true) {
-            System.out.println(employeeOptionsQuestion);
-            int choice = scanner.nextInt();
-            scanner.skip(Pattern.compile("[\n\r]{2}"));          
-
-            switch (choice) {
-                case 1:
-                    createEmployee();
-                    break;
-                case 2:
-                    displaySingleEmployee();  
-                    break;   
-                case 3:
-                    displayAllEmployees("active");
-                    break;
-                case 4:
-                    updateEmployee();
-                    break;
-                case 5:
-                    deleteEmployee();
-                    break;
-                case 6:
-                    if(displayAllEmployees("deleted")) {
-                        restoreEmployee();
-                    }
-                    break;
-                case 7:
-                    deleteAddress();
-                    break;
-                case 8:
-                    System.out.println("*****Thank You*****\n\n");
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please enter again");
-                    break;
-            }
-        }
-    }
-
     /**
      * This method deleted one address of an employee
      */
-    private void deleteAddress() throws ClassNotFoundException, 
-                                          SQLException {
+    private void deleteAddress() {
         boolean deleteStatus = false;
         int employeeId = getEmployeeId();
         if (controllerObj.checkEmployeeID(employeeId)) {
@@ -111,8 +62,7 @@ public class EmployeeView {
     /**
      * This method restores one employee
      */ 
-    private void restoreEmployee() throws ClassNotFoundException, 
-                                          SQLException {
+    private void restoreEmployee() {
         EmployeeController controllerObj = new EmployeeController();
         int employeeId = getEmployeeId();
         if (!controllerObj.checkEmployeeID(employeeId)) {
@@ -132,7 +82,6 @@ public class EmployeeView {
      * This method gets input from user based on option.
      * @params option is the input required from user
      * i.e.name, designation etc
-     * @throws ClassNotFoundException, SQLException.
      */
     private String getEmployee(String option) {
         System.out.print("Enter the " + option + " of the Employee  :  ");
@@ -141,10 +90,8 @@ public class EmployeeView {
 
    /**
     * This method adds details of employee to Database.
-    * @throws ClassNotFoundException, SQLException.
     */
-    private void createEmployee() throws ClassNotFoundException, SQLException {     
-        EmployeeController controllerObj = new EmployeeController();  
+    private void createEmployee() {     
         ArrayList<ArrayList<String>> addresses = 
                 new ArrayList<ArrayList<String>>();
         ArrayList<String> address = new ArrayList<String>();
@@ -180,7 +127,6 @@ public class EmployeeView {
 
     /**
      * This method gets address details from the user.
-     * @throws ClassNotFoundException, SQLException.
      */
     private ArrayList<String> getAddress() {
         ArrayList<String> address = new ArrayList<String>();
@@ -212,7 +158,6 @@ public class EmployeeView {
 
     /**
      * This method gets and vaidates pincode.
-     * @throws ClassNotFoundException, SQLException.
      */
     private String getPinCode() {
         EmployeeController controllerObj = new EmployeeController();
@@ -222,9 +167,8 @@ public class EmployeeView {
          
    /**
     * This method deletes an employee from Database.
-    * @throws ClassNotFoundException, SQLException.
     */
-    private void deleteEmployee() throws ClassNotFoundException, SQLException {
+    private void deleteEmployee() {
         int employeeID = getEmployeeId();
         EmployeeController controllerObj = new EmployeeController();
         if (controllerObj.checkEmployeeID(employeeID)) {
@@ -237,9 +181,8 @@ public class EmployeeView {
 
     /**
      * This method gets employee ID is present in database
-     * @throws ClassNotFoundException, SQLException.
      */
-    private int getEmployeeId() throws ClassNotFoundException, SQLException {
+    private int getEmployeeId() {
         int employeeId;
         System.out.print("Enter the ID of employee : ");
         employeeId = scanner.nextInt();             
@@ -249,12 +192,11 @@ public class EmployeeView {
 
     /**
      * This method updates employee details based on user's choice.
-     * @throws ClassNotFoundException, SQLException.
      */
-    private void updateEmployee() throws ClassNotFoundException, SQLException {
+    private void updateEmployee() {
         int choice = 0;
         int addressId; 
-        boolean updateStatus = true;
+        boolean updateStatus = false;
         ArrayList<ArrayList<String>> addresses = 
                 new ArrayList<ArrayList<String>>();
         EmployeeController controllerObj = new EmployeeController();
@@ -303,7 +245,6 @@ public class EmployeeView {
                         break;
                     default:
                         System.out.println("Invalid choice. Please enter again");
-                        break;
                    }
             }
         } else {
@@ -316,10 +257,8 @@ public class EmployeeView {
      * @return address id corresponding to user's selection
      * @param employeeId id of employee
      * @return address id.
-     * @throws ClassNotFoundException, SQLException.
      */
-    private int singleEmployeeAddress(int employeeId) throws 
-            ClassNotFoundException, SQLException {
+    private int singleEmployeeAddress(int employeeId) {
         int addressId = 0;
         int updateOption ;                  // choice of address entered by user
         int addressNumber = 1;
@@ -351,16 +290,12 @@ public class EmployeeView {
 
     /**
      * This method displays one employee details.
-     * @throws ClassNotFoundException, SQLException.
      */  
-    private void displaySingleEmployee() throws ClassNotFoundException,
-                                                SQLException {
+    private void displaySingleEmployee() {
         EmployeeController controllerObj = new EmployeeController();
         int employeeID = getEmployeeId();                 
         if(controllerObj.checkEmployeeID(employeeID)) {
-            String employeeDetails = 
-                    controllerObj.displaySingleEmployee(employeeID);
-            System.out.println(employeeDetails);
+            System.out.println(controllerObj.displaySingleEmployee(employeeID));
             System.out.println("----------------End------------------");
         } else {
             System.out.println("Employee ID does not exist");
@@ -369,10 +304,8 @@ public class EmployeeView {
 
    /**
     * This method displays all employees details.
-    * @throws ClassNotFoundException, SQLException.
     */
-    private boolean displayAllEmployees(String option) throws 
-            ClassNotFoundException, SQLException {
+    private boolean displayAllEmployees(String option) {
         boolean displayAllStatus = false;
         EmployeeController controllerObj = new EmployeeController();
         ArrayList<String> employeeDetails = 
@@ -392,10 +325,8 @@ public class EmployeeView {
 
     /**
      * This method gets and validates phone number.
-     * @throws ClassNotFoundException, SQLException.
      */
-    private long getEmployeePhoneNumber() throws ClassNotFoundException, 
-                                                 SQLException {
+    private long getEmployeePhoneNumber() {
         EmployeeController controllerObj = new EmployeeController();
         String phoneNumber = getEmployee("phone number");
         long mobileNumber = 
@@ -410,10 +341,8 @@ public class EmployeeView {
      
     /**
      * This method gets and validates salary.
-     * @throws ClassNotFoundException, SQLException.
      */   
-    private double getEmployeeSalary() throws ClassNotFoundException, 
-                                              SQLException {
+    private double getEmployeeSalary() {
         EmployeeController controllerObj = new EmployeeController();
         String salary = getEmployee("Salary");
         double employeeSalary = controllerObj.checkEmployeeSalary(salary);
@@ -427,13 +356,12 @@ public class EmployeeView {
 
     /**
      * This method gets and validates date of birth.
-     * @throws ClassNotFoundException, SQLException.
      */
-    private Date getEmployeeDOB() throws ClassNotFoundException, SQLException {
+    private Date getEmployeeDOB() {
         EmployeeController controllerObj = new EmployeeController();
         String dob = getEmployee("date of birth (yyyy-MM-dd)");
         Date date = controllerObj.checkEmployeeDOB(dob);
-        while(null == controllerObj.checkEmployeeDOB(dob)) {
+        while(null == date) {
             System.out.println("Please enter date of birth in right "
                                + "format yyyy-MM-dd");
             dob = getEmployee("date of birth (yyyy-MM-dd)");
@@ -441,4 +369,50 @@ public class EmployeeView {
         } 
         return date;
     }
+
+     /**
+    * This method displays options that can be performed with employee Database.
+    */
+    public void EmployeeOptions() {
+        String option = "y"; 
+
+        while (true) {
+            System.out.println(employeeOptionsQuestion);
+            int choice = scanner.nextInt();
+            scanner.skip(Pattern.compile("[\n\r]{2}"));          
+
+            switch (choice) {
+                case 1:
+                    createEmployee();
+                    break;
+                case 2:
+                    displaySingleEmployee();  
+                    break;   
+                case 3:
+                    displayAllEmployees("active");
+                    break;
+                case 4:
+                    updateEmployee();
+                    break;
+                case 5:
+                    deleteEmployee();
+                    break;
+                case 6:
+                    if(displayAllEmployees("deleted")) {
+                        restoreEmployee();
+                    }
+                    break;
+                case 7:
+                    deleteAddress();
+                    break;
+                case 8:
+                    System.out.println("*****Thank You*****\n\n");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please enter again");
+                    break;
+            }
+        }
+    }
+
 } 

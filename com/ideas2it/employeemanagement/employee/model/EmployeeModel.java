@@ -1,9 +1,9 @@
-package com.ideas2it.employeemanagement.model;
+package com.ideas2it.employeemanagement.employee.model;
 
 import java.sql.Date;
 import java.util.ArrayList;
 
-import com.ideas2it.employeemanagement.model.EmployeeAddressModel;
+import com.ideas2it.employeemanagement.employee.model.EmployeeAddressModel;
 
 /**
  * Plain old Java object for Employee Database. 
@@ -30,6 +30,10 @@ public class EmployeeModel {
         this.phoneNumber = phoneNumber;
         this.dob = date;
         this.addresses = addresses;
+    }
+
+    public EmployeeModel (int id) {
+        this.id = id;
     }
 
     public void setId(int newId) {
@@ -86,6 +90,13 @@ public class EmployeeModel {
 
     public ArrayList<EmployeeAddressModel> getAddresses() {
         return this.addresses;
+    }
+
+    public String toStringProject() {
+        return "Employee Id   : " + id  
+               + "\nName          : " + name 
+               + "\nDesignation   :  " + designation 
+               + "\nPhone number  : " + phoneNumber + "\n";
     }
 
     public String toString() {

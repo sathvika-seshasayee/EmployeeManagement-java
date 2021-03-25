@@ -1,11 +1,11 @@
-package com.ideas2it.employeemanagement.controller;
+package com.ideas2it.employeemanagement.employee.controller;
 
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
+import com.ideas2it.employeemanagement.employee.service.impl.EmployeeServiceImpl;
 
 /**
  * Links view and service layers.
@@ -15,14 +15,19 @@ import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
  */
 public class EmployeeController {
     EmployeeServiceImpl serviceObj = new EmployeeServiceImpl();
-    public boolean checkEmployeeID(int employeeId)  throws 
-            ClassNotFoundException, SQLException {
+
+    /**
+     * Checks if ID of employee is present in database.
+     * @param employeeId id of employee
+     */
+    public boolean checkEmployeeID(int employeeId) {
         return serviceObj.checkEmployeeID(employeeId);
     }
  
     /**
-     * This method passes employee details to service layer.
-     * @param name nam of employee
+     * This method passes employee details to service layer 
+     * to create an employee.
+     * @param name name of employee
      * @param designation designation of employee
      * @param employeeSalary salary of employee
      * @param date date of birth of employee
@@ -32,8 +37,7 @@ public class EmployeeController {
      */ 
     public int createEmployee(String name, String designation, 
             double employeeSalary, Date date, long mobileNumber, 
-            ArrayList<ArrayList<String>> addresses) throws 
-                    ClassNotFoundException, SQLException {
+            ArrayList<ArrayList<String>> addresses) {
         return serviceObj.createEmployee(name, designation, employeeSalary,
                                          date, mobileNumber, addresses);
     }
@@ -51,8 +55,7 @@ public class EmployeeController {
     public boolean updateEmployee(int employeeId, String name, String designation, 
                               double salary, Date dob, 
                               long phoneNumber, 
-                              ArrayList<ArrayList<String>> addresses) throws 
-                                      ClassNotFoundException, SQLException {
+                              ArrayList<ArrayList<String>> addresses) {
         return serviceObj.updateEmployee(employeeId, name, designation, salary,
                                          dob, phoneNumber, addresses);
     }        
@@ -62,10 +65,8 @@ public class EmployeeController {
      * This method passes id of employee to get addresses of that employee
      * @param employeeId is id of employee.
      * @return tree map of sorted values of employee addresses based on address id.
-     * @throws ClassNotFoundException, SQLException
      */
-    public Map<Integer, String> singleEmployeeAddress(int employeeId) throws 
-            ClassNotFoundException, SQLException {
+    public Map<Integer, String> singleEmployeeAddress(int employeeId) {
         return serviceObj.singleEmployeeAddress(employeeId);
     }
 
@@ -73,20 +74,16 @@ public class EmployeeController {
      * This method deletes one address of one employee
      * @param addressId is address id to be deleted
      * @return false if deleted.
-     * @throws ClassNotFoundException, SQLException
      */
-    public boolean deleteSingleAddress(int addressId) throws 
-            ClassNotFoundException, SQLException {
+    public boolean deleteSingleAddress(int addressId) {
         return serviceObj.deleteSingleAddress(addressId);
     } 
 
     /**
      * This method restores deleted employee in database
      * @param employeeId is id of employee
-     * @throws ClassNotFoundException, SQLException
      */
-    public boolean restoreEmployee(int employeeId)  throws 
-            ClassNotFoundException, SQLException {
+    public boolean restoreEmployee(int employeeId) {
         return serviceObj.restoreEmployee(employeeId);
     }
 
@@ -94,10 +91,8 @@ public class EmployeeController {
      * This method adds one address to the database
      * @param employeeId is the Id of employee.
      * @param is address is the address entered by user.
-     * @throws ClassNotFoundException, SQLException
      */
-    public boolean addAddress(int employeeId, ArrayList<String> address)
-            throws ClassNotFoundException, SQLException {
+    public boolean addAddress(int employeeId, ArrayList<String> address) {
         return serviceObj.addAddress(employeeId, address);
     }
 
@@ -113,63 +108,51 @@ public class EmployeeController {
     /**
      * This method passes employeeId to service layer.
      * @param employeeId
-     * @return concatinated string employee id and details
+     * @return string of one employee's details for display
      * @throws ClassNotFoundException, SQLException 
      */
-    public String displaySingleEmployee(int employeeId) throws 
-            ClassNotFoundException, SQLException {
+    public String displaySingleEmployee(int employeeId) {
         return serviceObj.getSingleEmployee(employeeId);
     }
 
     /**
      * This method passes employeeId to service layer.
      * @return array of strings of employee details
-     * @throws ClassNotFoundException, SQLException 
      */
-    public ArrayList<String> displayAllEmployees(String option) 
-            throws ClassNotFoundException, SQLException {
-        return serviceObj.viewAllEmployees(option);
+    public ArrayList<String> displayAllEmployees(String option) {
+        return serviceObj.getAllEmployees(option);
     }
 
     /**
      * This method passes employeeId to service layer for 
      * deleting employee details.
      * @param employeeId
-     * @throws ClassNotFoundException, SQLException 
      */
-    public void deleteEmployee(int employeeId) throws ClassNotFoundException,
-                                                      SQLException {
+    public void deleteEmployee(int employeeId) {
         serviceObj.deleteEmployee(employeeId);
     }
 
     /**
-     * This method passes date of birth to service layer for 
-     * converting to date format
+     * This method passes date of birth to service layer for validation.
      * @param dob date of birth of employee
-     * @throws ClassNotFoundException, SQLException 
      */
-    public Date checkEmployeeDOB(String dob) throws ClassNotFoundException,
-                                                    SQLException {
+    public Date checkEmployeeDOB(String dob) {
         return serviceObj.checkEmployeeDOB(dob);
     }
 
     /**
      * This method passes phone number to service layer for validation.
      * @param phone number
-     * @throws ClassNotFoundException, SQLException 
      */
-    public long checkEmployeePhoneNumber(String phoneNumber) throws 
-            ClassNotFoundException, SQLException {
+    public long checkEmployeePhoneNumber(String phoneNumber) {
         return serviceObj.checkEmployeePhoneNumber(phoneNumber);
     }
 
     /**
      * This method passes salary to service layer for validation.
      * @param salary
-     * @throws ClassNotFoundException, SQLException 
      */
-    public double checkEmployeeSalary(String salary) throws 
-            ClassNotFoundException, SQLException {
+    public double checkEmployeeSalary(String salary) {
         return serviceObj.checkEmployeeSalary(salary);
     }
 }

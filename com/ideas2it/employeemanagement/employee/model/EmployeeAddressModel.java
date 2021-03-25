@@ -1,4 +1,4 @@
-package com.ideas2it.employeemanagement.model;
+package com.ideas2it.employeemanagement.employee.model;
 
 /**
  * Plain old Java object for Employee Address Database.
