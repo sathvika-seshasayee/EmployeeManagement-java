@@ -54,6 +54,19 @@ public class ProjectServiceImpl implements ProjectService {
     
      */    
     @Override
+    public boolean updateProject(projectId, newName,
+                                newDetails, newStartDate, newClient, newTargetDate, employees) {
+        ProjectModel employeeModelObj = employeeDao.getSingleEmployee(employeeId);
+        employeeModelObj.setId(employeeId);
+        if("" != newName) {
+        
+
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
     public int createProject(String name, String details, Date startDate,
                       String client, Date targetDate) {
         ProjectModel projectModelObj = new ProjectModel(name, details, startDate,

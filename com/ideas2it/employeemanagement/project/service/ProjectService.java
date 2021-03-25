@@ -48,6 +48,13 @@ public interface ProjectService {
      * @return all project details
      */
     ArrayList<String> getAllProjects(); 
+
+    /**
+     * Updates all project details.
+     * @return true if updated sucessfully
+     */
+    boolean updateProject(projectId, newName,
+                                newDetails, newStartDate, newClient, newTargetDate, employees);
     
 
 }

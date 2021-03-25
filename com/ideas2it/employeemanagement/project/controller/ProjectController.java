@@ -61,5 +61,22 @@ public class ProjectController {
     public ArrayList<String> displayAllProjects() {
         return serviceObj.getAllProjects();
     }
+
+    /**
+     * This method updates project details
+     * @param projectId id of project
+     * @param newName name of project
+     * @param newDetails details of project
+     * @param newStartDate start date of project
+     * @param client client name
+     * @param targetDate target date of project
+     * @return true if updation was sucessfull            //check if it is true
+     */
+    public boolean updateProject(int projectId, String newName,
+                                    String newDetails, Date newStartDate, String newClient, Date newTargetDate,
+                                  ArrayString<Integer> employees) {
+        return serviceObj.updateProject(projectId, newName,
+                                newDetails, newStartDate, newClient, newTargetDate, employees);
+
 }
  

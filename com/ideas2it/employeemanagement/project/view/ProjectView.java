@@ -17,12 +17,14 @@ import com.ideas2it.employeemanagement.project.controller.ProjectController;
 public class ProjectView {
     static Scanner scanner = new Scanner(System.in);
     ProjectController controllerObj = new ProjectController();
-    static final String ProjectOptionsQuestion = "What do you want to do today with the"
+    static final String projectOptionsQuestion = "What do you want to do today with the"
                                 + " Project Database?\n1. Create Project"
                                 + "\n2. Display one Project details "
                                 + "\n3. Display All Projects "
                                 + " details \n4. Update Employee \n5. Delete Employee"
                                 + "\n6. Restore Project \n7. Exit\n";
+    static final String updateQuestion = "\n1.Project Name \n2.Project Details "
+            + "\n3. Start date \n4. Client  \n5. End date. \n6.Assign Employees \n7.Exit ";
 
    /**
     * This method displays options that can be performed with Project Database.
@@ -31,7 +33,7 @@ public class ProjectView {
         String option = "y"; 
 
         while (true) {
-            System.out.println(ProjectOptionsQuestion);
+            System.out.println(projectOptionsQuestion);
             int choice = scanner.nextInt();
             scanner.skip(Pattern.compile("[\n\r]{2}"));    
 
@@ -121,7 +123,53 @@ public class ProjectView {
         }
     }
 
+     /**
+     * This method updates all the projects.
+     */
     public void updateProject() {
+        int choice = 0;
+        int projectId = getProjectId();
+        if (controllerObj.checkProjectId(projectId)) {
+            while(true) {
+            System.out.println(updateQuestion);
+            choice = scanner.nextInt();
+            scanner.skip(Pattern.compile("[\r\n]{2}"));  
+
+            switch (choice) {
+                    case 1:
+                        newName = getProject("name");   
+                        break;
+                    case 2:
+                        newDetails = getProject("details (in one line)");
+                        break;
+                    case 3:
+                        newStartDate = getDate("start");
+                        break;
+                    case 4:
+                        newClient = getProject("client");
+                        break;
+                    case 5:
+                        newTargetDate = getDate("target");
+                        break;
+                    case 6:
+                        break;
+                    case 7:
+                        updateStatus = controllerObj.updateProject(projectId, newName,
+                                newDetails, newStartDate, newClient, newTargetDate, employees);
+                        if(updateStatus) {
+                            System.out.println("\nUpdation was sucessfull\n");
+                        } else {
+                            System.out.println("\nUpdation was not sucessfull\n");
+                        }
+                        ProjectOptions();
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please enter again");
+                   }
+            }
+        } else {
+        System.out.println("Employee Id does not exist");
+        }
     }
 
     public void deleteProject() {
