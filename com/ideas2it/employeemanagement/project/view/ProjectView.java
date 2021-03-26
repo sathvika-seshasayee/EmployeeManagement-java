@@ -21,7 +21,7 @@ public class ProjectView {
                                 + " Project Database?\n1. Create Project"
                                 + "\n2. Display one Project details "
                                 + "\n3. Display All Projects "
-                                + " details \n4. Update Employee \n5. Delete Employee"
+                                + " details \n4. Update Project \n5. Delete Project"
                                 + "\n6. Restore Project \n7. Exit\n";
     static final String updateQuestion = "\n1.Project Name \n2.Project Details "
             + "\n3. Start date \n4. Client  \n5. End date. \n6.Assign Employees \n7.Exit ";
@@ -45,7 +45,7 @@ public class ProjectView {
                     displayOneProject();  
                     break;   
                 case 3:
-                    displayAllProjects();
+                    displayAllProjects("active");
                     break;
                 case 4:
                     updateProject();
@@ -54,6 +54,7 @@ public class ProjectView {
                     deleteProject();
                     break;
                 case 6:
+                    displayAllProjects("deleted");
                     restoreProject();
                     break;
                 case 7:
@@ -63,6 +64,23 @@ public class ProjectView {
                     System.out.println("Invalid choice. Please enter again");
                     break;
             }      
+        }
+    }
+
+   /**
+    * This method deletes an project.
+    */
+    private void deleteProject() {
+        int projectId = getProjectId();
+        boolean deleteStatus = false;
+        if(controllerObj.checkProjectId(projectId)) {
+            if(controllerObj.deleteProject(projectId)) {
+                System.out.println("Project deleted sucessfully"); 
+            } else {
+                 System.out.println("Project not deleted."); 
+            }
+        } else {
+            System.out.println("Project Id does not exist"); 
         }
     }
 
@@ -109,9 +127,9 @@ public class ProjectView {
     /**
      * This method displays all the projects.
      */
-    public void displayAllProjects() {
+    public void displayAllProjects(String option) {
         ArrayList<String> projectDetails = 
-                controllerObj.displayAllProjects();
+                controllerObj.displayAllProjects(option);
         if (!projectDetails.isEmpty()) {
             Iterator<String> project = projectDetails.iterator();
             while(project.hasNext()) { 
@@ -128,7 +146,14 @@ public class ProjectView {
      */
     public void updateProject() {
         int choice = 0;
+        String name = "";
+        String details = "";
+        Date startDate = null;
+        String client = "";
+        Date targetDate = null;
+        boolean updateStatus = false;
         int projectId = getProjectId();
+        ArrayList<Integer> employees = new ArrayList<Integer>();
         if (controllerObj.checkProjectId(projectId)) {
             while(true) {
             System.out.println(updateQuestion);
@@ -137,25 +162,26 @@ public class ProjectView {
 
             switch (choice) {
                     case 1:
-                        newName = getProject("name");   
+                        name = getProject("name");   
                         break;
                     case 2:
-                        newDetails = getProject("details (in one line)");
+                        details = getProject("details (in one line)");
                         break;
                     case 3:
-                        newStartDate = getDate("start");
+                        startDate = getDate("start");
                         break;
                     case 4:
-                        newClient = getProject("client");
+                        client = getProject("client");
                         break;
                     case 5:
-                        newTargetDate = getDate("target");
+                        targetDate = getDate("target");
                         break;
                     case 6:
+                        employees = getEmployees();
                         break;
                     case 7:
-                        updateStatus = controllerObj.updateProject(projectId, newName,
-                                newDetails, newStartDate, newClient, newTargetDate, employees);
+                        updateStatus = controllerObj.updateProject(projectId, name,
+                                details, startDate, client, targetDate, employees);
                         if(updateStatus) {
                             System.out.println("\nUpdation was sucessfull\n");
                         } else {
@@ -172,10 +198,39 @@ public class ProjectView {
         }
     }
 
-    public void deleteProject() {
+    public ArrayList<Integer> getEmployees() { 
+        ArrayList<Integer> employeeIds = new ArrayList<Integer>();
+        int employeeId = 0;
+        String option = "";
+        System.out.print("Enter the id of employee to assign in this project  :  ");
+        do {
+            employeeId = scanner.nextInt();
+            scanner.skip(Pattern.compile("[\r\n]{2}"));
+            if(controllerObj.checkEmployeeId(employeeId)) {    // check if exists 
+                employeeIds.add(employeeId);   
+            } else {  
+                System.out.print("Employee does not exist");
+            }
+            System.out.print("Do you want to enter another employee y/n  :  ");
+            option = scanner.nextLine();
+        } while(option.equals("y"));
+        return employeeIds;
     }
-   
+
+    /**
+     * This method restores a project
+     */
     public void restoreProject() {
+        int projectId = getProjectId();
+        if (!controllerObj.checkProjectId(projectId)) {         
+            if(!controllerObj.restoreProject(projectId)) {
+                System.out.println("Project not in database");
+            } else {
+                System.out.println("Project restored sucessfully\n\n");
+            }
+        } else {
+            System.out.println("Project Id does not exist");
+        }
     }
 
     /** 

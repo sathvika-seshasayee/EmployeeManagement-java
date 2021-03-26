@@ -94,18 +94,12 @@ public class ProjectModel {
     }
 
     public String toString() {
-     //   String employee = "";
-     //   for(EmployeeModel i :employees) {
-      //      employee = employee + i.toStringProject() + "\n";
-    //    }      
-
-            
-        return "Project Id      : " + id 
+          
+        return "\nProject Id      : " + id 
                + "\nProject name    : " + name
                + "\nProject details : " + details
                + "\nStart date      : " + startDate
                + "\nClient          : " + client
                + "\nTarget Date     : " + targetDate + "\n\n";
-              // + "\n\nEmployee list   : \n" + employee;
     }
 }

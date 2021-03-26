@@ -115,8 +115,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 } 
                 prepareStatement.execute();
                 connection.commit();
-            } else {
-                connection.commit();
             }
         } catch (SQLException ex) {
             try {   
@@ -363,7 +361,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
      */    
     @Override 
     public boolean updateEmployee(EmployeeModel employeeModelObj) {
-		DataBaseConnection dataBaseConnection = 
+	DataBaseConnection dataBaseConnection = 
 	        DataBaseConnection.getInstance();
         Connection connection = dataBaseConnection.mysqlConnection();
         int updateStatus = 0;
@@ -462,9 +460,9 @@ public class EmployeeDaoImpl implements EmployeeDao {
      */    
     @Override            
     public boolean deleteEmployee(int employeeId) {
-		DataBaseConnection dataBaseConnection = 
+	DataBaseConnection dataBaseConnection = 
 	        DataBaseConnection.getInstance();
-        boolean deletEmployeeStatus = true;
+        boolean deletEmployeeStatus = false;
         Connection connection = dataBaseConnection.mysqlConnection();
         try {
         connection.setAutoCommit(false);
@@ -478,13 +476,13 @@ public class EmployeeDaoImpl implements EmployeeDao {
             prepareStatement.setInt(1, employeeId);
             rowsAffected = prepareStatement.executeUpdate();
             connection.commit();
-            deletEmployeeStatus = false;
+            deletEmployeeStatus = true;
         } else {
            connection.rollback();
         }
         prepareStatement.close();
        } catch (SQLException ex) {
-            ex.printStackTrace();
+            deletEmployeeStatus = false;
         }
         return deletEmployeeStatus;                             
     }

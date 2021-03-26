@@ -24,6 +24,24 @@ public class ProjectController {
         return serviceObj.checkProjectId(projectId);
     }
 
+   /**
+    * This method restores a project.
+    * @param projectId id of project
+    * @return true if restored
+    */
+    public boolean restoreProject(int projectId) {
+        return serviceObj.restoreProject(projectId);
+    }
+
+   /**
+    * This method deletes an project.
+    * @param projectId id of project
+    * @return true if deleted
+    */
+    public boolean deleteProject(int projectId) {
+        return serviceObj.deleteProject(projectId);
+    }
+
     /**
      * This method passes date to service layer for validation
      * @param date date 
@@ -58,8 +76,17 @@ public class ProjectController {
      * details.
      * @return all projects details
      */
-    public ArrayList<String> displayAllProjects() {
-        return serviceObj.getAllProjects();
+    public ArrayList<String> displayAllProjects(String option) {
+        return serviceObj.getAllProjects(option);
+    }
+ 
+    /**
+     * This method validates employee Ids
+     * @param  employees employee ids entered by user.
+     * @return list of employee Ids
+     */
+    public boolean checkEmployeeId(int employeeId) {
+        return serviceObj.checkEmployeeId(employeeId);
     }
 
     /**
@@ -73,10 +100,13 @@ public class ProjectController {
      * @return true if updation was sucessfull            //check if it is true
      */
     public boolean updateProject(int projectId, String newName,
-                                    String newDetails, Date newStartDate, String newClient, Date newTargetDate,
-                                  ArrayString<Integer> employees) {
+                                 String newDetails, Date newStartDate, String newClient, 
+                                 Date newTargetDate,
+                                 ArrayList<Integer> employees) {
         return serviceObj.updateProject(projectId, newName,
-                                newDetails, newStartDate, newClient, newTargetDate, employees);
+                                        newDetails, newStartDate, 
+                                        newClient, newTargetDate, employees);
+    }
 
 }
  

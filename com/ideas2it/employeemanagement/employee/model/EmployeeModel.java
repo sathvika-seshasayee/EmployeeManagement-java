@@ -32,6 +32,15 @@ public class EmployeeModel {
         this.addresses = addresses;
     }
 
+    public EmployeeModel (String name, String designation, double salary, 
+                          Date date, long phoneNumber) {
+        this.name = name;
+        this.designation = designation;
+        this.salary = salary;
+        this.phoneNumber = phoneNumber;
+        this.dob = date;
+    }
+
     public EmployeeModel (int id) {
         this.id = id;
     }
@@ -92,21 +101,16 @@ public class EmployeeModel {
         return this.addresses;
     }
 
-    public String toStringProject() {
-        return "Employee Id   : " + id  
-               + "\nName          : " + name 
-               + "\nDesignation   :  " + designation 
-               + "\nPhone number  : " + phoneNumber + "\n";
-    }
-
     public String toString() {
         String addresses = ""; 
+       if(null != this.addresses) {
         for(EmployeeAddressModel address: this.addresses) {
             if (address.getPinCode() != null) {
                 addresses = addresses + address.toString()
                             + "\n";
             }        
         }
+       }
         return    "Employee Id     : " + id  + "\nName          : " + name 
                 + "\nDesignation   :  " + designation + "\nSalary        : " 
                 + "Rs " + salary + "\nDate of Birth :  " + dob 

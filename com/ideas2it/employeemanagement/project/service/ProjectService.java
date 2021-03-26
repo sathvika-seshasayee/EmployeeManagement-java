@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 import com.ideas2it.employeemanagement.project.model.ProjectModel;
+import com.ideas2it.employeemanagement.employee.model.EmployeeModel;
 
 /** 
  * contains business logics for Project database.
@@ -20,11 +21,25 @@ public interface ProjectService {
     boolean checkProjectId(int projectId);
 
     /**
+     * Passes project id for restoring from database
+     * @param projectId id of project
+     * @return true if restores
+     */
+    boolean restoreProject(int projectId);
+
+    /**
      * Validates and converts into date format.
      * @param date date entered by user.
      * @return validated date
      */
     Date validateDate(String date);
+
+     /**
+     * Passes project id for deletion from database
+     * @param projectId id of project
+     * @return true if deleted
+     */
+    boolean deleteProject(int projectId);
 
     /**
      * Passes project object to dao.
@@ -45,18 +60,25 @@ public interface ProjectService {
 
     /**
      * Converts all project details from dao into strings.
+     * @param option for delted or active projects
      * @return all project details
      */
-    ArrayList<String> getAllProjects(); 
+    ArrayList<String> getAllProjects(String option); 
 
     /**
      * Updates all project details.
      * @return true if updated sucessfully
      */
-    boolean updateProject(projectId, newName,
-                                newDetails, newStartDate, newClient, newTargetDate, employees);
-    
+    boolean updateProject(int projectId, String name, String details, Date startDate, 
+                          String client, Date targetDate, ArrayList<Integer> employees);
 
+    /**
+     * Checks for duplicate employee ids.
+     * @return employee ids without duplicates
+     */ 
+    ArrayList<Integer> checkForDuplicates(ArrayList<Integer> employees, 
+            ArrayList<EmployeeModel> employeeModelObjs);
+   
 }
 
 

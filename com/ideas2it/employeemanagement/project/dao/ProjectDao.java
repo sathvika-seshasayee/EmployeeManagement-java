@@ -42,6 +42,19 @@ public interface ProjectDao {
     PreparedStatement setProject(PreparedStatement prepareStatement, 
                                         ProjectModel projectModelObj, 
                                         int insertIndex);
+    /**
+     * Deletes a project from database
+     * @param projectId id of project
+     * @return true if deleted
+     */
+    boolean deleteProject(int projectId);
+
+    /**
+     * Restores a project from database
+     * @param projectId id of project
+     * @return true if restores
+     */
+    boolean restoreProject(int projectId);
 
     /**
      * Gets one project details from database
@@ -54,7 +67,7 @@ public interface ProjectDao {
      * Gets all project details from database
      * @return list of all project details
      */
-    ArrayList<ProjectModel> getAllProjects();
+    ArrayList<ProjectModel> getAllProjects(String option);
  
     /**
      * Gets project details alone from result set
@@ -70,6 +83,17 @@ public interface ProjectDao {
      */ 
     EmployeeModel getEmployee(ResultSet resultSet);
 
-    
+    /**
+     * Updates project details in database
+     * @param projectModelObj object with project details
+     * @return true if updated
+     */
+    boolean updateProject(ProjectModel projectModelObj); 
 
+    /**
+     * Adds employee id and project id to junction table
+     * @param employeeModelObjs employees details
+     * @param projectId id of project id
+     */
+    void assignEmployees(ArrayList<EmployeeModel> employeeModelObjs, int projectId);
 }
