@@ -60,8 +60,20 @@ public class ProjectController {
      * @param targetDate is estimated target date of project
      * @return project id. 
      */
-    public int createProject(String name, String details, Date startDate, String client, Date targetDate) {
-        return serviceObj.createProject(name, details, startDate, client, targetDate);
+    public int createProject(String name, String details, Date startDate, 
+                             String client, Date targetDate, 
+                             ArrayList<Integer> employees) {
+        return serviceObj.createProject(name, details, startDate, client,
+                                        targetDate, employees);
+    }
+
+    /**
+     * This method gets all active employee details
+     * @param option option for delted or active employees
+     * @return employee details
+     */
+    public ArrayList<String> displayAllEmployees(String option) {
+        return serviceObj.getAllEmployees(option);
     }
 
     /**

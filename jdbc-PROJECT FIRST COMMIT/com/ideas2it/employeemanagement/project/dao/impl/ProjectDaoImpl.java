@@ -96,6 +96,7 @@ public class ProjectDaoImpl implements ProjectDao {
         Connection connection = dataBaseConnection.mysqlConnection();
         int projectId = 0;
         try {
+			connection.setAutoCommit(false);
             PreparedStatement prepareStatement = 
                     connection.prepareStatement(createProjectQuery, 
                             PreparedStatement.RETURN_GENERATED_KEYS);
@@ -105,12 +106,31 @@ public class ProjectDaoImpl implements ProjectDao {
 
             if((1 == rowsAffected) && (resultSet.next())) {
                 projectId = resultSet.getInt(1);
-	    }
+			}
+			prepareStatement.close();
+			ArrayList<EmployeeModel> employeeModelObjs = projectModelObj.getEmployees();
+			String value = "";
+			for (int i = 0; i < (employeeModelObjs.size() - 1); i++) {    
+                    value = value + " ,(?,?) ";
+            } 
+			String updateEmployeesQuery = "insert into employee_project_junction(employee_id, project_id) "
+                                		  + " values (? ,?)" + value ;
+            prepareStatement = connection.prepareStatement(updateEmployeesQuery);
+            int insertIndex = 1;
+			
+            for(EmployeeModel employeeObj : employeeModelObjs) {
+                prepareStatement.setInt(insertIndex++, employeeObj.getId());
+                prepareStatement.setInt(insertIndex++, projectId);
+            } 
+			prepareStatement.execute();
+			connection.commit();
             prepareStatement.close();
             resultSet.close();
             connection.close();
         } catch(SQLException e) {
+			e.printStackTrace();
             try{
+				connection.rollback();
                 if(connection!=null)
                     connection.close();
              }catch(SQLException se){
@@ -163,25 +183,22 @@ public class ProjectDaoImpl implements ProjectDao {
             prepareStatement.setInt(6, projectModelObj.getId());
             rowsAffected = prepareStatement.executeUpdate();
             prepareStatement.close();
-			System.out.println("inside dao");
             ArrayList<Integer> employeeIds = new ArrayList<Integer>();
             employeeModelObjs = projectModelObj.getEmployees();
-			System.out.println(projectModelObj.getEmployees());
-			System.out.println(employeeModelObjs);
+			
             if((!employeeModelObjs.isEmpty()) && (1 == rowsAffected)) {
 				for(EmployeeModel employeeObj : employeeModelObjs) {
 					employeeIds.add(employeeObj.getId());
 			    }
-				System.out.println(employeeIds);
 				String value = "";
-				for(int i = 0; i < employeeIds.size() ; i++) {    
-                    value = value + " (?,?) ";
+				
+				for(int i = 0; i < (employeeIds.size() - 1); i++) {    
+                    value = value + " ,(?,?) ";
                 } 
 				String updateEmployeesQuery = "insert into employee_project_junction(employee_id, project_id) "
-                                		      + " values " + value ;
-				System.out.println(updateEmployeesQuery);
+                                		      + " values (? ,?)" + value ;
                 prepareStatement = connection.prepareStatement(updateEmployeesQuery);
-				prepareStatement.setInt(1, projectModelObj.getId());
+			//	prepareStatement.setInt(1, projectModelObj.getId());
                 int insertIndex = 1;
                 for(EmployeeModel employeeObj : employeeModelObjs) {
                     prepareStatement.setInt(insertIndex++, employeeObj.getId());
@@ -190,13 +207,16 @@ public class ProjectDaoImpl implements ProjectDao {
                 prepareStatement.execute();
              }
              connection.commit();
+			 connection.close();
              updateStatus = (1 == rowsAffected);
         } catch (SQLException e) {
             e.printStackTrace();
             connection.rollback();
             try {
                 connection.close();
-            } catch(SQLException ex) {}
+            } catch(SQLException ex) {
+				e.printStackTrace();
+			}
         } finally {
             return updateStatus;
         }
@@ -360,8 +380,6 @@ public class ProjectDaoImpl implements ProjectDao {
         boolean deletProjectStatus = false;
         String value = "";
         Connection connection = dataBaseConnection.mysqlConnection();
-        String deleteEmployeesQuery = "delete from employee_project_junction "
-		                              + " where employee_id in ( ? " + value + " ) and  project_id = ?";
         try {
             connection.setAutoCommit(false);
             PreparedStatement prepareStatement = 
@@ -374,8 +392,10 @@ public class ProjectDaoImpl implements ProjectDao {
                 for (int i = 0; i < (employeeModelObjs.size() - 1) ; i++) {
                     value = value + ", ? ";
                 }
+				String deleteEmployeesQuery = "delete from employee_project_junction "
+		                + " where employee_id in ( ? " + value + " ) and  project_id = ?";
                 prepareStatement = 
-		        connection.prepareStatement(deleteEmployeesQuery); 
+		            connection.prepareStatement(deleteEmployeesQuery); 
                 int insertIndex = 1;
             if(!employeeModelObjs.isEmpty()) {
                 for (EmployeeModel employeeObj : employeeModelObjs) {
@@ -386,12 +406,13 @@ public class ProjectDaoImpl implements ProjectDao {
             }
                 connection.commit();
                 deletProjectStatus = true;
-            } else {
-               connection.rollback();
-            }
+            } 
             prepareStatement.close();
         } catch (SQLException ex) {
-              System.out.println(ex);
+             ex.printStackTrace();
+			try {
+			  connection.rollback();
+			} catch (SQLException e) {}
               deletProjectStatus = false;
         }
         return deletProjectStatus;                             

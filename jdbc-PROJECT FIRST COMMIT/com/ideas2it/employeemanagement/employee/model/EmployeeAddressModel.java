@@ -15,6 +15,8 @@ public class EmployeeAddressModel {
     private String country;
     private String pinCode;
     private boolean isPermanantAddress;       // permanant or temporary address
+
+    public EmployeeAddressModel() {};
   
     public EmployeeAddressModel(String address, String city, String state,
             String country, String pinCode, boolean isPermanantAddress) {

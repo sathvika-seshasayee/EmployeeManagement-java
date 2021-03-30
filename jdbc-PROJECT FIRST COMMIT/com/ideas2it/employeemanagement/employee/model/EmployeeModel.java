@@ -20,6 +20,8 @@ public class EmployeeModel {
     private Date dob;           
     private long phoneNumber;
     private ArrayList<EmployeeAddressModel> addresses;
+
+    public EmployeeModel () {};
     
     public EmployeeModel (String name, String designation, double salary, 
                           Date date, long phoneNumber, 
@@ -101,11 +103,13 @@ public class EmployeeModel {
 
     public String toString() {
         String addresses = ""; 
-        for(EmployeeAddressModel address: this.addresses) {
-            if (address.getPinCode() != null) {
-                addresses = addresses + address.toString()
-                            + "\n";
-            }        
+        if(this.addresses != null) {
+            for(EmployeeAddressModel address: this.addresses) {
+                if (address.getPinCode() != null) {
+                    addresses = addresses + address.toString()
+                                + "\n";
+                }        
+            }
         }
         return    "Employee Id     : " + id  + "\nName          : " + name 
                 + "\nDesignation   :  " + designation + "\nSalary        : " 

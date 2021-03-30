@@ -97,10 +97,20 @@ public class ProjectServiceImpl implements ProjectService {
         if(!employees.isEmpty()) {
             employeeModelObjs = checkDuplicateEmployees(projectModelObj.getEmployees(), employees);
             projectModelObj.setEmployees(employeeModelObjs);
-        }
- 
+        } else { 
+		    ArrayList<Integer> employeeIds = new ArrayList<Integer> ();
+		    for (EmployeeModel employeeModelObj : projectModelObj.getEmployees()) {
+				employeeIds.add(employeeModelObj.getId());
+			}
+		    employeeModelObjs = checkDuplicateEmployees(projectModelObj.getEmployees(), employeeIds);
+            projectModelObj.setEmployees(employeeModelObjs);
+		}
         return projectDao.updateProject(projectModelObj);
         }  
+		
+    public ArrayList<String> getAllEmployees(String option) {
+		return employeeServiceObj.getAllEmployees(option);
+	}
 
     public ArrayList<EmployeeModel> checkDuplicateEmployees(ArrayList<EmployeeModel> employeeModelObjs,
                                                   ArrayList<Integer> employees) {
@@ -144,9 +154,10 @@ public class ProjectServiceImpl implements ProjectService {
      */    
     @Override
     public int createProject(String name, String details, Date startDate,
-                      String client, Date targetDate) {
+                      String client, Date targetDate, ArrayList<Integer> employeeIds) {
+        ArrayList<EmployeeModel> employees = employeeServiceObj.getSetOfEmployees(employeeIds);
         ProjectModel projectModelObj = new ProjectModel(name, details, startDate,
-                                                        client, targetDate);
+                                                        client, targetDate, employees);
         return projectDao.createProject(projectModelObj);
     }
 
@@ -160,15 +171,19 @@ public class ProjectServiceImpl implements ProjectService {
         ProjectModel projectModelObj = projectDao.getOneProject(projectId);
         ArrayList<EmployeeModel> employeeModelObjects = projectModelObj.getEmployees();
         ArrayList<Integer> employeeIds = new ArrayList<Integer>();
+        String employees = "";
         for(EmployeeModel employee : employeeModelObjects) {
             employeeIds.add(employee.getId());
         }
         ArrayList<EmployeeModel> employeeObjects = 
                 employeeServiceObj.getSetOfEmployees(employeeIds);
-        System.out.print("inside service");
-        System.out.print(employeeObjects);
         projectModelObj.setEmployees(employeeObjects);
-        return projectModelObj.toString();
+        if (!employeeObjects.isEmpty()) {
+            for (EmployeeModel employeeObj : employeeObjects) {
+                employees = employees + employeeObj.toString();
+            }
+		}
+        return (projectModelObj.toString() + employees);
     }
 
     /**
@@ -198,7 +213,6 @@ public class ProjectServiceImpl implements ProjectService {
             for(EmployeeModel singleEmployee : employeeModelObjects) {
 				int employeeId = singleEmployee.getId();
 				EmployeeModel employeeModel = (employee.get(employeeId));
-            
                 employeeStrings = employeeStrings + employeeModel.toString();
             }
             projectString.add(project.toString() + employeeStrings + line) ;       

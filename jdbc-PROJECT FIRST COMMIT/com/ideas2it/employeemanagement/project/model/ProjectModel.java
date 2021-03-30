@@ -18,6 +18,8 @@ public class ProjectModel {
     private String client;
     private Date targetDate;
     private ArrayList<EmployeeModel> employees;
+
+    public ProjectModel() {};
     
     public ProjectModel(String name, String details, Date startDate, String client, Date targetDate) {
         this.name = name;
@@ -94,12 +96,7 @@ public class ProjectModel {
     }
 
     public String toString() {
-     //   String employee = "";
-     //   for(EmployeeModel i :employees) {
-      //      employee = employee + i.toStringProject() + "\n";
-    //    }      
-
-            
+             
         return "Project Id      : " + id 
                + "\nProject name    : " + name
                + "\nProject details : " + details

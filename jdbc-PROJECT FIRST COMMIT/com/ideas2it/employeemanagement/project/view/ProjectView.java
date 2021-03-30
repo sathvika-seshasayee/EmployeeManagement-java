@@ -21,7 +21,7 @@ public class ProjectView {
                                 + " Project Database?\n1. Create Project"
                                 + "\n2. Display one Project details "
                                 + "\n3. Display All Projects "
-                                + " details \n4. Update Employee \n5. Delete Employee"
+                                + " details \n4. Update Project \n5. Delete Project"
                                 + "\n6. Restore Project \n7. Exit\n";
     static final String updateQuestion = "\n1. Project Name \n2. Project Details "
             + "\n3. Start date \n4. Client  \n5. End date. \n6. Assign Employees \n7. Exit ";
@@ -77,7 +77,7 @@ public class ProjectView {
         String client = getProject("client");
         ArrayList<Integer> employees = getEmployees();
         Date targetDate = getDate("target");
-        int projectId = controllerObj.createProject(name, details, startDate, client, targetDate);
+        int projectId = controllerObj.createProject(name, details, startDate, client, targetDate, employees);
         if (0 != projectId) {
             System.out.println("Project created sucessfully \nID of project is " + projectId);
         } else {
@@ -187,23 +187,43 @@ public class ProjectView {
     public ArrayList<Integer> getEmployees() {
         int employeeId = 0;
         String option = "";
+        boolean displayAllStatus = displayAllEmployees("active");
         ArrayList<Integer> employeeIds = new ArrayList<Integer>();
-        do {
-            System.out.print("Enter the id of the employee");
-            employeeId = scanner.nextInt();
-            scanner.skip(Pattern.compile("[\r\n]{2}")); 
-            if(!controllerObj.checkEmployeeId(employeeId)) {
-                System.out.print("Employee id does not exist");
-            } else {
-                employeeIds.add(employeeId);
-            }
-            System.out.print("Do you want to enter another id ? y/n ");
-            option = scanner.nextLine();
-        }while(option.equals("y"));
+        if(displayAllStatus) {
+            do {
+                System.out.print("Enter the id of the employee  :  ");
+                employeeId = scanner.nextInt();
+                scanner.skip(Pattern.compile("[\r\n]{2}")); 
+                if(!controllerObj.checkEmployeeId(employeeId)) {
+                    System.out.print("Employee id does not exist");
+                } else {
+                    employeeIds.add(employeeId);
+                }
+                System.out.print("Do you want to enter another id ? y/n   :  ");
+                option = scanner.nextLine();
+            }while(option.equals("y"));
+        } else {
+            System.out.println("No employees to assign");
+        }
         return employeeIds;
     }
 
-        
+    private boolean displayAllEmployees(String option) {
+       boolean displayAllStatus = false;
+        ArrayList<String> employeeDetails = 
+                controllerObj.displayAllEmployees(option);
+        if(employeeDetails != null) {
+            displayAllStatus = true;
+        Iterator<String> employee = employeeDetails.iterator();
+        while(employee.hasNext()) { 
+            System.out.println(employee.next());
+        }
+        System.out.println("--------------End of list---------------");
+        } else {
+          System.out.println("No employee records to display");
+        }
+        return displayAllStatus;
+    }         
 
     /**
      * This method deletes a project

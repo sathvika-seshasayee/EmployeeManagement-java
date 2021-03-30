@@ -229,7 +229,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
      */     
     @Override 
     public boolean restoreEmployee(int employeeId) {
-		DataBaseConnection dataBaseConnection = 
+	DataBaseConnection dataBaseConnection = 
 	        DataBaseConnection.getInstance();
         Connection connection = dataBaseConnection.mysqlConnection();
         int restoreEmployeeStatus = 0; 
@@ -240,7 +240,6 @@ public class EmployeeDaoImpl implements EmployeeDao {
         prepareStatement.setInt(1, employeeId);
         restoreEmployeeStatus = prepareStatement.executeUpdate();
         prepareStatement.close();
-        System.out.println(restoreEmployeeStatus);
         if(1 == restoreEmployeeStatus) {
       
             prepareStatement = 

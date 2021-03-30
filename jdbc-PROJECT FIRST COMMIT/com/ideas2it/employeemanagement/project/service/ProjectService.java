@@ -48,7 +48,7 @@ public interface ProjectService {
      * @return id of the project
      */
     int createProject(String name, String details, Date startDate,
-                      String client, Date targetDate);
+                      String client, Date targetDate, ArrayList<Integer> employees);
 
     /**
      * Converts one project details from dao into string.
