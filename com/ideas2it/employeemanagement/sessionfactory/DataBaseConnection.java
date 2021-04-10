@@ -30,7 +30,7 @@ public class DataBaseConnection {
                 sessionFactory = configuration.configure("resources/hibernate/properties/hibernate.cfg.xml").buildSessionFactory();
             }
         } catch (Exception ex) {
-          ex.printStackTrace();
+            ex.printStackTrace();
         }
         return sessionFactory;
     }
