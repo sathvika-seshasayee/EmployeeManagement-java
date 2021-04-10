@@ -19,7 +19,7 @@ public interface ProjectDao {
      * @param projectId id of the project
      * @return true if id is present in database, false otherwise
      */     
-    Project checkProjectId(int projectId);
+    boolean checkProjectId(int projectId, boolean isDeleted);
 
     /**
      * Passes project details for updation.

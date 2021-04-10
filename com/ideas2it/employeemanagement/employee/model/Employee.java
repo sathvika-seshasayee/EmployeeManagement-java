@@ -2,6 +2,7 @@ package com.ideas2it.employeemanagement.employee.model;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.ideas2it.employeemanagement.employee.model.Address;
 import com.ideas2it.employeemanagement.project.model.Project;
@@ -21,14 +22,14 @@ public class Employee {
     private Date dob;           
     private long phoneNumber;
     private boolean isDeleted;
-    private List<Address> addresses;
+    private Set<Address> addresses;
     private List<Project> projects;
 
     public Employee () {};
     
     public Employee (String name, String designation, double salary, 
                           Date date, long phoneNumber, 
-                          List<Address> addresses) {
+                          Set<Address> addresses) {
         this.name = name;
         this.designation = designation;
         this.salary = salary;
@@ -74,7 +75,7 @@ public class Employee {
          this.phoneNumber = phoneNumber;
     }
 
-    public void setAddresses(List<Address> address) {
+    public void setAddresses(Set<Address> address) {
          this.addresses = address;
     }
   
@@ -106,7 +107,7 @@ public class Employee {
         return this.phoneNumber;
     }
 
-    public List<Address> getAddresses() {
+    public Set<Address> getAddresses() {
         return this.addresses;
     }
 

@@ -34,15 +34,7 @@ public class ProjectServiceImpl implements ProjectService {
      */    
     @Override
     public boolean checkProjectId(int projectId, boolean isDeleted) {
-        Project project = new Project(projectId);
-        boolean projectIsPresent = false;
-
-        if(null != project) {
-            projectIsPresent = isDeleted 
-                               ? (true == project.getIsDeleted())
-                               : (false == project.getIsDeleted());
-        }
-        return projectIsPresent;
+        return projectDao.checkProjectId(projectId, isDeleted);
     }
 
     /**
@@ -54,6 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean deleteProject(int projectId) {
         Project project = new Project(projectId);
         project.setIsDeleted(true);
+        project.setEmployees(null);
         return projectDao.updateProject(project);
     }
 

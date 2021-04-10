@@ -37,8 +37,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                               double salary, Date date, 
                               long mobileNumber, 
                               List<List<String>> addresses) {
-        List<Address> newAddresses = 
-                new ArrayList<Address>();
+        Set<Address> newAddresses = 
+                new HashSet<Address>();
         if(null != addresses){
             for(List<String> address : addresses) {
                 Address singleAddress = getAddressObj(address);       
@@ -69,8 +69,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                               double salary, Date dob, long phoneNumber, 
                               List<List<String>> addresses, int addressId,
                               int projectId) {
-        List<Address> employeeAddressObjs = 
-                new ArrayList<Address>();
+        Set<Address> employeeAddressObjs = 
+                new HashSet<Address>();
         Employee employee = new Employee(employeeId);
         employee = employeeDao.getSingleEmployee(employeeId);
         ProjectServiceImpl projectService = new ProjectServiceImpl();
@@ -117,28 +117,29 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setProjects(projects);
         }
         
-        if(null != addresses){
+        if(null != addresses) {
+            if(!employee.getAddresses().isEmpty()) {
+                    employeeAddressObjs = employee.getAddresses();
+            }
             for(List<String> address : addresses) {
                 Address employeeAddressObj = getAddressObj(address);       
                 employeeAddressObjs.add(employeeAddressObj);
                 employee.setAddresses(employeeAddressObjs);
             }
-        } else {
-            employeeAddressObjs = null;
         }
+
         return employeeDao.updateEmployee(employee);
     } 
 
-
     public Address getAddressObj(List<String> address) {
-    boolean isPermanantaddress = ((address.get(5)).equals("permanant"));
-    Address employeeAddressObj = new Address(address.get(0), 
+        boolean isPermanantaddress = ((address.get(5)).equals("permanant"));
+        Address employeeAddressObj = new Address(address.get(0), 
                                                       address.get(1), 
                                                       address.get(2), 
                                                       address.get(3), 
                                                       address.get(4), 
                                                       isPermanantaddress);
-    return employeeAddressObj;
+        return employeeAddressObj;
     }
 
     /**
@@ -155,12 +156,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         ProjectServiceImpl projectService = new ProjectServiceImpl();
         Employee employee = employeeDao.getSingleEmployee(employeeId);
         List<Project> projects = employee.getProjects();
-            for(Project project : projects) {
-                 if(projectId == project.getId()) {
-                     projects.remove(project);
-                     break;
-                 }
-             } 
+        for(Project project : projects) {
+            if(projectId == project.getId()) {
+                projects.remove(project);
+                break;
+            }
+        } 
         employee.setProjects(projects);
         return employeeDao.updateEmployee(employee);
     }
@@ -207,12 +208,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee = 
                 employeeDao.getSingleEmployee(employeeId);
         System.out.println(employee);
-        List<Address> addresses = employee.getAddresses();
+        Set<Address> addresses = employee.getAddresses();
         Map<Integer, String> address = new TreeMap<Integer, String>();
-        for (int i = 0; i < addresses.size(); i++) {
-            int addressId = (addresses.get(i)).getId();
+        for (Address singleAddress : addresses) {
+            int addressId = singleAddress.getId();
             address.put(addressId, 
-                        (addresses.get(i)).toString());  
+                        singleAddress.toString());  
         }
         return address;
     }
@@ -224,7 +225,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         String line = "----------------------------";
         if(null != employees) {
             for(Employee employee : employees) {
-                Set<Address> addresses = new HashSet<Address>(employee.getAddresses());
+                Set<Address> addresses = employee.getAddresses();
                 if(!addresses.isEmpty()) {
                 for(Address address: addresses) {
                     if(true == address.getIsDeleted()) {
@@ -232,7 +233,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                     }
                   }
                 }
-                employee.setAddresses(new ArrayList(addresses));
+                employee.setAddresses(addresses);
                 employeess.add(employee);
          }
       }
@@ -297,14 +298,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */ 
     @Override 
     public boolean checkEmployeeID(int employeeId, boolean isDeleted) {
-        Employee employee = employeeDao.checkEmployeeID(employeeId);
-        boolean idPresent = false;
-        if(null != employee) {
-            idPresent = isDeleted 
-                        ? (true == employee.getIsDeleted())
-                        : (false == employee.getIsDeleted());
-        }
-        return idPresent;
+        return employeeDao.checkEmployeeId(employeeId, isDeleted);
     }
  
     /**

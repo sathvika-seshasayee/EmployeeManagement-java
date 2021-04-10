@@ -17,13 +17,7 @@ import com.ideas2it.employeemanagement.project.model.Project;
  * @since 2021-03-16
  */
 public interface EmployeeDao {
-    /**
-     * This method gets project ids for an employee
-     * @param employeeId id of employee
-     * @return list of projects with ids
-     */
-    List<Project> getProjects(int employeeId);
-
+    
     /**
      * This method gets set of employee details.
      * @param employeeIds Ids of employees
@@ -66,6 +60,6 @@ public interface EmployeeDao {
      * @param isDeleted status of employees, active or deleted
      * @return false if upation was sucessful.
      */
-    Employee checkEmployeeID(int employeeId);
+    boolean checkEmployeeId(int employeeId, boolean isDeleted);
 
 }

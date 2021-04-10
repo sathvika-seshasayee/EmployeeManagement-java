@@ -3,6 +3,7 @@ package com.ideas2it.employeemanagement.project.dao.impl;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import java.sql.Date;
@@ -21,7 +22,6 @@ import com.ideas2it.employeemanagement.sessionfactory.DataBaseConnection;
  * @author Sathvika Seshasayee
  */
 public class ProjectDaoImpl implements ProjectDao {
-
     /**
   
      * {@inheritdoc}
@@ -30,10 +30,11 @@ public class ProjectDaoImpl implements ProjectDao {
     @Override
     public int createProject(Project project) {
         int projectId = 0;
-        Session session = DataBaseConnection.getSessionFactory().openSession();
+        Session session = null;
         Transaction transaction = null;
         
         try {
+            session = DataBaseConnection.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             projectId = (Integer) session.save(project);
             transaction.commit();
@@ -41,7 +42,12 @@ public class ProjectDaoImpl implements ProjectDao {
             ex.printStackTrace();
             transaction.rollback();
         } finally {
-            session.close();
+            if(null != session) {
+                session.close();
+            }
+            if(null != transaction) {
+                transaction.close();
+            }
         }
         return projectId;
     }
@@ -53,21 +59,22 @@ public class ProjectDaoImpl implements ProjectDao {
      */    
     @Override
     public List<Project> getSetOfProjects(List<Integer> projectIds) {
-        Session session = DataBaseConnection.getSessionFactory().openSession();
-        Transaction transaction = null;
+        Session session = null;
         List<Project> projects = new ArrayList<Project>();
 
          try {
+            session = DataBaseConnection.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             Criteria criteria = session.createCriteria(Project.class);
             criteria.add(Restrictions.like("isDeleted", false));
             criteria.add(Restrictions.in("id", projectIds));
             projects = criteria.list();
-            transaction.commit();
         } catch (HibernateException e) {
             e.printStackTrace();
         } finally {
-           session.close();
+            if(null != session) {
+                session.close();
+            }
         }
         return projects;
     }   
@@ -79,11 +86,12 @@ public class ProjectDaoImpl implements ProjectDao {
      */    
     @Override
     public boolean updateProject(Project project) {
-        Session session = DataBaseConnection.getSessionFactory().openSession();
+        Session session = null;
         Transaction transaction = null;
         boolean updateStatus = false;
         
         try {
+            session = DataBaseConnection.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             session.update(project);
             transaction.commit();
@@ -91,7 +99,12 @@ public class ProjectDaoImpl implements ProjectDao {
         } catch (HibernateException e) {
             e.printStackTrace();
         } finally {
-           session.close();
+            if(null != session) {
+                session.close();
+            }
+            if(null != transaction) {
+                transaction.close();
+            }
         }
         return updateStatus;
     }                  
@@ -102,23 +115,27 @@ public class ProjectDaoImpl implements ProjectDao {
     
      */    
     @Override
-    public Project checkProjectId(int projectId) {
+    public boolean checkProjectId(int projectId, boolean isDeleted) {
         Session session = null;
         Transaction transaction = null;
-        Project project = null;
+        List projectid = null;
+        String checkProject = "select id FROM Project  where id = :projectId and isDeleted = :isDeleted";
 
         try {
             session = DataBaseConnection.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
-            project = (Project) session.get(Project.class, projectId);
-            transaction.commit();
+            Query query = session.createQuery(checkProject);
+            query.setParameter("projectId", projectId);
+            query.setParameter("isDeleted", isDeleted);
+            projectid = query.list();
         } catch(HibernateException e) {
             e.printStackTrace();
             transaction.rollback();
         } finally {
-            session.close();
+            if(null != session) {
+                session.close();
+            }
         }
-        return project;
+        return (!projectid.isEmpty());
     }
 
     /**
@@ -128,16 +145,19 @@ public class ProjectDaoImpl implements ProjectDao {
      */    
     @Override
     public Project getOneProject(int projectId) {
-        Session session = DataBaseConnection.getSessionFactory().openSession();
+        Session session = null;
         Project project = null;       
 
         try {
+           session = DataBaseConnection.getSessionFactory().openSession();
            project = (Project) session.get(Project.class, projectId);
            for(Employee employee : project.getEmployees()) {}
         } catch(HibernateException e) {
             e.printStackTrace();
         } finally {
-           session.close();
+            if(null != session) {
+                session.close();
+            }
         }
         return project;
     }
@@ -149,10 +169,11 @@ public class ProjectDaoImpl implements ProjectDao {
      */    
     @Override
     public List<Project> getAllProjects(boolean isDeleted) {
-        Session session = DataBaseConnection.getSessionFactory().openSession();
+        Session session = null;
         List<Project> projects = new ArrayList<Project>();
         
         try {
+            session = DataBaseConnection.getSessionFactory().openSession();
             Criteria criteria = session.createCriteria(Project.class);
             criteria.add(Restrictions.like("isDeleted", isDeleted));
             projects = criteria.list();
@@ -162,7 +183,9 @@ public class ProjectDaoImpl implements ProjectDao {
         } catch (HibernateException e) {
             e.printStackTrace();
         } finally {
-           session.close();
+            if(null != session) {
+                session.close();
+            }
         }
         return projects;
     }                 
