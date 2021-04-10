@@ -1,11 +1,10 @@
-<<<<<<< HEAD
 package com.ideas2it.employeemanagement.project.service;
 
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.List;
 
-import com.ideas2it.employeemanagement.project.model.ProjectModel;
-import com.ideas2it.employeemanagement.employee.model.EmployeeModel;
+import com.ideas2it.employeemanagement.project.model.Project;
+import com.ideas2it.employeemanagement.employee.model.Employee;
 
 /** 
  * contains business logics for Project database.
@@ -17,133 +16,108 @@ public interface ProjectService {
     /**
      * Passes id to dao.
      * @param projectId id of the project
+     * @param isDeleted project deleted or active status
      * @return true if id is present in database, false otherwise
      */
-    boolean checkProjectId(int projectId);
+    boolean checkProjectId(int projectId, boolean isDeleted);
 
     /**
-     * Passes project id for restoring from database
+     * This method passes employee and project details 
+     * to un assigns employees from a project.
+     * @param employeeIds ids of employees
      * @param projectId id of project
-     * @return true if restores
+     * @return true if un assigned
+     */
+    boolean unAssignEmployees(List<Integer> employeeIds, int projectId);
+
+    /**
+     * Validates and converts into date format.
+     * @param date date entered by user.
+     * @return validated date
+     */
+    Date validateDate(String date);
+
+    /**
+     * This method checks if id of employee is present in database
+     * @param employeeId is id of employee
+     * @retuen true if employee id if present in database
+     */
+    public boolean checkEmployeeId(int employeeId);
+
+    /**
+     * Passes id to dao for deletion.
+     * @param projectId id of the project
+     * @return true if id is present in database, false otherwise
+     */
+    boolean deleteProject(int projectId); 
+
+    /**
+     * Passes project object to dao.
+     * @param name name of the project
+     * @param startDate start date of project
+     * @param client client organization name
+     * @return id of the project
+     */
+    int createProject(String name, String details, Date startDate,
+                      String client, Date targetDate, List<Integer> employees);
+
+    /**
+     * Converts one project details from dao into string.
+     * @param projectId id of project
+     * @return project details.
+     */
+    String getOneProject(int projectId);
+
+    /**
+     * Passes project id to dao for restoration.
+     * @param projectId id of project
+     * @return true if restored sucessfully, false otherwise.
      */
     boolean restoreProject(int projectId);
 
     /**
-     * Validates and converts into date format.
-     * @param date date entered by user.
-     * @return validated date
-     */
-    Date validateDate(String date);
-
-     /**
-     * Passes project id for deletion from database
-     * @param projectId id of project
-     * @return true if deleted
-     */
-    boolean deleteProject(int projectId);
-
-    /**
-     * Passes project object to dao.
-     * @param name name of the project
-     * @param startDate start date of project
-     * @param client client organization name
-     * @return id of the project
-     */
-    int createProject(String name, String details, Date startDate,
-                      String client, Date targetDate);
-
-    /**
-     * Converts one project details from dao into string.
-     * @param projectId id of project
-     * @return project details.
-     */
-    String getOneProject(int projectId);
-
-    /**
      * Converts all project details from dao into strings.
-     * @param option for delted or active projects
      * @return all project details
      */
-    ArrayList<String> getAllProjects(String option); 
-
+    List<String> getAllProjects(boolean isDeleted); 
+ 
     /**
-     * Updates all project details.
-     * @return true if updated sucessfully
-     */
-    boolean updateProject(int projectId, String name, String details, Date startDate, 
-                          String client, Date targetDate, ArrayList<Integer> employees);
-
-    /**
-     * Checks for duplicate employee ids.
-     * @return employee ids without duplicates
+     * Gets all employee details.
+     * @return all employee details
      */ 
-    ArrayList<Integer> checkForDuplicates(ArrayList<Integer> employees, 
-            ArrayList<EmployeeModel> employeeModelObjs);
-   
-}
-
-
-=======
-package com.ideas2it.employeemanagement.project.service;
-
-import java.sql.Date;
-import java.util.ArrayList;
-
-import com.ideas2it.employeemanagement.project.model.ProjectModel;
-
-/** 
- * contains business logics for Project database.
- * @author Sathvika seshasayee
- * @version 1.0
- * @since 2021-03-24
- */
-public interface ProjectService {
-    /**
-     * Passes id to dao.
-     * @param projectId id of the project
-     * @return true if id is present in database, false otherwise
-     */
-    boolean checkProjectId(int projectId);
+    String getAllEmployees(boolean isDeleted);
 
     /**
-     * Validates and converts into date format.
-     * @param date date entered by user.
-     * @return validated date
-     */
-    Date validateDate(String date);
+     * Checks for duplicates of employee id entered by user.
+     * @return all employee details
+     */ 
+    List<Employee> checkDuplicateEmployees(List<Employee> employeeModelObjs,
+                                           List<Integer> employees);
 
     /**
-     * Passes project object to dao.
-     * @param name name of the project
-     * @param startDate start date of project
-     * @param client client organization name
-     * @return id of the project
-     */
-    int createProject(String name, String details, Date startDate,
-                      String client, Date targetDate);
-
-    /**
-     * Converts one project details from dao into string.
-     * @param projectId id of project
+     * Gets only projects details
      * @return project details.
-     */
-    String getOneProject(int projectId);
+     */ 
+    String getOnlyProjects(boolean isDeleted);
 
     /**
-     * Converts all project details from dao into strings.
-     * @return all project details
+     * Gets set of projects.
+     * @return set of projects details.
      */
-    ArrayList<String> getAllProjects(); 
+    List<Project> getSetOfProjects(List<Integer> projectIds);
+
+    /**
+     * Gets set of employee details of a project
+     * @return Employee details
+     */
+    String getSetOfEmployees(int projectId); 
 
     /**
      * Updates all project details.
      * @return true if updated sucessfully
      */
-    boolean updateProject(projectId, newName,
-                                newDetails, newStartDate, newClient, newTargetDate, employees);
-    
+    boolean updateProject(int projectId, String name,
+                          String details, Date startDate, String client,
+                          Date targetDate, List<Integer> employees);
 
 }
-
-
->>>>>>> 665f890bb8669ac259479e01d25d579ed7507da3

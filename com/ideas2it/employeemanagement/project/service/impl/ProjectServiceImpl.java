@@ -1,19 +1,20 @@
-<<<<<<< HEAD
 package com.ideas2it.employeemanagement.project.service.impl;
 
-import java.sql.Date;
-import java.util.regex.Pattern;
 import java.util.ArrayList;
-import java.util.Map;
+import java.sql.Date;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
 
-import com.ideas2it.employeemanagement.project.dao.impl.ProjectDaoImpl;
-import com.ideas2it.employeemanagement.project.model.ProjectModel;
-import com.ideas2it.employeemanagement.employee.model.EmployeeModel;
-import com.ideas2it.employeemanagement.project.service.ProjectService;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.Set;
+
+import com.ideas2it.employeemanagement.employee.model.Employee;
 import com.ideas2it.employeemanagement.employee.service.impl.EmployeeServiceImpl;
+import com.ideas2it.employeemanagement.project.dao.impl.ProjectDaoImpl;
+import com.ideas2it.employeemanagement.project.model.Project;
+import com.ideas2it.employeemanagement.project.service.ProjectService;
 
 /**
  * Contains logics behind displayed outputs.
@@ -22,7 +23,7 @@ import com.ideas2it.employeemanagement.employee.service.impl.EmployeeServiceImpl
  * @author Sathvika Seshasayee
  */
 public class ProjectServiceImpl implements ProjectService {
-    EmployeeServiceImpl employeeServiceObj = new EmployeeServiceImpl();
+    EmployeeServiceImpl employeeService = new EmployeeServiceImpl();
     ProjectDaoImpl projectDao = new ProjectDaoImpl();
 
     /**
@@ -31,9 +32,23 @@ public class ProjectServiceImpl implements ProjectService {
     
      */    
     @Override
-    public boolean checkProjectId(int projectId) {
-        return projectDao.checkProjectId(projectId);
+    public boolean checkProjectId(int projectId, boolean isDeleted) {
+        return projectDao.checkProjectId(projectId, isDeleted);
     }
+
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
+    public boolean deleteProject(int projectId) {
+        Project project = new Project(projectId);
+        project.setIsDeleted(true);
+        project.setEmployees(null);
+        return projectDao.updateProject(project);
+    }
+
 
     /**
   
@@ -43,11 +58,14 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Date validateDate(String date) {
         Date projectDate = null;
-        boolean isDate = false;
-        try {
-            isDate = Pattern.matches("(?:1?[9]|(2)[0])[0-9][0-9][-](?:0?[1-9]|(1)[02])[-](?:[012]?[0-9]|(3)[01])", date);
-            projectDate = isDate ? Date.valueOf(date) : null;
-            } catch (IllegalArgumentException e) {}
+
+        try {  
+            projectDate = Pattern.matches("(?:1?[9]|(2)[0])[0-9][0-9][-]"
+                    + "(?:0?[1-9]|(1)[02])[-](?:[012]?[0-9]|(3)[01])", date) 
+                    ? Date.valueOf(date) : null;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
         return projectDate;
     }
 
@@ -58,35 +76,75 @@ public class ProjectServiceImpl implements ProjectService {
      */    
     @Override
     public boolean updateProject(int projectId, String name,
-                                String details, Date startDate, String client,
-                                Date targetDate, ArrayList<Integer> employees) {
-        ProjectModel projectModelObj = projectDao.getOneProject(projectId);
-        ArrayList<Integer> Ids = new ArrayList<Integer>();
-        if("" != name) {
-            projectModelObj.setName(name);
-        }
-        
-        if("" != details) {
-            projectModelObj.setDetails(details);
-        }
- 
-        if("" != client) {
-            projectModelObj.setDetails(client);
-        }
-    
-        if(null != startDate) {
-            projectModelObj.setStartDate(startDate);
-        }
-    
-        if(null != targetDate) {
-            projectModelObj.setTargetDate(targetDate);
+                                 String details, Date startDate, String client, 
+                                 Date targetDate, List<Integer> employeeIds) {
+        Project project = projectDao.getOneProject(projectId);
+        List<Employee> employees = new ArrayList<Employee>();
+        List<Employee> newEmployees = new ArrayList<Employee>();
+
+        if("" != name) { 
+            project.setName(name);
         }
 
-        if(!employees.isEmpty()) {
-            employees = checkForDuplicates(employees, projectModelObj.getEmployees());
-            projectModelObj.setEmployees(employeeServiceObj.getSetOfEmployees(employees));
+        if("" != details) { 
+            project.setDetails(details);
         }
-        return projectDao.updateProject(projectModelObj);
+
+        if(null != startDate) { 
+            project.setStartDate(startDate);
+        }
+        
+        if(null != targetDate) { 
+            project.setStartDate(startDate);
+        }
+
+        if("" != client) { 
+            project.setDetails(client);
+        }
+
+        if(!employeeIds.isEmpty() && (project.getEmployees()).isEmpty()) {
+	    project.setEmployees(employeeService.getSetOfEmployees(employeeIds));
+	} else if(!employeeIds.isEmpty()) {
+             employees = checkDuplicateEmployees(project.getEmployees(), employeeIds);
+             employees.addAll(employeeService.getSetOfEmployees(employeeIds));
+             project.setEmployees(employees);
+        } 
+        return projectDao.updateProject(project);
+        }  
+
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
+    public boolean unAssignEmployees(List<Integer> employeeIds, int projectId) {
+        Project project = projectDao.getOneProject(projectId);
+        Set<Employee> employeeSet = new HashSet<Employee>();
+        if(null != project.getEmployees()) {
+            for(Employee employee : project.getEmployees()) {
+                for(Integer employeeId : employeeIds) {
+                    if(employeeId == employee.getId()) {
+                        employeeSet.add(employee);
+                    }
+                }
+            }
+         }
+         List<Employee> employees = new ArrayList<Employee>(employeeSet);
+         List<Employee> assignedEmployees = project.getEmployees();
+         assignedEmployees.removeAll(employees);
+         project.setEmployees(assignedEmployees);
+         return projectDao.updateProject(project);
+    }
+	
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override	
+    public String getAllEmployees(boolean isDeleted) {
+	return employeeService.getAllEmployees(isDeleted);
     }
 
     /**
@@ -95,81 +153,44 @@ public class ProjectServiceImpl implements ProjectService {
     
      */    
     @Override
-    public ArrayList<Integer> checkForDuplicates(ArrayList<Integer> employees, 
-                                      ArrayList<EmployeeModel> employeeModelObjs) {
-        Set<Integer> idSetOne = new HashSet<Integer>(employees);
-        ArrayList<Integer> employeeIds = getEmployeeIds(employeeModelObjs);
-        Set<Integer> idSetTwo = new HashSet<Integer>(employeeIds);
-        if(!idSetTwo.isEmpty()) {
+    public List<Employee> checkDuplicateEmployees(List<Employee> employees,
+                                                  List<Integer> newAssignees) {
+        List<Integer> employeeIds = new ArrayList<Integer>();
+
+	    if(!employees.isEmpty()) {
+
+                for(Employee employee : employees) {
+                    employeeIds.add(employee.getId());
+                }
+            Set<Integer> idSetOne = new HashSet<Integer>(newAssignees);
+            Set<Integer> idSetTwo = new HashSet<Integer>(employeeIds);
             idSetOne.removeAll(idSetTwo);
-        }
-        employeeIds = new ArrayList<Integer>(idSetOne);
-        return employeeIds;
+            employeeIds = new ArrayList<Integer>(idSetOne);
+        } 
+        return employeeService.getSetOfEmployees(employeeIds);
     }
-           
-    public ArrayList<Integer> getEmployeeIds(ArrayList<EmployeeModel> employeeModelObjs) {
-        ArrayList<Integer> employeeIds = new ArrayList<Integer>();
-        for(EmployeeModel employeeModel : employeeModelObjs) {
-            employeeIds.add(employeeModel.getId());
-        }
-        return employeeIds;
-    }
-                 
-    public boolean checkEmployeeId(int employeeId) {
-        return employeeServiceObj.checkEmployeeID(employeeId);
+
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
+    public List<Project> getSetOfProjects(List<Integer> projectIds) {
+        return projectDao.getSetOfProjects(projectIds);
     }
         
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public int createProject(String name, String details, Date startDate,
-                      String client, Date targetDate) {
-        ProjectModel projectModelObj = new ProjectModel(name, details, startDate,
-                                                        client, targetDate);
-        return projectDao.createProject(projectModelObj);
-    }
-  
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public boolean deleteProject(int projectId) {
-        return projectDao.deleteProject(projectId);
-    }
- 
-    /**
+
+   /**
   
      * {@inheritdoc}
     
      */    
     @Override
     public boolean restoreProject(int projectId) {
-        return projectDao.restoreProject(projectId);
-    }
-       
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public String getOneProject(int projectId) {
-        ProjectModel projectModelObj = projectDao.getOneProject(projectId);
-        ArrayList<EmployeeModel> employeeModelObjects = projectModelObj.getEmployees();
-        ArrayList<Integer> employeeIds = getEmployeeIds(employeeModelObjects);
-        ArrayList<EmployeeModel> employeeObjects = 
-                employeeServiceObj.getSetOfEmployees(employeeIds);
-        projectModelObj.setEmployees(employeeObjects);
-        String employee = "";
-        for(EmployeeModel employeeObj : employeeObjects) {
-            employee = employee + employeeObj.toString();
-        }
-        return (projectModelObj.toString() + employee);
+        Project project = new Project(projectId);
+        project.setIsDeleted(false);
+        return projectDao.updateProject(project);
     }
 
     /**
@@ -178,103 +199,9 @@ public class ProjectServiceImpl implements ProjectService {
     
      */    
     @Override
-    public ArrayList<String> getAllProjects(String option) {
-        String line = "------------------------\n";
-        ArrayList<ProjectModel> projects = projectDao.getAllProjects(option);
-        ArrayList<Integer> employeeIds = new ArrayList<Integer>();
-        Map<Integer, EmployeeModel> employee = new HashMap<Integer, EmployeeModel>();
-        ArrayList<EmployeeModel> allEmployees = employeeServiceObj.getAllEmployeesModel();
-        ArrayList<String> projectString = 
-                  new ArrayList<String>();
-        for(EmployeeModel employeeModelObj : allEmployees) {
-            employee.put(employeeModelObj.getId(), employeeModelObj);
-        }
-        for(ProjectModel project : projects) {
-            ArrayList<EmployeeModel> employeeModelObjects = 
-                                     project.getEmployees();
-            String employeeStrings = "" ;
-            for(EmployeeModel singleEmployee : employeeModelObjects) {
-	        int employeeId = singleEmployee.getId();
-	        EmployeeModel employeeModel = (employee.get(employeeId));
-                employeeStrings = employeeStrings + employeeModel.toString();
-            }
-            projectString.add(project.toString() + employeeStrings + line) ;       
-        }      	
-        return projectString;
+    public boolean checkEmployeeId(int employeeId) {
+        return employeeService.checkEmployeeID(employeeId, false);
     }
-    
-
-
-}
-
-
-
-
-
-
-=======
-package com.ideas2it.employeemanagement.project.service.impl;
-
-import java.sql.Date;
-import java.util.regex.Pattern;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-
-import com.ideas2it.employeemanagement.project.dao.impl.ProjectDaoImpl;
-import com.ideas2it.employeemanagement.project.model.ProjectModel;
-import com.ideas2it.employeemanagement.employee.model.EmployeeModel;
-import com.ideas2it.employeemanagement.project.service.ProjectService;
-import com.ideas2it.employeemanagement.employee.service.impl.EmployeeServiceImpl;
-
-/**
- * Contains logics behind displayed outputs.
- * 
- * @version 1.0 24 Mar 2021
- * @author Sathvika Seshasayee
- */
-public class ProjectServiceImpl implements ProjectService {
-    EmployeeServiceImpl employeeServiceObj = new EmployeeServiceImpl();
-    ProjectDaoImpl projectDao = new ProjectDaoImpl();
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public boolean checkProjectId(int projectId) {
-        return projectDao.checkProjectId(projectId);
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public Date validateDate(String date) {
-        Date projectDate = null;
-        boolean isDate = false;
-        try {
-            isDate = Pattern.matches("(?:1?[9]|(2)[0])[0-9][0-9][-](?:0?[1-9]|(1)[02])[-](?:[012]?[0-9]|(3)[01])", date);
-            projectDate = isDate ? Date.valueOf(date) : null;
-            } catch (IllegalArgumentException e) {}
-        return projectDate;
-    }
-
-    /**
-  
-     * {@inheritdoc}
-    
-     */    
-    @Override
-    public boolean updateProject(projectId, newName,
-                                newDetails, newStartDate, newClient, newTargetDate, employees) {
-        ProjectModel employeeModelObj = employeeDao.getSingleEmployee(employeeId);
-        employeeModelObj.setId(employeeId);
-        if("" != newName) {
-        
 
     /**
   
@@ -283,10 +210,41 @@ public class ProjectServiceImpl implements ProjectService {
      */    
     @Override
     public int createProject(String name, String details, Date startDate,
-                      String client, Date targetDate) {
-        ProjectModel projectModelObj = new ProjectModel(name, details, startDate,
-                                                        client, targetDate);
-        return projectDao.createProject(projectModelObj);
+                      String client, Date targetDate, List<Integer> employeeIds) {
+        List<Employee> employees = new ArrayList<Employee>();
+
+        if(!employeeIds.isEmpty()) {
+            employees = employeeService.getSetOfEmployees(employeeIds);
+        }
+        Project project = new Project(name, details, startDate,
+                                      client, targetDate, employees);
+        return projectDao.createProject(project);
+    }
+
+    /**
+  
+     * {@inheritdoc}
+    
+     */    
+    @Override
+    public String getSetOfEmployees(int projectId) {
+        Project project = projectDao.getOneProject(projectId);
+        List<Employee> employees = project.getEmployees();
+        String employeeDetails = "";
+
+        for (Employee employee : employees) {
+                employeeDetails = employeeDetails + employee.toString();
+        }
+        return employeeDetails;
+    }
+
+    /**
+  
+     * {@inheritdoc}
+    
+     */ 
+    public Project getSingleProject(int projectId) {
+        return projectDao.getOneProject(projectId);
     }
 
     /**
@@ -296,16 +254,19 @@ public class ProjectServiceImpl implements ProjectService {
      */    
     @Override
     public String getOneProject(int projectId) {
-        ProjectModel projectModelObj = projectDao.getOneProject(projectId);
-        ArrayList<EmployeeModel> employeeModelObjects = projectModelObj.getEmployees();
-        ArrayList<Integer> employeeIds = new ArrayList<Integer>();
-        for(EmployeeModel employee : employeeModelObjects) {
-            employeeIds.add(employee.getId());
+        Project project = projectDao.getOneProject(projectId);
+        String projectDetails = "";
+        projectDetails += project.toString();
+
+	if(!project.getEmployees().isEmpty()) {
+            projectDetails += "\n Employees assigned   :  ";
+
+            for(Employee employee : project.getEmployees()) {
+                projectDetails += String.valueOf(employee.getId()) + "  ";
+            }
+            projectDetails += "\n";
         }
-        ArrayList<EmployeeModel> employeeObjects = 
-                employeeServiceObj.getSetOfEmployees(employeeIds);
-        projectModelObj.setEmployees(employeeObjects);
-        return projectModelObj.toString();
+        return projectDetails;
     }
 
     /**
@@ -314,43 +275,45 @@ public class ProjectServiceImpl implements ProjectService {
     
      */    
     @Override
-    public ArrayList<String> getAllProjects() {
-        String line = "------------------------\n";
-        ArrayList<ProjectModel> projects = projectDao.getAllProjects();
-        ArrayList<String> projectDetails = new ArrayList<String>();
-        ArrayList<Integer> employeeIds = new ArrayList<Integer>();
-        Map<Integer, EmployeeModel> employee = new HashMap<Integer, EmployeeModel>();
-        ArrayList<EmployeeModel> allEmployees = employeeServiceObj.getAllEmployeesModel();
-        ArrayList<String> projectString = 
-                  new ArrayList<String>();
-		
-        for(EmployeeModel i : allEmployees) {
-            employee.put(i.getId(), i);
-        }
-        for(int i = 0; i < projects.size(); i++) {
-            ProjectModel project = projects.get(i);
-            ArrayList<EmployeeModel> employeeModelObjects = 
-                                     project.getEmployees();
-            String employeeStrings = "" ;
-			System.out.println(employee.get(3));
-            for(EmployeeModel singleEmployee : employeeModelObjects) {
-				int employeeId = singleEmployee.getId();
-				EmployeeModel employeeModel = (employee.get(employeeId));
-            
-                employeeStrings = employeeStrings + employeeModel.toString();
-            }
-            projectString.add(project.toString() + employeeStrings + line) ;       
-        }      	
+    public String getOnlyProjects(boolean isDeleted) {
+        List<Project> projects = projectDao.getAllProjects(isDeleted);
+        String projectString = "";
+
+        for(Project project : projects) {
+            projectString = projectString + project.toString();
+        }  
         return projectString;
     }
+
+    /**
+  
+     * {@inheritdoc}
     
+     */    
+    @Override
+    public List<String> getAllProjects(boolean isDeleted) {
+        String line = "------------------------\n";
+        List<Project> projects = projectDao.getAllProjects(isDeleted);
+        List<String> projectDetails = new ArrayList<String>();
 
+	for(Project project : projects) {
+            List<Employee> employees = project.getEmployees();
+            List<Integer> employeeIds = new ArrayList<Integer>();
+            String employeeStrings = "" ;
 
+            if(null != employees) {
+
+                for(Employee singleEmployee : employees) {
+                    employeeIds.add(singleEmployee.getId());
+                }
+                employees = employeeService.getSetOfEmployees(employeeIds);
+
+                for(Employee singleEmployee : employees) {
+                    employeeStrings = employeeStrings + singleEmployee.toString();
+                }
+            }
+            projectDetails.add(project.toString() + employeeStrings + line) ;       
+        }      	
+        return projectDetails;
+    }
 }
-
-
-
-
-
-
->>>>>>> 665f890bb8669ac259479e01d25d579ed7507da3
