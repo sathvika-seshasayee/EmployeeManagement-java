@@ -7,8 +7,11 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Assign/Un Assign Employees</title>
-
-
+<c:if test = "${null != displayStatus}">
+<script>
+alert("${displayStatus}");
+</script>
+</c:if>
 </head>
 
 <style>

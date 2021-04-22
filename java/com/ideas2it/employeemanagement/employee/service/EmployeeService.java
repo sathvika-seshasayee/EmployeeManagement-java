@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ideas2it.employeemanagement.employee.model.Employee;
+import com.ideas2it.CustomException.EmployeeManagementException;
 import com.ideas2it.employeemanagement.employee.model.Address;
 
 /** 
@@ -25,51 +26,58 @@ public interface EmployeeService {
      * @param mobileNumber represents mobile number of employee
      * @param address represents list of addresses entered by user
      * @return employee id from database.
+     * @throws EmployeeManagementException 
      */
     int createEmployee(int employeeId, String name, String designation, double employeeSalary,
                        Date date, long mobileNumber, 
-                       List<List<String>> addresses);
+                       List<List<String>> addresses) throws EmployeeManagementException;
 
     /**
      * Gets list of project Ids assigned 
      * @param employeeId
      * @return List of project ids assigned to employee
+     * @throws EmployeeManagementException 
      */
-    List<String> getProjectsAssigned(int employeeId);
+    List<String> getProjectsAssigned(int employeeId) throws EmployeeManagementException;
 
     /**
      * Deleted one address for an employee
      * @param addressId id of address to be deleted
      * @param employeeId id of employee
+     * @throws EmployeeManagementException 
      */
-    boolean deleteOneAddress(int addressId, int employeeId);
+    boolean deleteOneAddress(int addressId, int employeeId) throws EmployeeManagementException;
  
     /**
      * Adds one or more address to employee details
      * @param addresses address details
      * @return true if updated;
+     * @throws EmployeeManagementException 
      */   
-    boolean addAddresses(List<List<String>> addresses, int employeeId);
+    boolean addAddresses(List<List<String>> addresses, int employeeId) throws EmployeeManagementException;
 
     /**
      * Gets multiple employees given the id
      * @param employeeIds ids of multiple employees
      * @return employees details
+     * @throws EmployeeManagementException 
      */
-    List<Employee> getSetOfEmployees(List<Integer> employeeIds);
+    List<Employee> getSetOfEmployees(List<Integer> employeeIds) throws EmployeeManagementException;
 
     /**
      * Checks id of project of it is active.
      * @return true if active and present
+     * @throws EmployeeManagementException 
      */
-    boolean checkProjectId(int projectId);
+    boolean checkProjectId(int projectId) throws EmployeeManagementException;
 
     /**
      * Gets all project for display
      * @param isDeleted true for deleted projects, false for active projects
      * @return projects details  
+     * @throws EmployeeManagementException 
      */
-    List<String> getAllProjects(boolean isDeleted);
+    List<String> getAllProjects(boolean isDeleted) throws EmployeeManagementException;
 
     /** 
      * This method converts list of address details into objects
@@ -81,8 +89,9 @@ public interface EmployeeService {
     /**
      * Gets employee details of all active employees
      * @return list of employee details
+     * @throws EmployeeManagementException 
      */
-    List<Employee> getEmployeesDetails();
+    List<Employee> getEmployeesDetails() throws EmployeeManagementException;
 
     /**
      * This method updates employee details.
@@ -93,45 +102,51 @@ public interface EmployeeService {
      * @param date represents date of birth of employee
      * @param mobileNumber represents mobile number of employee
      * @return true if updation was sucessful, false otherwise.
+     * @throws EmployeeManagementException 
      */
     public boolean updateEmployee(int employeeId, String name, String designation, 
-                                  double salary, Date dob, long phoneNumber, List<List<String>> addresses);
+                                  double salary, Date dob, long phoneNumber, List<List<String>> addresses) throws EmployeeManagementException;
 
     /**
      * restores one  employee.
      * @param employeeId id of employee
      * @return false if employee was restored.
+     * @throws EmployeeManagementException 
      */
-    boolean restoreEmployee(int employeeId);
+    boolean restoreEmployee(int employeeId) throws EmployeeManagementException;
 
     /**
      * This method converts single employee details from database to string.
      * @params employeeId is id of employee.
      * @return a string with employee details.
+     * @throws EmployeeManagementException 
      */
-    List<String> getEmployee(int employeeId);
+    List<String> getEmployee(int employeeId) throws EmployeeManagementException;
 
     /** 
      * This method converts all employee and corresponding address 
      * details to string.
      * @return array list of strings of details of all employee.
+     * @throws EmployeeManagementException 
      */
-    List<String> getAllEmployees(boolean isDeleted);
+    List<String> getAllEmployees(boolean isDeleted) throws EmployeeManagementException;
 
     /**
      * soft deletes one employee details.
      * @param is id of employee.
      * @return false if employee details were soft deleted.
+     * @throws EmployeeManagementException 
      */
-    boolean deleteEmployee(int employeeId);
+    boolean deleteEmployee(int employeeId) throws EmployeeManagementException;
 
     /**
      * checks if employee id is present in database
      * @param employeeId id of employee
      * @param isDeleted true for deleted employees, false for active employees
      * @return false is single address of employee was soft deleted
+     * @throws EmployeeManagementException 
      */ 
-    boolean checkEmployeeID(int employeeId, boolean isDeleted);
+    boolean checkEmployeeID(int employeeId, boolean isDeleted) throws EmployeeManagementException;
 
     /**
      * checks for correct format of date.
@@ -162,15 +177,17 @@ public interface EmployeeService {
     double checkEmployeeSalary(String salary);
 
 	/**
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
-	List<String> getEmployeeDetail(int employeeId);
+	List<String> getEmployeeDetail(int employeeId) throws EmployeeManagementException;
 
 	/**
      * checks for correct format of salary.
      * @param salary is the salary of employee.
      * @return salary in right format.
+	 * @throws EmployeeManagementException 
      */
-	boolean updateAssignedProjects(int employeeId, List<Integer> projectIds);
+	boolean updateAssignedProjects(int employeeId, List<Integer> projectIds) throws EmployeeManagementException;
 
 }

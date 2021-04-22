@@ -21,6 +21,11 @@ tr {background-color: #FFFFFF;}
 <body style="background-color:#f2d9d9">
 <button onclick= "document.location.href='Index.jsp'">Home</button>
 <button onclick= "document.location.href='Project.jsp'">Project Home</button>
+<c:if test = "${null != displayStatus}">
+<script>
+alert("${displayStatus}");
+</script>
+</c:if>
 <div align="center">
 
     <h3>Project Details</h3>

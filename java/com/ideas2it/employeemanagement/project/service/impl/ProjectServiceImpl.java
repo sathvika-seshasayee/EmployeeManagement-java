@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.Set;
 
+import com.ideas2it.CustomException.EmployeeManagementException;
 import com.ideas2it.employeemanagement.employee.model.Employee;
 import com.ideas2it.employeemanagement.employee.service.impl.EmployeeServiceImpl;
 import com.ideas2it.employeemanagement.project.dao.impl.ProjectDaoImpl;
@@ -30,7 +31,7 @@ public class ProjectServiceImpl implements ProjectService {
 	 * {@inheritDoc} 
 	 */
 	@Override
-	public boolean checkProjectId(int projectId, boolean isDeleted) {
+	public boolean checkProjectId(int projectId, boolean isDeleted) throws EmployeeManagementException {
 		return projectDao.checkProjectId(projectId, isDeleted);
 	}
 
@@ -38,7 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean deleteProject(int projectId) {
+	public boolean deleteProject(int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 		project.setIsDeleted(true);
 		project.setEmployees(null);
@@ -68,11 +69,12 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
 	public boolean updateProject(int projectId, String name, String details, Date startDate, String client,
-			Date targetDate, List<Integer> employeeIds) {
+			Date targetDate, List<Integer> employeeIds) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 
 		if ("" != name) {
@@ -101,10 +103,11 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public boolean assignEmployees(List<Integer> employeeIds, int projectId) {
+	public boolean assignEmployees(List<Integer> employeeIds, int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 
 		if (!employeeIds.isEmpty()) {
@@ -119,10 +122,11 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public boolean unAssignEmployees(List<Integer> employeeIds, int projectId) {
+	public boolean unAssignEmployees(List<Integer> employeeIds, int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 		Set<Employee> employeeSet = new HashSet<Employee>();
 		if (null != project.getEmployees()) {
@@ -144,10 +148,11 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public List<String> getAllEmployees(boolean isDeleted) {
+	public List<String> getAllEmployees(boolean isDeleted) throws EmployeeManagementException {
 		return employeeService.getAllEmployees(isDeleted);
 	}
 
@@ -155,20 +160,22 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public List<Project> getMultipleProjects(List<Integer> projectIds) {
+	public List<Project> getMultipleProjects(List<Integer> projectIds) throws EmployeeManagementException {
 		return projectDao.getMultipleProjects(projectIds);
 	}
 
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public boolean restoreProject(int projectId) {
+	public boolean restoreProject(int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 		project.setIsDeleted(false);
 		return projectDao.updateProject(project);
@@ -177,21 +184,23 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public boolean checkEmployeeId(int employeeId) {
+	public boolean checkEmployeeId(int employeeId) throws EmployeeManagementException {
 		return employeeService.checkEmployeeID(employeeId, false);
 	}
 
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
 	public int createProject(String name, String details, Date startDate, String client, Date targetDate,
-			List<Integer> employeeIds) {
+			List<Integer> employeeIds) throws EmployeeManagementException {
 		List<Employee> employees = new ArrayList<Employee>();
 
 		if (!employeeIds.isEmpty()) {
@@ -205,10 +214,11 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public String getSetOfEmployees(int projectId) {
+	public String getSetOfEmployees(int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 		List<Employee> employees = project.getEmployees();
 		String employeeDetails = "";
@@ -222,10 +232,11 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public List<String> getSetOfEmployeeIds(int projectId) {
+	public List<String> getSetOfEmployeeIds(int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 		List<Employee> employees = project.getEmployees();
 		List<String> employeeDetails = new ArrayList<String>();
@@ -239,19 +250,21 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
-	public Project getSingleProject(int projectId) {
+	public Project getSingleProject(int projectId) throws EmployeeManagementException {
 		return projectDao.getOneProject(projectId);
 	}
 
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public List<String> getOneProject(int projectId) {
+	public List<String> getOneProject(int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 		String projectDetails = "";
 		List<String> projectDetail = new ArrayList<String>();
@@ -290,10 +303,11 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public String getOnlyProjects(boolean isDeleted) {
+	public String getOnlyProjects(boolean isDeleted) throws EmployeeManagementException {
 		List<Project> projects = projectDao.getAllProjects(isDeleted);
 		String projectString = "";
 
@@ -306,10 +320,11 @@ public class ProjectServiceImpl implements ProjectService {
 	/**
 	 * 
 	 * {@inheritDoc}
+	 * @throws EmployeeManagementException 
 	 * 
 	 */
 	@Override
-	public List<String> getAllProjects(boolean isDeleted) {
+	public List<String> getAllProjects(boolean isDeleted) throws EmployeeManagementException {
 		List<Project> projects = projectDao.getAllProjects(isDeleted);
 		List<String> allProjects = new ArrayList<String>();
 

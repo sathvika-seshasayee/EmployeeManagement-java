@@ -28,6 +28,11 @@ tr {background-color: #FFFFFF;}
 alert("${updateStatus}");
 </script>
 </c:if>
+<c:if test = "${null != displayStatus}">
+<script>
+alert("${displayStatus}");
+</script>
+</c:if>
 <form name = "createEmployee" action = "employeeController"  method = post>
     <h3>Employee Details</h3>
     <input type="hidden" name="method_name" value="createEmployee"/>

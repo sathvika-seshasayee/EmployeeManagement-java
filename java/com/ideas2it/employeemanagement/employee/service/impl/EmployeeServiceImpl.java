@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.TreeMap;
 import java.lang.IllegalArgumentException;
 
+import com.ideas2it.CustomException.EmployeeManagementException;
 import com.ideas2it.employeemanagement.employee.dao.impl.EmployeeDaoImpl;
 import com.ideas2it.employeemanagement.employee.model.Employee;
 import com.ideas2it.employeemanagement.employee.model.Address;
@@ -30,12 +31,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
     public int createEmployee(int employeeId, String name, String designation, 
                               double salary, Date date, 
                               long mobileNumber, 
-                              List<List<String>> addresses) {
+                              List<List<String>> addresses) throws EmployeeManagementException {
         List<Address> newAddresses = 
                 new ArrayList<Address>();
         if(null != addresses){
@@ -54,9 +56,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
-    public List<Employee> getSetOfEmployees(List<Integer> employeeIds) {
+    public List<Employee> getSetOfEmployees(List<Integer> employeeIds) throws EmployeeManagementException {
         List<Employee> employees = new ArrayList<Employee>();
         if(!employeeIds.isEmpty()) {
             employees = employeeDao.getSetOfEmployees(employeeIds);
@@ -68,9 +71,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
-    public boolean addAddresses(List<List<String>> addresses, int employeeId) {
+    public boolean addAddresses(List<List<String>> addresses, int employeeId) throws EmployeeManagementException {
         Employee employee = employeeDao.getEmployee(employeeId);
         List<Address> employeeAddresses = new ArrayList<Address>();
 
@@ -87,9 +91,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
-    public boolean deleteOneAddress(int addressId, int employeeId) {
+    public boolean deleteOneAddress(int addressId, int employeeId) throws EmployeeManagementException {
         Employee employee = employeeDao.getEmployee(employeeId);
         List<Address> addresses = employee.getAddresses();
 
@@ -108,10 +113,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
     public boolean updateEmployee(int employeeId, String name, String designation, 
-                                  double salary, Date dob, long phoneNumber, List<List<String>> addresses) {
+                                  double salary, Date dob, long phoneNumber, List<List<String>> addresses) throws EmployeeManagementException {
         Employee employee = employeeDao.getEmployee(employeeId);
         List<Address> newAddresses = new ArrayList<Address>();
 
@@ -164,9 +170,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
-    public boolean restoreEmployee(int employeeId) { 
+    public boolean restoreEmployee(int employeeId) throws EmployeeManagementException { 
         Employee employee = employeeDao.getEmployee(employeeId);
         employee.setIsDeleted(false);
         return employeeDao.updateEmployee(employee);
@@ -174,9 +181,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
-    public boolean updateAssignedProjects(int employeeId, List<Integer> projectIds) {
+    public boolean updateAssignedProjects(int employeeId, List<Integer> projectIds) throws EmployeeManagementException {
     	ProjectServiceImpl projectService = new ProjectServiceImpl();
     	Employee employee = employeeDao.getEmployee(employeeId);
     	if(!projectIds.isEmpty()) {
@@ -192,8 +200,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
-    public List<String> getProjectsAssigned(int employeeId) {
+    public List<String> getProjectsAssigned(int employeeId) throws EmployeeManagementException {
     	Employee employee = employeeDao.getEmployee(employeeId);
     	List<String> projectIds = new ArrayList<String>();
     	if(!(employee.getProjects().isEmpty())) {
@@ -206,9 +215,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
-    public List<String> getEmployee(int employeeId) {
+    public List<String> getEmployee(int employeeId) throws EmployeeManagementException {
     	Employee employee = employeeDao.getEmployee(employeeId);
         List<String> employeeDetail = getEmployeeDetail(employeeId);
         
@@ -227,9 +237,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
-    public List<String> getEmployeeDetail(int employeeId) {
+    public List<String> getEmployeeDetail(int employeeId) throws EmployeeManagementException {
     	Employee employee = employeeDao.getEmployee(employeeId);
         List<String> employeeDetail = new ArrayList<String>();
         
@@ -258,9 +269,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */  
     @Override
-    public List<Employee> getEmployeesDetails () {
+    public List<Employee> getEmployeesDetails () throws EmployeeManagementException {
         List<Employee> employees = employeeDao.getAllEmployees(false);
         List<String> employeeDetails = new ArrayList<String>();
         List<Employee> employeess = new ArrayList<Employee>();
@@ -284,27 +296,30 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */  
     @Override
-    public List<String> getAllProjects(boolean isDeleted) {
+    public List<String> getAllProjects(boolean isDeleted) throws EmployeeManagementException {
         ProjectServiceImpl projectService = new ProjectServiceImpl();
         return projectService.getAllProjects(isDeleted);
     }
  
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */  
     @Override
-    public boolean checkProjectId(int projectId) {
+    public boolean checkProjectId(int projectId) throws EmployeeManagementException {
         ProjectServiceImpl projectService = new ProjectServiceImpl();
         return projectService.checkProjectId(projectId, false);
     }
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */
     @Override
-    public List<String> getAllEmployees(boolean isDeleted) {
+    public List<String> getAllEmployees(boolean isDeleted) throws EmployeeManagementException {
         ProjectServiceImpl projectService = new ProjectServiceImpl();
         List<Employee> employees = employeeDao.getAllEmployees(isDeleted);
         List<String> allEmployees = new ArrayList<String>();
@@ -348,9 +363,10 @@ public class EmployeeServiceImpl implements EmployeeService {
   
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */   
     @Override
-    public boolean deleteEmployee(int employeeId) {
+    public boolean deleteEmployee(int employeeId) throws EmployeeManagementException {
         Employee employee = employeeDao.getEmployee(employeeId);
         employee.setIsDeleted(true);
         employee.setProjects(null);
@@ -359,9 +375,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     /**
      * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */ 
     @Override 
-    public boolean checkEmployeeID(int employeeId, boolean isDeleted) {
+    public boolean checkEmployeeID(int employeeId, boolean isDeleted) throws EmployeeManagementException {
         return employeeDao.checkEmployeeId(employeeId, isDeleted);
     }
  

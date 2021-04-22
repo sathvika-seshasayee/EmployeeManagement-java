@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ideas2it.CustomException.EmployeeManagementException;
 import com.ideas2it.employeemanagement.project.service.ProjectService;
 import com.ideas2it.employeemanagement.project.service.impl.ProjectServiceImpl;
 
@@ -95,6 +96,7 @@ public class ProjectController extends HttpServlet {
 	 * @param request 
 	 * @param response
 	 * @throws IOException, ServletException
+	 * @throws EmployeeManagementException 
 	 */
 	public void assignOrUnAssignEmployees(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -107,10 +109,11 @@ public class ProjectController extends HttpServlet {
 			    employeeIds.add(Integer.parseInt(employee));
 		    }
 		}
-		if(projectService.assignEmployees(employeeIds, projectId)) {
+		try {
+		    projectService.assignEmployees(employeeIds, projectId);
 			assignStatus = "Updated assigned employees sucessfully for project Id " + projectId;
-		} else {
-			assignStatus = "Assigned employees not updated";
+		} catch(EmployeeManagementException e) {
+			assignStatus = e.getMessage();
 		}
 		request.setAttribute("assignOrUnAssignStatus", assignStatus);
 		RequestDispatcher rd = request.getRequestDispatcher("Project.jsp");
@@ -122,11 +125,13 @@ public class ProjectController extends HttpServlet {
 	 * @param request 
 	 * @param response
 	 * @throws IOException, ServletException
+	 * @throws EmployeeManagementException 
 	 */
 	private void displayEmployeesForAssign(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		int projectId = Integer.parseInt(request.getParameter("projectId"));
+		try {
 		List<String> employees = projectService.getAllEmployees(false);
 		List<List<String>> employeeDetails = new ArrayList<List<String>>();
-		int projectId = Integer.parseInt(request.getParameter("projectId"));
 		List<String> assignedEmployeeIds = projectService.getSetOfEmployeeIds(projectId);
 		
 		for(int i = 0; i < employees.size() ; i = i + 8) {
@@ -136,10 +141,12 @@ public class ProjectController extends HttpServlet {
 			}
 			employeeDetails.add(details);
 		}
-		
-		request.setAttribute("projectId", projectId);
 		request.setAttribute("assignedEmployeeIds", assignedEmployeeIds);
 		request.setAttribute("employeeDetails", employeeDetails);
+		} catch(EmployeeManagementException e) {
+			request.setAttribute("displayStatus", e.getMessage());
+		}
+		request.setAttribute("projectId", projectId);	
 		RequestDispatcher rd = request.getRequestDispatcher("assignOrUnAssignEmployees.jsp");
 		rd.forward(request, response);
 	}
@@ -148,51 +155,42 @@ public class ProjectController extends HttpServlet {
 	 * Restores Project
 	 * @param request 
 	 * @param response
+	 * @throws ServletException 
+	 * @throws EmployeeManagementException 
+	 * @throws NumberFormatException 
 	 * @throws IOException, ServletException
 	 */
-	public void restoreProject(HttpServletRequest request, HttpServletResponse response) {
+	public void restoreProject(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException  {
 		String restoreProjectStatus = "";
 		String checkProjectIdStatus = "";
-		if (projectService.checkProjectId(Integer.parseInt(request.getParameter("projectId")), true)) {
-			if (projectService.restoreProject(Integer.parseInt(request.getParameter("projectId")))) {
-				restoreProjectStatus = "Project ID " + request.getParameter("projectId")
-						+ " restored sucess fully.";
-			} else {
-				restoreProjectStatus = "Project ID " + request.getParameter("projectId") + " not restored.";
-			}
-		} else {
-			checkProjectIdStatus = "Project id does not exist in deleted Projects.";
-		}
+        try {
+			projectService.restoreProject(Integer.parseInt(request.getParameter("projectId")));
+			restoreProjectStatus = "Project ID " + request.getParameter("projectId")
+						           + " restored sucess fully.";
+        } catch(EmployeeManagementException e) {
+        	restoreProjectStatus = e.getMessage();
+        }
 		request.setAttribute("restoreProjectStatus", restoreProjectStatus);
-		request.setAttribute("checkProjectIdStatus", checkProjectIdStatus);
 		RequestDispatcher rd = request.getRequestDispatcher("restoreProject.jsp");
-		try {
-			rd.forward(request, response);
-		} catch (ServletException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		rd.forward(request, response);	
 	}
 
 	/**
-	 * 
 	 * Gets Deletes Project 
 	 * @param request 
 	 * @param response
 	 * @throws IOException, ServletException
+	 * @throws EmployeeManagementException 
+	 * @throws NumberFormatException 
 	 */
 	public void deleteProject(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+			throws ServletException, IOException, NumberFormatException {
 		String deleteProjectStatus = "";
-		if (projectService.checkProjectId(Integer.parseInt(request.getParameter("projectId")), false)) {
-			if (projectService.deleteProject(Integer.parseInt(request.getParameter("projectId")))) {
-				deleteProjectStatus = "Project ID " + request.getParameter("projectId") + " Deleted Sucessfully.";
-			} else {
-				deleteProjectStatus = "Project ID " + request.getParameter("projectId") + " not deleted.";
-			}
-		} else {
-			deleteProjectStatus = "Project ID is not present. Please try again";
+		try {
+			projectService.deleteProject(Integer.parseInt(request.getParameter("projectId")));
+		    deleteProjectStatus = "Project ID " + request.getParameter("projectId") + " Deleted Sucessfully.";
+		} catch(EmployeeManagementException e) {
+			deleteProjectStatus = e.getMessage();
 		}
 		request.setAttribute("deleteProjectStatus", deleteProjectStatus);
 		RequestDispatcher rd = request.getRequestDispatcher("displayAllProjects.jsp");
@@ -200,23 +198,16 @@ public class ProjectController extends HttpServlet {
 	}
 
 	/**
-	 * Gets Check If project id is in database 
-	 * @param request 
-	 * @param response
-	 * @throws IOException, ServletException
-	 */
-	public boolean checkProjectId(int projectId, boolean isDeleted) {
-		return projectService.checkProjectId(projectId, isDeleted);
-	}
-
-	/**
 	 * Displays all projects
 	 * @param request 
 	 * @param response
 	 * @throws IOException, ServletException
+	 * @throws EmployeeManagementException 
 	 */
 	public void displayProjects(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+	  try {
 		List<String> allProjects = Boolean.parseBoolean(request.getParameter("isDeleted")) 
 				                  ? projectService.getAllProjects(true)
 				                  : projectService.getAllProjects(false);
@@ -232,9 +223,12 @@ public class ProjectController extends HttpServlet {
 			}
 			request.setAttribute("projects", projects);
 		} else {
-			String displayStatus = "No active projects present.";
-			request.setAttribute("displayStatus", displayStatus);
+		//	String displayStatus = "No active projects present.";
+			request.setAttribute("displayStatus", "No active projects present.");
 		}
+	  } catch(EmployeeManagementException e) {
+		  request.setAttribute("displayStatus", e.getMessage());
+	  }
 		RequestDispatcher rd = Boolean.parseBoolean(request.getParameter("isDeleted")) 
 	              ? request.getRequestDispatcher("restoreProject.jsp") 
 	              : request.getRequestDispatcher("displayAllProjects.jsp");
@@ -246,6 +240,7 @@ public class ProjectController extends HttpServlet {
 	 * @param request 
 	 * @param response
 	 * @throws IOException, ServletException
+	 * @throws EmployeeManagementException 
 	 */
 	public void createProject(HttpServletRequest request,  HttpServletResponse response) throws ServletException, IOException {
         String updateStatus = "";
@@ -258,17 +253,18 @@ public class ProjectController extends HttpServlet {
 
 		if (!("".equals(request.getParameter("projectId")))) {
 			int projectId = Integer.parseInt(request.getParameter("projectId"));
-			if(projectService.updateProject(projectId, name, details, startDate, client, targetDate, employees)) {
-				updateStatus = "Project Id " + projectId + " Updated sucessfully";
-			} else {
-				updateStatus = "Project Id " + projectId + " not Updated";
+			try {
+			  projectService.updateProject(projectId, name, details, startDate, client, targetDate, employees);
+			  updateStatus = "Project Id " + projectId + " Updated sucessfully";
+			} catch(EmployeeManagementException e) {
+				updateStatus = e.getMessage();
 			}
 		} else {
-			int projectId = projectService.createProject(name, details, startDate, client, targetDate, employees);
-			if(0 != projectId) {
+			try {
+			    int projectId = projectService.createProject(name, details, startDate, client, targetDate, employees);
 				updateStatus = "Project Id " + projectId + " created sucessfully";
-			} else {
-				updateStatus = "Project not created ";
+			} catch(EmployeeManagementException e) {
+				updateStatus = e.getMessage();
 			}
 		}
 		request.setAttribute("updateStatus", updateStatus);
@@ -281,10 +277,12 @@ public class ProjectController extends HttpServlet {
 	 * @param request 
 	 * @param response
 	 * @throws IOException, ServletException
+	 * @throws EmployeeManagementException 
+	 * @throws NumberFormatException 
 	 */
 	public void displayProject(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
-
+        try {
 			List<String> project = projectService.getOneProject(Integer.parseInt(request.getParameter("projectId")));
 			List<String> projectDetails = new ArrayList<String>();
 			List<List<String>> employeeDetails = new ArrayList<List<String>>();
@@ -302,28 +300,34 @@ public class ProjectController extends HttpServlet {
 				employeeDetails.add(employee);
 			}
 			request.setAttribute("projectDetails", projectDetails);
-			request.setAttribute("employeeDetails", employeeDetails);
-		
-		if (Boolean.parseBoolean(request.getParameter("forUpdation"))) {
+			request.setAttribute("employeeDetails", employeeDetails);		
+	/*	if (Boolean.parseBoolean(request.getParameter("forUpdation"))) {
 			RequestDispatcher rd = request.getRequestDispatcher("createProject.jsp");
 			rd.forward(request, response);
-		} else {
-			RequestDispatcher rd = request.getRequestDispatcher("displayProject.jsp");
-			rd.forward(request, response);
+		} else { */
+        } catch(EmployeeManagementException e) {
+        	request.setAttribute("displayStatus", e.getMessage());
+        }
+        RequestDispatcher rd = request.getRequestDispatcher("displayProject.jsp");
+		rd.forward(request, response);
 		}
-
-	}
 	
 	/**
 	 * Display project for updating
 	 * @param request 
 	 * @param response
 	 * @throws IOException, ServletException
+	 * @throws EmployeeManagementException 
+	 * @throws NumberFormatException 
 	 */
-	public void displayProjectForUpdate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void displayProjectForUpdate(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NumberFormatException {
+		try {
 		List<String> project = projectService.getOneProject(Integer.parseInt(request.getParameter("projectId")));
 		project = project.subList(0, 6);
 		request.setAttribute("project", project);
+		} catch(EmployeeManagementException e) {
+			request.setAttribute("displayStatus", e.getMessage());
+		}
 		RequestDispatcher rd = request.getRequestDispatcher("createProject.jsp");
 		rd.forward(request, response);
 	}

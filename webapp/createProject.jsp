@@ -24,6 +24,11 @@ tr {background-color: #FFFFFF;}
 <button onclick= "document.location.href='Project.jsp'">Project Home</button>
 <div align="center">
 <br><br>
+<c:if test = "${null != displayStatus}">
+<script>
+alert("${displayStatus}");
+</script>
+</c:if>
 <c:if test = "${null != updateStatus}">
 <script>
 alert("${updateStatus}");

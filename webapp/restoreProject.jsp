@@ -10,7 +10,7 @@
 </head>
 <style>
 table {
-  width: 80%;
+  width: 90%;
 }
 th, td {
   text-align: center;

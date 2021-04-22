@@ -14,6 +14,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Subqueries;
 
+import com.ideas2it.CustomException.EmployeeManagementException;
 import com.ideas2it.employeemanagement.employee.dao.EmployeeDao;
 import com.ideas2it.employeemanagement.employee.model.Address;
 import com.ideas2it.employeemanagement.employee.model.Employee;
@@ -29,15 +30,14 @@ import com.ideas2it.employeemanagement.sessionfactory.DataBaseConnection;
 public class EmployeeDaoImpl implements EmployeeDao {
 
     /**
-  
-     * {@inheritdoc}
-    
+     * {@inheritDoc}  
+     * @throws EmployeeManagementException 
      */  
     @Override
-    public int createEmployee(Employee employee) {
+    public int createEmployee(Employee employee) throws EmployeeManagementException {
         int employeeId = 0;
         Session session = null;   
-        Transaction transaction = null;  
+        Transaction transaction = null; 
         
         try {
             session = DataBaseConnection.getSessionFactory().openSession();
@@ -47,21 +47,34 @@ public class EmployeeDaoImpl implements EmployeeDao {
         } catch (Exception ex) {
             ex.printStackTrace();
             transaction.rollback();
+            throw new EmployeeManagementException("Creation failed");
         } finally {
-        	if(null != session) {
-			    session.close();
-        	}
+        	closeSession(session);
         }
         return employeeId;
     }
+    
+    /**
+     * Closes session object
+     * @param session
+     * @throws EmployeeManagementException 
+     */
+    private void closeSession(Session session) {
+    	try {
+    		if(null != session) {
+			    session.close();
+        	}
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}	
+    }
 
     /**
-  
-     * {@inheritDoc}
-    
+     * {@inheritDoc} 
+     * @throws EmployeeManagementException 
      */  
     @Override
-    public List<Employee> getSetOfEmployees(List<Integer> employeeIds) {
+    public List<Employee> getSetOfEmployees(List<Integer> employeeIds) throws EmployeeManagementException {
         Session session = null;
         List<Employee> employees = new ArrayList<Employee>();
 
@@ -73,19 +86,19 @@ public class EmployeeDaoImpl implements EmployeeDao {
             employees = criteria.list();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new EmployeeManagementException("Employees fetching failed");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return employees;
     }
                 
     /**
-     * {@inheritdoc}  
+     * {@inheritDoc}  
+     * @throws EmployeeManagementException 
      */    
     @Override 
-    public List<Employee> getAllEmployees(boolean isDeleted) {
+    public List<Employee> getAllEmployees(boolean isDeleted) throws EmployeeManagementException {
         Session session = null;
         List<Employee> employees = new ArrayList<Employee>();
         Address address = new Address();
@@ -101,19 +114,19 @@ public class EmployeeDaoImpl implements EmployeeDao {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            throw new EmployeeManagementException("Employees fetching failed");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return employees;
     }    
 
     /** 
-     * {@inheritdoc}
+     * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */   
     @Override 
-    public boolean updateEmployee(Employee employee) {
+    public boolean updateEmployee(Employee employee) throws EmployeeManagementException {
         Session session = null;
         Transaction transaction = null;
         boolean updateStatus = false;
@@ -126,19 +139,19 @@ public class EmployeeDaoImpl implements EmployeeDao {
             updateStatus = true;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new EmployeeManagementException("Updation failed.");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return updateStatus;
     }
 
     /**  
-     * {@inheritdoc}
+     * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */   
     @Override
-    public Employee getEmployee(int employeeId) {
+    public Employee getEmployee(int employeeId) throws EmployeeManagementException {
         Session session = null;
         Employee employee = null;
         
@@ -149,19 +162,19 @@ public class EmployeeDaoImpl implements EmployeeDao {
            for(Project project : employee.getProjects()) {}
         } catch (Exception e) {
             e.printStackTrace();
+            throw new EmployeeManagementException("Employee fetching failed");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return employee;
     }    
 
     /**  
-     * {@inheritdoc}
+     * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */   
     @Override
-    public boolean checkEmployeeId(int employeeId, boolean isDeleted) {
+    public boolean checkEmployeeId(int employeeId, boolean isDeleted) throws EmployeeManagementException {
         Session session = null;
         List<Integer> employeeid = new ArrayList<Integer>();
         String checkEmployee = "select id FROM Employee  where id = :employeeId and isDeleted = :isDeleted";
@@ -173,11 +186,10 @@ public class EmployeeDaoImpl implements EmployeeDao {
             query.setParameter("isDeleted", isDeleted);
             employeeid = query.list();
         } catch(Exception e) {
-            e.printStackTrace();;
+            e.printStackTrace();
+            throw new EmployeeManagementException("Employees fetching failed");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return (!employeeid.isEmpty());
     }

@@ -22,6 +22,11 @@ tr {background-color: #FFFFFF;}
 <body style="background-color:#f2d9d9">
 <button onclick="document.location.href='Index.jsp'">Home</button>
 <button onclick= "document.location.href='Employee.jsp'">Employee Home</button>
+<c:if test = "${null != displayStatus}">
+<script>
+alert("${displayStatus}");
+</script>
+</c:if>
 <c:if test = "${null != assignStatus}">
 <script>
 alert("${assignStatus}");

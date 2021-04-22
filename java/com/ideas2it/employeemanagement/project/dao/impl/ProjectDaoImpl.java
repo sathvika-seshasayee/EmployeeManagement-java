@@ -10,6 +10,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ideas2it.CustomException.EmployeeManagementException;
 import com.ideas2it.employeemanagement.employee.model.Employee;
 import com.ideas2it.employeemanagement.project.dao.ProjectDao;
 import com.ideas2it.employeemanagement.project.model.Project;
@@ -23,12 +24,11 @@ import com.ideas2it.employeemanagement.sessionfactory.DataBaseConnection;
  */
 public class ProjectDaoImpl implements ProjectDao {
     /**
-  
-     * {@inheritdoc}
-    
+     * {@inheritDoc}
+     * @throws EmployeeManagementException 
      */    
     @Override
-    public int createProject(Project project) {
+    public int createProject(Project project) throws EmployeeManagementException {
         int projectId = 0;
         Session session = null;
         Transaction transaction = null;
@@ -41,17 +41,34 @@ public class ProjectDaoImpl implements ProjectDao {
         } catch (Exception ex) {
             ex.printStackTrace();
             transaction.rollback();
+            throw new EmployeeManagementException("Creation failed");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return projectId;
     }
 
-     
+    /**
+     * Closes session object
+     * @param session
+     * @throws EmployeeManagementException 
+     */
+    private void closeSession(Session session) {
+    	try {
+    		if(null != session) {
+			    session.close();
+        	}
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}	
+    }
+    
+    /**
+     * {@inheritDoc}  
+     * @throws EmployeeManagementException 
+     */ 
     @Override
-    public List<Project> getMultipleProjects(List<Integer> projectIds) {
+    public List<Project> getMultipleProjects(List<Integer> projectIds) throws EmployeeManagementException {
         Session session = null;
         List<Project> projects = new ArrayList<Project>();
 
@@ -63,19 +80,19 @@ public class ProjectDaoImpl implements ProjectDao {
             projects = criteria.list();
         } catch (Exception e) {
             e.printStackTrace();
+            throw new EmployeeManagementException("Projects fetching failed");
         } finally {
              session.close(); 
         }
         return projects;
     }   
 
-    /**
-  
-     * {@inheritdoc}
-    
+    /** 
+     * {@inheritDoc}   
+     * @throws EmployeeManagementException 
      */    
     @Override
-    public boolean updateProject(Project project) {
+    public boolean updateProject(Project project) throws EmployeeManagementException {
         Session session = null;
         Transaction transaction = null;
         boolean updateStatus = false;
@@ -88,21 +105,19 @@ public class ProjectDaoImpl implements ProjectDao {
             updateStatus = true;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new EmployeeManagementException("Project updation failed");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return updateStatus;
     }                  
 
-    /**
-  
-     * {@inheritdoc}
-    
+    /**  
+     * {@inheritDoc}   
+     * @throws EmployeeManagementException 
      */    
     @Override
-    public boolean checkProjectId(int projectId, boolean isDeleted) {
+    public boolean checkProjectId(int projectId, boolean isDeleted) throws EmployeeManagementException {
         Session session = null;
         Transaction transaction = null;
         List projectid = null;
@@ -117,21 +132,19 @@ public class ProjectDaoImpl implements ProjectDao {
         } catch(Exception e) {
             e.printStackTrace();
             transaction.rollback();
+            throw new EmployeeManagementException("Id checking failed");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return (!projectid.isEmpty());
     }
 
     /**
-  
-     * {@inheritdoc}
-    
+     * {@inheritDoc}  
+     * @throws EmployeeManagementException 
      */    
     @Override
-    public Project getOneProject(int projectId) {
+    public Project getOneProject(int projectId) throws EmployeeManagementException {
         Session session = null;
         Project project = null;       
 
@@ -141,21 +154,19 @@ public class ProjectDaoImpl implements ProjectDao {
            for(Employee employee : project.getEmployees()) {}
         } catch(Exception e) {
             e.printStackTrace();
+            throw new EmployeeManagementException("Project fetching failed");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return project;
     }
 
-    /**
-  
-     * {@inheritdoc}
-    
+    /**  
+     * {@inheritDoc}   
+     * @throws EmployeeManagementException 
      */    
     @Override
-    public List<Project> getAllProjects(boolean isDeleted) {
+    public List<Project> getAllProjects(boolean isDeleted) throws EmployeeManagementException {
         Session session = null;
         List<Project> projects = new ArrayList<Project>();
         
@@ -169,10 +180,9 @@ public class ProjectDaoImpl implements ProjectDao {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            throw new EmployeeManagementException("Projects fetching failed");
         } finally {
-            if(null != session) {
-                session.close();
-            }
+        	closeSession(session);
         }
         return projects;
     }                 
