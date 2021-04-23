@@ -12,45 +12,31 @@ public class EmployeeManagementException extends Exception {
 	/**
 	 * Constructor
 	 */
-	public EmployeeManagementException() {
-		// TODO Auto-generated constructor stub
-	}
+	public EmployeeManagementException() {}
 
 	/**
+	 * This method sets error message to object
 	 * @param message
 	 */
 	public EmployeeManagementException(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * Sets a new throwable object  
 	 * @param cause
 	 */
 	public EmployeeManagementException(Throwable cause) {
 		super(cause);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
+	 * This method sets error message and throwable (errors and exceptions) to object
 	 * @param message
 	 * @param cause
 	 */
 	public EmployeeManagementException(String message, Throwable cause) {
 		super(message, cause);
-		// TODO Auto-generated constructor stub
-	}
-
-	/**
-	 * @param message
-	 * @param cause
-	 * @param enableSuppression
-	 * @param writableStackTrace
-	 */
-	public EmployeeManagementException(String message, Throwable cause, boolean enableSuppression,
-			boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -59,6 +59,7 @@ tr {background-color: #FFFFFF;}
 	<c:if test =  "${null != restoreEmployeeStatus}">
 	<script>
 	alert("${restoreEmployeeStatus}")
+	window.location = window.location.href = 'employeeController?action=displayEmployees&isDeleted=true';
 	</script>
 	</c:if>
 </body>

@@ -68,55 +68,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employees;
     }
     
-    
     /**
      * {@inheritDoc}
      * @throws EmployeeManagementException 
      */
     @Override
-    public boolean addAddresses(List<List<String>> addresses, int employeeId) throws EmployeeManagementException {
-        Employee employee = employeeDao.getEmployee(employeeId);
-        List<Address> employeeAddresses = new ArrayList<Address>();
-
-            if(!employee.getAddresses().isEmpty()) {
-                    employeeAddresses = employee.getAddresses();
-            }
-
-            for(List<String> address : addresses) {      
-                employeeAddresses.add(getAddressObj(address));
-                employee.setAddresses(employeeAddresses);
-            }
-        return employeeDao.updateEmployee(employee);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws EmployeeManagementException 
-     */
-    @Override
-    public boolean deleteOneAddress(int addressId, int employeeId) throws EmployeeManagementException {
-        Employee employee = employeeDao.getEmployee(employeeId);
-        List<Address> addresses = employee.getAddresses();
-
-        for(Address address : addresses) {
-
-            if(addressId == address.getId()) {
-                addresses.remove(address);
-                address.setIsDeleted(true);
-                addresses.add(address);            
-                employee.setAddresses(addresses);
-                break;
-            }
-        }      
-        return employeeDao.updateEmployee(employee);
-    }
-    
-    /**
-     * {@inheritDoc}
-     * @throws EmployeeManagementException 
-     */
-    @Override
-    public boolean updateEmployee(int employeeId, String name, String designation, 
+    public void updateEmployee(int employeeId, String name, String designation, 
                                   double salary, Date dob, long phoneNumber, List<List<String>> addresses) throws EmployeeManagementException {
         Employee employee = employeeDao.getEmployee(employeeId);
         List<Address> newAddresses = new ArrayList<Address>();
@@ -148,7 +105,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setAddresses(newAddresses);
         }
 
-        return employeeDao.updateEmployee(employee);
+        employeeDao.updateEmployee(employee);
     } 
 
   
@@ -173,10 +130,12 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @throws EmployeeManagementException 
      */
     @Override
-    public boolean restoreEmployee(int employeeId) throws EmployeeManagementException { 
+    public void restoreEmployee(int employeeId) throws EmployeeManagementException { 
         Employee employee = employeeDao.getEmployee(employeeId);
         employee.setIsDeleted(false);
-        return employeeDao.updateEmployee(employee);
+        if(!employeeDao.updateEmployee(employee)) {
+        	throw new EmployeeManagementException("Employee restoring failed");
+        }
     }
     
     /**
@@ -184,7 +143,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @throws EmployeeManagementException 
      */
     @Override
-    public boolean updateAssignedProjects(int employeeId, List<Integer> projectIds) throws EmployeeManagementException {
+    public void updateAssignedProjects(int employeeId, List<Integer> projectIds) throws EmployeeManagementException {
     	ProjectServiceImpl projectService = new ProjectServiceImpl();
     	Employee employee = employeeDao.getEmployee(employeeId);
     	if(!projectIds.isEmpty()) {
@@ -194,7 +153,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     		employee.setProjects(null);
     	}
 
-    	return employeeDao.updateEmployee(employee);
+    	if(employeeDao.updateEmployee(employee)) {
+    		throw new EmployeeManagementException("Updating assigned projects to an employee failed");
+    	}
     }
 
 
@@ -366,11 +327,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @throws EmployeeManagementException 
      */   
     @Override
-    public boolean deleteEmployee(int employeeId) throws EmployeeManagementException {
+    public void deleteEmployee(int employeeId) throws EmployeeManagementException {
         Employee employee = employeeDao.getEmployee(employeeId);
         employee.setIsDeleted(true);
         employee.setProjects(null);
-        return employeeDao.updateEmployee(employee);
+        if(!employeeDao.updateEmployee(employee)) {
+        	throw new EmployeeManagementException("Employee deletion failed");
+        }
     }
 
     /**
@@ -431,5 +394,48 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return employeeSalary;
     }
-	
+
+    /**
+     * {@inheritDoc}
+     * @throws EmployeeManagementException 
+     */
+    @Override
+    public boolean addAddresses(List<List<String>> addresses, int employeeId) throws EmployeeManagementException {
+        Employee employee = employeeDao.getEmployee(employeeId);
+        List<Address> employeeAddresses = new ArrayList<Address>();
+
+            if(!employee.getAddresses().isEmpty()) {
+                    employeeAddresses = employee.getAddresses();
+            }
+
+            for(List<String> address : addresses) {      
+                employeeAddresses.add(getAddressObj(address));
+                employee.setAddresses(employeeAddresses);
+            }
+        return employeeDao.updateEmployee(employee);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws EmployeeManagementException 
+     */
+    @Override
+    public boolean deleteOneAddress(int addressId, int employeeId) throws EmployeeManagementException {
+        Employee employee = employeeDao.getEmployee(employeeId);
+        List<Address> addresses = employee.getAddresses();
+
+        for(Address address : addresses) {
+
+            if(addressId == address.getId()) {
+                addresses.remove(address);
+                address.setIsDeleted(true);
+                addresses.add(address);            
+                employee.setAddresses(addresses);
+                break;
+            }
+        }      
+        return employeeDao.updateEmployee(employee);  
+    }
+    
+    
 }

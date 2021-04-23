@@ -39,9 +39,4 @@
            
 </div>  
 </body>
-<c:if test = "${null != assignOrUnAssignStatus}">
-<script>
-alert("${assignOrUnAssignStatus}");
-</script>
-</c:if>
 </html>

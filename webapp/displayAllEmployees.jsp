@@ -29,6 +29,12 @@ tr {background-color: #FFFFFF;}
 alert("${displayStatus}");
 </script>
 </c:if>
+<c:if test = "${null != updateStatus}">
+<script>
+alert("${updateStatus}");
+window.location = window.location.href = 'employeeController?action=displayEmployees&isDeleted=false';
+</script>
+</c:if>
 <c:if test = "${null != employeeDetails}">
 <h1> Active Employee Details </h1>
     <table>  
@@ -58,6 +64,13 @@ alert("${displayStatus}");
 <c:if test = "${null != deleted}">
 <script>
 alert("${deleted}");
+window.location = window.location.href = 'employeeController?action=displayEmployees&isDeleted=false';
+</script>
+</c:if>
+<c:if test = "${null != assignStatus}">
+<script>
+alert("${assignStatus}");
+window.location = window.location.href = 'employeeController?action=displayEmployees&isDeleted=false';
 </script>
 </c:if>
 </body>

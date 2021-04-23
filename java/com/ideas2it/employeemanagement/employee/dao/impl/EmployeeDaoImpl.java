@@ -1,20 +1,20 @@
 package com.ideas2it.employeemanagement.employee.dao.impl;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.HibernateException;
+//import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionException;
+//import org.hibernate.SessionException;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Subqueries;
+//import org.hibernate.criterion.DetachedCriteria;
+//import org.hibernate.criterion.Subqueries;
 
 import com.ideas2it.CustomException.EmployeeManagementException;
+import com.ideas2it.CustomLogger.EmployeeManagementLogger;
 import com.ideas2it.employeemanagement.employee.dao.EmployeeDao;
 import com.ideas2it.employeemanagement.employee.model.Address;
 import com.ideas2it.employeemanagement.employee.model.Employee;
@@ -28,10 +28,12 @@ import com.ideas2it.employeemanagement.sessionfactory.DataBaseConnection;
  * @author Sathvika Seshasayee
  */
 public class EmployeeDaoImpl implements EmployeeDao {
-
+	//private static final Logger logger = Logger.getLogger(EmployeeDaoImpl.class); 
+	final EmployeeManagementLogger logger = new EmployeeManagementLogger(EmployeeDao.class);
+	
     /**
      * {@inheritDoc}  
-     * @throws EmployeeManagementException 
+     * 
      */  
     @Override
     public int createEmployee(Employee employee) throws EmployeeManagementException {
@@ -46,15 +48,15 @@ public class EmployeeDaoImpl implements EmployeeDao {
             transaction.commit();
         } catch (Exception ex) {
             ex.printStackTrace();
-            transaction.rollback();
+            logger.logError(ex);
             throw new EmployeeManagementException("Creation failed");
         } finally {
         	closeSession(session);
         }
         return employeeId;
     }
-    
-    /**
+ 
+	/**
      * Closes session object
      * @param session
      * @throws EmployeeManagementException 
@@ -86,6 +88,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             employees = criteria.list();
         } catch (Exception e) {
             e.printStackTrace();
+            logger.logError(e);
             throw new EmployeeManagementException("Employees fetching failed");
         } finally {
         	closeSession(session);
@@ -113,6 +116,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
                 for(Project project : employee.getProjects()) {}
             }
         } catch (Exception e) {
+        	logger.logError(e);
             e.printStackTrace();
             throw new EmployeeManagementException("Employees fetching failed");
         } finally {
@@ -138,8 +142,8 @@ public class EmployeeDaoImpl implements EmployeeDao {
             transaction.commit();
             updateStatus = true;
         } catch (Exception e) {
+        	logger.logError(e);
             e.printStackTrace();
-            throw new EmployeeManagementException("Updation failed.");
         } finally {
         	closeSession(session);
         }
@@ -186,6 +190,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             query.setParameter("isDeleted", isDeleted);
             employeeid = query.list();
         } catch(Exception e) {
+        	logger.logError(e);
             e.printStackTrace();
             throw new EmployeeManagementException("Employees fetching failed");
         } finally {

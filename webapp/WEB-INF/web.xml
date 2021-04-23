@@ -20,5 +20,25 @@
           <servlet-name>project</servlet-name>
           <url-pattern>/projectController</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+      <servlet-name>ErrorHandler</servlet-name>
+      <servlet-class>com.ideas2it.CustomException.ErrorHandler</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+          <servlet-name>ErrorHandler</servlet-name>
+          <url-pattern>/ErrorHandler</url-pattern>
+  </servlet-mapping>
+  
+  <error-page>
+   <exception-type>java.lang.Throwable</exception-type >
+   <location>/ErrorHandler</location>
+  </error-page>
+  
+  <error-page>
+   <error-code>404</error-code>
+   <location>/ErrorHandler</location>
+  </error-page>
  
 </web-app>

@@ -27,11 +27,6 @@ tr {background-color: #FFFFFF;}
 alert("${displayStatus}");
 </script>
 </c:if>
-<c:if test = "${null != assignStatus}">
-<script>
-alert("${assignStatus}");
-</script>
-</c:if>
 	<c:if test="${projects != null}">
 	<div align="center">
 		<br /> <br />
@@ -81,13 +76,11 @@ alert("${assignStatus}");
 							
 						</tr>
 					</c:forEach>
-				</table>
-			
+				</table>			
 			<input type="submit" value="Submit">
 		</form>
 	</div>
 </c:if>
-
 
 </body>
 </html>

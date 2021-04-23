@@ -22,7 +22,7 @@ tr {background-color: #FFFFFF;}
 	<button onclick="document.location.href='Index.jsp'">Home</button>
 	<button onclick= "document.location.href='Project.jsp'">Project Home</button>
 	<div align="center">
-		
+		<h3> Deleted Projects </h3>
 		<br /> <br />
         <c:if test = "${null != projects}">
 
@@ -34,7 +34,6 @@ tr {background-color: #FFFFFF;}
 					<th>Client</th>
 					<th>Start Date</th>
 					<th>End Date</th>
-					<th>Employees Assigned</th>
 					<th>Restore</th>
 				</tr>
 
@@ -47,7 +46,6 @@ tr {background-color: #FFFFFF;}
 						<td>${project.get(3)}</td>
 						<td>${project.get(4)}</td>
 						<td>${project.get(5)}</td>
-						<td>${project.get(6)}</td>
 						<td><button onclick = "document.location.href = 'projectController?action=restoreProject&projectId=${project.get(0)}'">Restore</button></td>
 					</tr>
 				</c:forEach>
@@ -57,6 +55,7 @@ tr {background-color: #FFFFFF;}
 	<c:if test = "${null != restoreProjectStatus}">
 	<script>
 	alert("${restoreProjectStatus}")
+	window.location = window.location.href = 'projectController?action=displayProjects&isDeleted=true';
 	</script>
 	</c:if>
 </body>

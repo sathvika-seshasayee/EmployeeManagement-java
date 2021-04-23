@@ -104,7 +104,7 @@ public interface EmployeeService {
      * @return true if updation was sucessful, false otherwise.
      * @throws EmployeeManagementException 
      */
-    public boolean updateEmployee(int employeeId, String name, String designation, 
+    public void updateEmployee(int employeeId, String name, String designation, 
                                   double salary, Date dob, long phoneNumber, List<List<String>> addresses) throws EmployeeManagementException;
 
     /**
@@ -113,7 +113,7 @@ public interface EmployeeService {
      * @return false if employee was restored.
      * @throws EmployeeManagementException 
      */
-    boolean restoreEmployee(int employeeId) throws EmployeeManagementException;
+    void restoreEmployee(int employeeId) throws EmployeeManagementException;
 
     /**
      * This method converts single employee details from database to string.
@@ -137,7 +137,7 @@ public interface EmployeeService {
      * @return false if employee details were soft deleted.
      * @throws EmployeeManagementException 
      */
-    boolean deleteEmployee(int employeeId) throws EmployeeManagementException;
+    void deleteEmployee(int employeeId) throws EmployeeManagementException;
 
     /**
      * checks if employee id is present in database
@@ -188,6 +188,6 @@ public interface EmployeeService {
      * @return salary in right format.
 	 * @throws EmployeeManagementException 
      */
-	boolean updateAssignedProjects(int employeeId, List<Integer> projectIds) throws EmployeeManagementException;
+	void updateAssignedProjects(int employeeId, List<Integer> projectIds) throws EmployeeManagementException;
 
 }

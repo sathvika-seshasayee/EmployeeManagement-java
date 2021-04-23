@@ -39,11 +39,13 @@ public class ProjectServiceImpl implements ProjectService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean deleteProject(int projectId) throws EmployeeManagementException {
+	public void deleteProject(int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 		project.setIsDeleted(true);
 		project.setEmployees(null);
-		return projectDao.updateProject(project);
+		if(!projectDao.updateProject(project)) {	
+			throw new EmployeeManagementException("Project Deletion failed");
+		}
 	}
 
 	/**
@@ -73,7 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
 	 * 
 	 */
 	@Override
-	public boolean updateProject(int projectId, String name, String details, Date startDate, String client,
+	public void updateProject(int projectId, String name, String details, Date startDate, String client,
 			Date targetDate, List<Integer> employeeIds) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 
@@ -96,8 +98,8 @@ public class ProjectServiceImpl implements ProjectService {
 		if ("" != client) {
 			project.setDetails(client);
 		}
-
-		return projectDao.updateProject(project);
+		
+		projectDao.updateProject(project);
 	}
 
 	/**
@@ -107,7 +109,7 @@ public class ProjectServiceImpl implements ProjectService {
 	 * 
 	 */
 	@Override
-	public boolean assignEmployees(List<Integer> employeeIds, int projectId) throws EmployeeManagementException {
+	public void assignEmployees(List<Integer> employeeIds, int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 
 		if (!employeeIds.isEmpty()) {
@@ -116,33 +118,9 @@ public class ProjectServiceImpl implements ProjectService {
 			project.setEmployees(null);
 		}
 		
-		return projectDao.updateProject(project);
-	}
-
-	/**
-	 * 
-	 * {@inheritDoc}
-	 * @throws EmployeeManagementException 
-	 * 
-	 */
-	@Override
-	public boolean unAssignEmployees(List<Integer> employeeIds, int projectId) throws EmployeeManagementException {
-		Project project = projectDao.getOneProject(projectId);
-		Set<Employee> employeeSet = new HashSet<Employee>();
-		if (null != project.getEmployees()) {
-			for (Employee employee : project.getEmployees()) {
-				for (Integer employeeId : employeeIds) {
-					if (employeeId == employee.getId()) {
-						employeeSet.add(employee);
-					}
-				}
-			}
+		if(!projectDao.updateProject(project)) {
+			throw new EmployeeManagementException("Project Updation failed");
 		}
-		List<Employee> employees = new ArrayList<Employee>(employeeSet);
-		List<Employee> assignedEmployees = project.getEmployees();
-		assignedEmployees.removeAll(employees);
-		project.setEmployees(assignedEmployees);
-		return projectDao.updateProject(project);
 	}
 
 	/**
@@ -175,10 +153,12 @@ public class ProjectServiceImpl implements ProjectService {
 	 * 
 	 */
 	@Override
-	public boolean restoreProject(int projectId) throws EmployeeManagementException {
+	public void restoreProject(int projectId) throws EmployeeManagementException {
 		Project project = projectDao.getOneProject(projectId);
 		project.setIsDeleted(false);
-		return projectDao.updateProject(project);
+		if(!projectDao.updateProject(project)) {
+			throw new EmployeeManagementException("Project restoring failed");
+		}
 	}
 
 	/**

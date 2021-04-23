@@ -24,16 +24,6 @@ public interface ProjectService {
     boolean checkProjectId(int projectId, boolean isDeleted) throws EmployeeManagementException;
 
     /**
-     * This method passes employee and project details 
-     * to un assigns employees from a project.
-     * @param employeeIds ids of employees
-     * @param projectId id of project
-     * @return true if un assigned
-     * @throws EmployeeManagementException 
-     */
-    boolean unAssignEmployees(List<Integer> employeeIds, int projectId) throws EmployeeManagementException;
-
-    /**
      * Validates and converts into date format.
      * @param date date entered by user.
      * @return validated date
@@ -45,7 +35,7 @@ public interface ProjectService {
      * @param employeeIds id of employees
      * @param projectId id of project
      */
-    boolean assignEmployees(List<Integer> employeeIds, int projectId) throws EmployeeManagementException;
+    void assignEmployees(List<Integer> employeeIds, int projectId) throws EmployeeManagementException;
 
     /**
      * This method checks if id of employee is present in database
@@ -61,7 +51,7 @@ public interface ProjectService {
      * @return true if id is present in database, false otherwise
      * @throws EmployeeManagementException 
      */
-    boolean deleteProject(int projectId) throws EmployeeManagementException; 
+    void deleteProject(int projectId) throws EmployeeManagementException; 
 
     /**
      * Passes project object to dao.
@@ -88,7 +78,7 @@ public interface ProjectService {
      * @return true if restored sucessfully, false otherwise.
      * @throws EmployeeManagementException 
      */
-    boolean restoreProject(int projectId) throws EmployeeManagementException;
+    void restoreProject(int projectId) throws EmployeeManagementException;
 
     /**
      * Converts all project details from dao into strings.
@@ -130,7 +120,7 @@ public interface ProjectService {
      * @return true if updated sucessfully
      * @throws EmployeeManagementException 
      */
-    boolean updateProject(int projectId, String name,
+    void updateProject(int projectId, String name,
                           String details, Date startDate, String client,
                           Date targetDate, List<Integer> employees) throws EmployeeManagementException;
 

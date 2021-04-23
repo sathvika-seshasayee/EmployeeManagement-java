@@ -29,9 +29,9 @@ tr {background-color: #FFFFFF;}
 alert("${displayStatus}");
 </script>
 </c:if>
-<c:if test = "${null != updateStatus}">
+<c:if test = "${null != createStatus}">
 <script>
-alert("${updateStatus}");
+alert("${createStatus}");
 </script>
 </c:if>
 

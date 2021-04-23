@@ -7,7 +7,7 @@
 <head>
 <style>
 table {
-  width: 80%;
+  width: 95%;
 }
 th, td {
   text-align: center;
@@ -24,11 +24,8 @@ tr {background-color: #FFFFFF;}
 <div align="center">
 
 <c:if test = "${null != projects }">
-<h3> Active Project Details </h3>
+<h2> Active Project Details </h2>
 <br/>
-<br/>
-
-
     <table>  
     <tr><th>Id</th><th>Name</th><th>Details</th><th>Client</th>  
     <th>Start Date</th><th>End Date</th>
@@ -55,11 +52,27 @@ tr {background-color: #FFFFFF;}
 <c:if test = "${null != deleteProjectStatus}">
 <script>
 alert("${deleteProjectStatus}")
+// function autoRefresh() {
+    window.location = window.location.href = 'projectController?action=displayProjects';
+// }
+// setInterval('autoRefresh()', 3);
 </script>
 </c:if>
 <c:if test = "${null != displayStatus}">
 <script>
 alert("${displayStatus}")
+</script>
+</c:if>
+<c:if test = "${null != updateStatus}">
+<script>
+alert("${updateStatus}");
+window.location = window.location.href = 'projectController?action=displayProjects';
+</script>
+</c:if>
+<c:if test = "${null != assignOrUnAssignStatus}">
+<script>
+alert("${assignOrUnAssignStatus}");
+window.location = window.location.href = 'projectController?action=displayProjects';
 </script>
 </c:if>
 </body>
