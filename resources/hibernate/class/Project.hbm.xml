@@ -1,0 +1,27 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping>
+   <class name = "com.ideas2it.employeemanagement.project.model.Project" table = "project">
+
+      <id name = "id" type = "int" column = "id">
+         <generator class="increment"/>
+      </id>
+      
+      <property name = "name" column = "name" type = "string"/>
+      <property name = "details" column = "details" type = "string"/>
+      <property name = "startDate" column = "start_date" type = "date"/>
+      <property name = "client" column = "project_client" type = "string"/>
+      <property name = "targetDate" column = "target_date" type = "date"/>
+      <property name = "isDeleted" column = "is_deleted" type = "boolean"/>
+
+       <bag name = "employees" cascade = "save-update" table = "employee_project">
+           <key column = "project_id"/>
+           <many-to-many column = "employee_id" class = "com.ideas2it.employeemanagement.employee.model.Employee"/>
+       </bag>
+
+      </class>   
+</hibernate-mapping>
+   
