@@ -1,5 +1,7 @@
 package com.ideas2it.employeemanagement.employee.model;
 
+import org.springframework.stereotype.Component;
+
 import com.ideas2it.employeemanagement.employee.model.Employee;
 
 /**
@@ -9,6 +11,7 @@ import com.ideas2it.employeemanagement.employee.model.Employee;
  * @version 1.0 09 Mar 2021
  * @author Sathvika Seshasayee
  */
+@Component
 public class Address {
     private int id;
     private String doorNoAndStreet;            

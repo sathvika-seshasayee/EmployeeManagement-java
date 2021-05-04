@@ -3,6 +3,8 @@ package com.ideas2it.employeemanagement.employee.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +17,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ideas2it.CustomException.EmployeeManagementException;
 import com.ideas2it.CustomLogger.EmployeeManagementLogger;
-import com.ideas2it.employeemanagement.employee.model.Address;
+import com.ideas2it.employeemanagement.employee.dao.EmployeeDao;
 import com.ideas2it.employeemanagement.employee.model.Employee;
 import com.ideas2it.employeemanagement.employee.service.EmployeeService;
-import com.ideas2it.employeemanagement.employee.service.impl.EmployeeServiceImpl;
 import com.ideas2it.employeemanagement.project.model.Project;
 
 /**
@@ -29,26 +30,36 @@ import com.ideas2it.employeemanagement.project.model.Project;
  */
 @Controller
 public class EmployeeController {
-    static EmployeeService employeeService = new EmployeeServiceImpl();
+
     final EmployeeManagementLogger logger = new EmployeeManagementLogger(EmployeeController.class);
 
+    ApplicationContext container = new ClassPathXmlApplicationContext("classpath:beans.xml");
+    private EmployeeService employeeService = container.getBean(EmployeeService.class);
+//    
+//    private EmployeeManagementLogger logger;
+//
+//    private EmployeeController(EmployeeManagementLogger logger) {
+//        this.logger = logger;
+//        logger.setLogger(EmployeeController.class);
+//    }
+    
     /**
-     * Returns to index page
+     * Returns to dispatcher servlet
      * 
-     * @return to index page
+     * @return String index
      */
     @GetMapping("/")
-    public String indexPage() {
+    public String getIndexPage() {
         return "Index";
     }
 
     /**
-     * Returns to employee page
+     * Returns to dispatcher servlet
      * 
-     * @return to employee page
+     * @return to String employee
      */
     @GetMapping("/employee")
-    public String employeePage() {
+    public String getEmployeePage() {
         return "Employee";
     }
 
@@ -59,10 +70,9 @@ public class EmployeeController {
      */
     @GetMapping("/createEmployeeForm")
     public String createEmployeeForm(Model model) {
+
         Employee employee = new Employee();
-        Address address = new Address();
         model.addAttribute(employee);
-        model.addAttribute(address);
         return "createEmployee";
     }
 
@@ -74,21 +84,23 @@ public class EmployeeController {
      * @return ModelAndView object
      */
     @PostMapping("/updateAssignedProjects")
-    private ModelAndView updateAssignedProjects(@RequestParam int employeeId, @RequestParam(required = false) String[] projectId) {
+    private ModelAndView updateAssignedProjects(@RequestParam int employeeId,
+            @RequestParam(required = false) String[] projectId) {
         List<Integer> projectIds = new ArrayList<Integer>();
         ModelAndView modelAndView = new ModelAndView();
 
+        try {
         if (null != projectId) {
             for (String project : projectId) {
-                projectIds.add(Integer.parseInt(project));
+                    projectIds.add(Integer.parseInt(project));
             }
         }
-        try {
             employeeService.updateAssignedProjects(employeeId, projectIds);
             modelAndView.addObject("assignStatus",
                     "Assigned projects updated for employee Id " + employeeId + " sucessfully");
-        } catch (EmployeeManagementException e) {
+        } catch (EmployeeManagementException | NumberFormatException e) {
             logger.logError(e);
+            logger.logError("LOGGING TESTING");
             modelAndView.addObject("assignStatus", e.getMessage());
         }
         modelAndView.setViewName("displayAllEmployees");
@@ -208,9 +220,11 @@ public class EmployeeController {
      * @param addAddress user choice to add or not add address
      * @return ModelAndView object
      */
-    @PostMapping(value = "/createOrUpdateEmployee")
+    @RequestMapping("/createOrUpdateEmployee")
     private ModelAndView createEmployee(@ModelAttribute("employee") Employee employee,
             @RequestParam("addAddress") String addAddress) {
+        System.out.println("INSIDE CREATE");
+        System.out.println(employee);
         ModelAndView modelAndView = new ModelAndView();
         try {
             if (0 != employee.getId()) {
@@ -253,6 +267,7 @@ public class EmployeeController {
      */
     @GetMapping("/displayForUpdateEmployee/{employeeId}")
     private ModelAndView displayEmployeeforUpdate(@PathVariable int employeeId) {
+        System.out.println("INSIDE DISPLAY FOR UPDATE");
         Employee employee = new Employee();
         ModelAndView modelAndView = new ModelAndView();
         try {
@@ -262,7 +277,7 @@ public class EmployeeController {
             if (2 == employee.getAddresses().size()) {
                 modelAndView.addObject("temporaryAddress", employee.getAddresses().get(1));
             }
-            modelAndView.addObject("projects",employee.getProjects());
+            modelAndView.addObject("projects", employee.getProjects());
         } catch (EmployeeManagementException e) {
             logger.logError(e);
             modelAndView.addObject("displayStatus", "Employee Id " + employeeId + " could not be displayed.");

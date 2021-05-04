@@ -1,8 +1,9 @@
 package com.ideas2it.employeemanagement.employee.model;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.ideas2it.employeemanagement.employee.model.Address;
 import com.ideas2it.employeemanagement.project.model.Project;
@@ -14,6 +15,7 @@ import com.ideas2it.employeemanagement.project.model.Project;
  * @version 3.0 03 Mar 2021
  * @author Sathvika Seshasayee
  */
+
 public class Employee {
     private int id;
     private String name;
@@ -37,7 +39,7 @@ public class Employee {
         this.dob = date;
         this.addresses = addresses;
     }
-
+    
     public boolean getIsDeleted() {
         return this.isDeleted;
     }

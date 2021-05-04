@@ -3,6 +3,7 @@ package com.ideas2it.employeemanagement.employee.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
@@ -24,6 +25,8 @@ import com.ideas2it.employeemanagement.sessionfactory.DataBaseConnection;
  */
 public class EmployeeDaoImpl implements EmployeeDao {
     final EmployeeManagementLogger logger = new EmployeeManagementLogger(EmployeeDao.class);
+  
+    public EmployeeDaoImpl() {};
 
     /**
      * {@inheritDoc}
@@ -43,7 +46,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             logger.logError(ex);
             throw new EmployeeManagementException("Creation failed");
         } finally {
-            closeSession(session);
+            DataBaseConnection.closeSession(session);
         }
         return employeeId;
     }
@@ -66,7 +69,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
         } catch (HibernateException e) {
             logger.logError(e);
         } finally {
-            closeSession(session);
+            DataBaseConnection.closeSession(session);
         }
         return updateStatus;
     }
@@ -87,7 +90,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             logger.logError(e);
             throw new EmployeeManagementException("Deleted address failed");
         } finally {
-            closeSession(session);
+            DataBaseConnection.closeSession(session);
         }
     }
 
@@ -102,13 +105,13 @@ public class EmployeeDaoImpl implements EmployeeDao {
         try {
             session = DataBaseConnection.getSessionFactory().openSession();
             employee = (Employee) session.get(Employee.class, employeeId);
-            for (Address address : employee.getAddresses()) {}
-            for (Project project : employee.getProjects()) {}
+            Hibernate.initialize(employee.getAddresses());
+            Hibernate.initialize(employee.getProjects());
         } catch (HibernateException e) {
             logger.logError(e);
             throw new EmployeeManagementException("Employee fetching failed");
         } finally {
-            closeSession(session);
+            DataBaseConnection.closeSession(session);
         }
         return employee;
     }
@@ -132,7 +135,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             logger.logError(e);
             throw new EmployeeManagementException("Employees fetching failed");
         } finally {
-            closeSession(session);
+            DataBaseConnection.closeSession(session);
         }
         return (!employeeid.isEmpty());
     }
@@ -154,7 +157,7 @@ public class EmployeeDaoImpl implements EmployeeDao {
             logger.logError(e);
             throw new EmployeeManagementException("Employees fetching failed");
         } finally {
-            closeSession(session);
+            DataBaseConnection.closeSession(session);
         }
         return employees;
     }
@@ -172,30 +175,15 @@ public class EmployeeDaoImpl implements EmployeeDao {
             session = DataBaseConnection.getSessionFactory().openSession();
             employees = session.createQuery(getAllEmployeesQuery).getResultList();
             for (Employee employee : employees) {
-                for (Address addresses : employee.getAddresses()) {}
-                for (Project project : employee.getProjects()) {}
+                Hibernate.initialize(employee.getAddresses());
+                Hibernate.initialize(employee.getProjects());
             }
         } catch (HibernateException e) {
             logger.logError(e);
             throw new EmployeeManagementException("Employees fetching failed");
         } finally {
-            closeSession(session);
+            DataBaseConnection.closeSession(session);
         }
         return employees;
-    }
-
-    /**
-     * Closes session object
-     * 
-     * @param session session object
-     */
-    private static void closeSession(Session session) {
-        try {
-            if (null != session) {
-                session.close();
-            }
-        } catch (HibernateException e) {
-          //  logger.logError(e);
-        }
     }
 }

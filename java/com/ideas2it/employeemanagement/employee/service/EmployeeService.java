@@ -1,6 +1,6 @@
 package com.ideas2it.employeemanagement.employee.service;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import com.ideas2it.employeemanagement.employee.model.Employee;
@@ -135,14 +135,6 @@ public interface EmployeeService {
      * @throws EmployeeManagementException 
      */ 
     boolean checkEmployeeID(int employeeId, boolean isDeleted) throws EmployeeManagementException;
-
-    /**
-     * checks for correct format of date.
-     * 
-     * @param dob is the date of birth of employee entered by user.
-     * @return date of birth in right format.
-     */ 
-    Date checkEmployeeDOB(String dob);
 
     /**
      * checks for correct format of phone number.

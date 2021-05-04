@@ -11,11 +11,13 @@ import org.apache.logging.log4j.LogManager;
 public class EmployeeManagementLogger {
 	private Logger logger;
 	
+	private EmployeeManagementLogger() {};
+	
 	/**
 	 * Creating logger object for a class
 	 * @param className name of class
 	 */
-	public EmployeeManagementLogger(Class className) {
+	public EmployeeManagementLogger(Class<?> className) {
 		logger = LogManager.getLogger(className);
 	}
 	

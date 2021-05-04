@@ -1,14 +1,14 @@
 package com.ideas2it.employeemanagement.employee.service.impl;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import java.lang.IllegalArgumentException;
 
 import com.ideas2it.CustomException.EmployeeManagementException;
 import com.ideas2it.employeemanagement.employee.dao.EmployeeDao;
-import com.ideas2it.employeemanagement.employee.dao.impl.EmployeeDaoImpl;
 import com.ideas2it.employeemanagement.employee.model.Employee;
 import com.ideas2it.employeemanagement.employee.model.Address;
 import com.ideas2it.employeemanagement.employee.service.EmployeeService;
@@ -23,8 +23,21 @@ import com.ideas2it.employeemanagement.project.model.Project;
  * @version 1.0 03 Mar 2021
  * @author Sathvika Seshasayee
  */
+
 public class EmployeeServiceImpl implements EmployeeService {
-    EmployeeDao employeeDao = new EmployeeDaoImpl();
+
+    private EmployeeDao employeeDao;
+
+    public EmployeeServiceImpl() {}
+
+    private EmployeeServiceImpl(EmployeeDao employeeDao) {
+        this.employeeDao = employeeDao;
+    }
+
+//    public void setEmployeeDao(EmployeeDao employeeDao) {
+//        this.employeeDao = employeeDao;
+//    }
+//    
 
     /**
      * {@inheritDoc}
@@ -76,7 +89,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void updateAssignedProjects(int employeeId, List<Integer> projectIds) throws EmployeeManagementException {
         ProjectService projectService = new ProjectServiceImpl();
         Employee employee = employeeDao.getEmployee(employeeId);
-        if (!projectIds.isEmpty()) {
+        if (!projectIds.isEmpty()) {                   
             List<Project> projects = projectService.getMultipleProjects(projectIds);
             employee.setProjects(projects);
         } else {
@@ -142,7 +155,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public List<Project> getAllProjects(boolean isDeleted) throws EmployeeManagementException {
-        ProjectServiceImpl projectService = new ProjectServiceImpl();
+        ProjectService projectService = new ProjectServiceImpl();
         return projectService.getAllProjects(isDeleted);
     }
 
@@ -151,7 +164,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean checkProjectId(int projectId) throws EmployeeManagementException {
-        ProjectServiceImpl projectService = new ProjectServiceImpl();
+        ProjectService projectService = new ProjectServiceImpl();
         return projectService.checkProjectId(projectId, false);
     }
 
@@ -201,17 +214,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     /**
      * {@inheritDoc}
      */
-    @Override
+  /*  @Override
     public Date checkEmployeeDOB(String dob) {
-        Date dateOfBirth = null;
+     /**   Date dateOfBirth = null;
         boolean isDate = false;
         try {
             isDate = Pattern.matches("[1][9][0-9][0-9][-](?:0?[1-9]|(1)[02])[-](?:[012]?[0-9]|(3)[01])", dob);
             dateOfBirth = isDate ? Date.valueOf(dob) : null;
         } catch (IllegalArgumentException e) {
-        }
-        return dateOfBirth;
-    }
+        } 
+        return null;
+    } */
 
     /**
      * {@inheritDoc}

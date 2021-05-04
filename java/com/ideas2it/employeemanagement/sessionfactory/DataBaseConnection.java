@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.hibernate.cfg.Configuration;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 /**
@@ -34,4 +36,17 @@ public class DataBaseConnection {
         }
         return sessionFactory;
     }
+    
+    /**
+     * Closes session object
+     * 
+     * @param session session object
+     */
+    public static void closeSession(Session session) {
+        try {
+            if (null != session) {
+                session.close();
+            }
+        } catch (HibernateException e) {}
+    }    
 }   

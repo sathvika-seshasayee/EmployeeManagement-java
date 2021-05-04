@@ -31,7 +31,7 @@ tr {
 	<button onclick="document.location.href='/'">Home</button>
 	<button onclick="document.location.href='/employee'">Employee Home</button>
 	<div align="center">
-		<form:form method="POST" action="/createOrUpdateEmployee" modelAttribute="employee">
+		<form:form action = "/createOrUpdateEmployee"  method="POST"  modelAttribute="employee">
 			<h3>Employee Details</h3>
 			<table>
 				<c:if test="${0 != employee.id}">
