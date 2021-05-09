@@ -1,0 +1,251 @@
+@import url(https://fonts.googleapis.com/css?family=Candal);
+@import url(https://fonts.googleapis.com/css?family=DM Sans);
+@import url(https://fonts.googleapis.com/css?family=Poppins);
+
+
+body {
+     background: rgb(148, 220, 233); 
+    /* background: #ffff; */
+}
+
+.resume {
+    display: grid;
+    grid-template-columns: 33% 67%;
+    /* grid-column-gap: 1em; */
+    width: 1194px;
+    height:1256px;
+}
+
+.resume_left {
+    display: grid;
+    grid-template-rows: 37% 33% ;
+    grid-row-gap: 1em;
+}  
+
+.resume_left >div {
+    background: #ffffff;
+    padding: 1em;
+}
+
+.resume > div {
+    /* background: #eee; */
+    background: #ffffff;
+    padding: 1em;
+}
+
+.resume > div:nth-child(odd) {
+     /* background: #ddd;  */
+     background: #ffffff; 
+}
+
+.profile_pic img {
+    border-radius: 50%;
+    width: 200px;
+    margin-top: 50px;
+    margin-left: 50px;
+}
+
+.name {
+    text-align: center;
+    font-size: 20px;
+}
+
+.designation {
+    font-size: 15px;  
+}
+
+.icons {
+    margin-top: -10px;
+    margin-left: 20px;
+    font-size: 15px;
+}
+
+.email {
+    font-family: 'Poppins';
+    margin-bottom: 10px;
+    border-bottom: 1px solid #cacddb;
+    padding: 10px;
+    /* margin-left: -40px; */
+}
+
+.location {
+    font-family: 'Poppins';
+    margin-bottom: 10px;
+    border-bottom: 1px solid #cacddb;
+    padding: 10px;
+    /* margin-left: -40px; */
+}
+
+.full_time {
+    font-family: 'Poppins';
+    margin-bottom: 20px;
+    border-bottom: 1px solid #cacddb;
+    padding: 10px;
+    /* margin-left: -40px; */
+}
+
+.position {
+    font-family: 'Poppins';
+    margin-bottom: 20px;
+    padding: 10px;
+    /* margin-left: -40px; */
+}
+
+.resume_right {
+    display: grid;
+    grid-template-rows: 35% 30% 40%;
+}
+
+.resume_right > div {
+    background: #ffff;
+}
+
+.summary {
+    margin-top: 60px;
+    margin-right: 100px;
+}
+
+.summary_details {
+    font-size: 15px;
+    /* font-family: 'DM Sans'; */
+    font-family: 'Poppins';
+    color: #8b95b6;
+    font-weight: 800;
+}
+
+.work_experience {
+    display: grid;
+    margin-right: 100px;
+}
+
+.education {
+    display: grid;
+    grid-template-rows: 25% 50% 25%;
+    margin-right: 100px;
+    margin-bottom: 100px;
+    margin-top: 100px;
+}
+
+.pill_button1 {
+    background-color: #d7ffe0;
+    border-radius: 25px;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 270px;
+    margin-bottom: 10px;
+  }
+
+  .pill_button2 {
+    background-color: #d7ffe0;
+    border-radius: 25px;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 270px;
+    margin-bottom: 10px;
+  }
+
+  .pill_button3 {
+    background-color: #d7ffe0;
+    border-radius: 25px;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 380px;
+    margin-bottom: 10px;
+  }
+
+  .download {
+    background-color: #367cff;
+    border-radius: 15px;
+    border: none;
+    padding: 20px 30px;
+    margin-left: 20px;
+    margin-top: 50px;
+  }
+
+  .icons_work {
+      display: grid;
+      grid-template-columns: 20% 20% 60%;
+      margin-bottom: 30px;
+      font-family: 'Poppins';
+  }
+
+  .work_experience1 {
+    margin-top: 20px;
+    /* margin-bottom: 30px; */
+    border-bottom: 1px solid #cacddb;
+    padding-bottom: 10px;
+    padding-top: 10px;
+  }
+
+  .work_experience2 {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    /* margin-bottom: 70px; */
+    border-bottom: 1px solid #cacddb;
+  }
+
+  .work_experience3 {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    /* margin-bottom: 50px; */
+    border-bottom: 1px solid #cacddb;
+  }
+
+  .apple_date {
+    margin-left: 280px;
+}
+
+  .figma_date {
+    margin-left: 200px;
+  }
+
+  .microsoft_date {
+    margin-left: 200px;
+  }
+
+  .section_title {
+    font-size: 30px;
+    font-family: 'Candal';
+    color: #3e5086;
+  }
+
+  .inside_title {
+    font-size: 22px;
+    /* font-family: 'DM Sans'; */
+    font-family: 'Poppins';
+    color: #354881;
+    margin-top: 10px;
+  }
+
+  .education_date {
+      margin-left: 140px;
+      font-family: 'Poppins';
+  }
+
+  .education_date1 {
+    margin-left: 140px;
+    font-family: 'Poppins';
+ }
+
+  .masters {
+    border-bottom: 1px solid #cacddb;
+    margin-bottom: 30px;
+    padding-top: 30px;
+    font-family: 'Poppins';
+  }
+
+  .left_side_details {
+    font-family: 'Candal';
+    margin-left: 10px;
+    font-size: 13px;
+    color:#334680;
+  }
+
+  i {
+    color:#cacddb;
+  }
+
+.resume_download {
+      color: white;
+      font-weight: 700;
+  }
