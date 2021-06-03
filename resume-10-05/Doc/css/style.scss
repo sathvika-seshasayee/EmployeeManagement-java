@@ -1,0 +1,150 @@
+@import url(../css/fonts.css);
+$primaryColor:#3e5086;
+$iconsColor: #cacddb;
+body {
+	background-color: black;
+}
+.container {
+	background: white;
+	padding: 4% 6.5% 8% 2%;
+}
+.left-side {
+	display: inline-block;
+	width: 25%;
+	padding: 0% 4% 0% 0%;
+	img {
+		border-radius: 50%;
+		width: 190px;
+		margin: 10% 0% 10% 0%;
+	}
+}
+.right-side {
+	display: inline-block;
+	width: 70%;
+	vertical-align: top;
+	padding: 1% 0% 0% 0%;
+	i {
+		display: inline-block;
+		padding: 0em 0.35em 0em 0em;
+	}
+}
+.profile {
+	margin: 0 auto;
+	width: 72%;
+	text-align: center;
+}
+ul {
+	padding-inline-start: 0px;
+}
+li {
+	list-style: none;
+	font-size: 12px;
+	border-bottom: 1px solid $iconsColor;
+	font-weight: 800;
+	font-size: 13px;
+	color: $primaryColor;
+	font-family: poppins;
+	>i {
+		display: inline-block;
+		padding: 6%;
+		width: 5%;
+		color: $iconsColor;
+	}
+}
+.profile-details {
+	padding: 5% 0%;
+}
+.download-button {
+	background-color: #367cff;
+	border-radius: 15px;
+	border: none;
+	padding: 5% 11%;
+	text-align: center;
+	color: #dce8ff;
+	font-weight: 600;
+	margin: 12% 0% 0% 0%;
+}
+.summary {
+	margin: 3% 0% 0% 0%;
+	font-family: poppins;
+}
+.work {
+	display: inline-block;
+	width: 50%;
+	text-align: left;
+}
+.full-time-block {
+	display: inline-block;
+	width: 49%;
+	text-align: right;
+}
+.full-time {
+	background-color: #d7ffe0;
+	padding: 1.5% 4.5%;
+	border-radius: 15px;
+	font-size: 13px;
+	font-weight: 700;
+	font-family: poppins;
+}
+.work-company {
+	display: inline-block;
+	width: 16%;
+}
+.work-place {
+	display: inline-block;
+	width: 16%;
+}
+.duration {
+	display: inline-block;
+	width: 66%;
+	text-align: right;
+}
+.work-experience {
+	border-bottom: 1px solid #cacddb;
+	padding: 2% 1% 4% 0%;
+	h3 {
+		margin-bottom: 6px;
+	}
+}
+.education {
+	border-bottom: 1px solid $iconsColor;
+	padding: 2% 1% 4% 0%;
+	h3 {
+		margin-bottom: 6px;
+	}
+}
+.all-work-experience {
+	padding: 8% 0% 0% 0%;
+}
+.university {
+	display: inline-block;
+	width: 33%;
+}
+.all-education {
+	margin: 8% 0% 0% 0%;
+}
+h3 {
+	font-weight: 200;
+	font-size: 20px;
+	color: $primaryColor;
+	font-family: poppins;
+}
+h1 {
+	font-family: candal;
+	font-size: 30px;
+	font-weight: 200;
+	margin: 0%;
+	color: $primaryColor;
+}
+.work-details {
+	font-size: 12px;
+	color: $iconsColor;
+	font-weight: 800;
+	font-family: poppins;
+}
+.university-details {
+	font-size: 12px;
+	color: $iconsColor;
+	font-weight: 800;
+	font-family: poppins;
+}
